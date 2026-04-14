@@ -6,6 +6,7 @@ Page({
    */
   data: {
     // 孩子相关
+    nonthing:'',
     childId:'',
     childName:'',
     childAvatar:'',
