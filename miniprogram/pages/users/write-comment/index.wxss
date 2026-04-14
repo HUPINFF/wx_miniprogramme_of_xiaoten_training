@@ -1,0 +1,177 @@
+/* pages/users/write-comment/index.wxss */
+.container {
+  min-height: 100vh;
+  background-color: #f5f7fa;
+  padding-bottom: 40rpx;
+}
+
+.form-card {
+  background-color: #fff;
+  border-radius: 24rpx;
+  margin: 20rpx;
+  padding: 32rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+/* 课程信息 */
+.course-info {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 20rpx;
+  padding: 28rpx;
+  margin-bottom: 32rpx;
+  text-align: center;
+  color: #fff;
+}
+
+.course-name {
+  font-size: 36rpx;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.coach-name {
+  font-size: 28rpx;
+  opacity: 0.9;
+}
+
+/* 表单项 */
+.form-item {
+  width: 100%;
+  margin-bottom: 40rpx;
+}
+
+.form-item:last-child {
+  margin-bottom: 0;
+}
+
+.label {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #333;
+  display: block;
+  margin-bottom: 16rpx;
+}
+
+.required {
+  color: #ff6b6b;
+  font-size: 28rpx;
+}
+
+/* 评分星星 */
+.rating {
+  display: flex;
+  gap: 20rpx;
+  margin-bottom: 12rpx;
+}
+
+.star {
+  font-size: 56rpx;
+  color: #e0e0e0;
+  transition: all 0.2s;
+}
+
+.star.active {
+  color: #ffb400;
+}
+
+.rating-tip {
+  font-size: 26rpx;
+  color: #07c160;
+}
+
+/* 文本框 */
+textarea {
+  background-color: #f8f9fc;
+  padding: 24rpx;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  color: #333;
+  width: 100%;
+  min-height: 240rpx;
+  box-sizing: border-box;
+  line-height: 1.5;
+}
+
+.counter {
+  display: block;
+  text-align: right;
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 12rpx;
+}
+
+/* 标签 */
+.tags {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+}
+
+.tag {
+  /* width: 20%; */
+  padding: 12rpx 28rpx;
+  background-color: #f8f9fc;
+  border-radius: 40rpx;
+  font-size: 26rpx;
+  color: #666;
+  transition: all 0.2s;
+  border: 1rpx solid transparent;
+}
+
+/* .tag .li {
+  width: 25%;
+} */
+
+.tag.active {
+  background-color: #07c160;
+  color: #fff;
+  box-shadow: 0 4rpx 12rpx rgba(7, 193, 96, 0.3);
+}
+
+/* 匿名选项 */
+.anonymous {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 16rpx 0;
+}
+
+.anonymous checkbox {
+  transform: scale(0.9);
+}
+
+.anonymous text {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.anonymous-hint {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 提交按钮 */
+.submit-btn {
+  background: linear-gradient(135deg, #07c160 0%, #06a34d 100%);
+  color: #fff;
+  border-radius: 48rpx;
+  height: 88rpx;
+  font-size: 32rpx;
+  margin-top: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  box-shadow: 0 4rpx 12rpx rgba(7, 193, 96, 0.3);
+}
+
+.submit-btn::after {
+  border: none;
+}
+
+.submit-btn[disabled] {
+  background: #ccc;
+  box-shadow: none;
+}

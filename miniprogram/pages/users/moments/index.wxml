@@ -1,0 +1,30 @@
+<view class="container">
+  <nav-bar title="更多精彩瞬间"></nav-bar>
+
+   <!-- 精彩瞬间列表（网格布局） -->
+   <view class="moments-grid">
+    <block wx:for="{{momentsList}}" wx:key="_id">
+      <view class="moment-card" bind:tap="viewMomentDetail" data-id="{{item._id}}">
+        <image class="moment-image" src="{{item.image}}" mode="aspectFill"></image>
+        <text class="moment-title">{{item.title}}</text>
+      </view>
+    </block>
+   </view>
+   <!-- 空状态 -->
+   <view wx:if="{{momentsList.length === 0 && !loading}}" class="empty">
+    <text>暂无精彩瞬间</text>
+  </view>
+
+  
+  <!-- 加载更多 -->
+  <view wx:if="{{hasMore && momentsList.length > 0}}" class="load-more" bindtap="loadMore">
+    <text wx:if="{{!loadingMore}}">加载更多</text>
+    <text wx:else>加载中...</text>
+  </view>
+
+   <!-- 加载状态 -->
+   <view class="loading" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text>加载中...</text>
+  </view>
+</view>

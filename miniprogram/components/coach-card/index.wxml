@@ -1,0 +1,56 @@
+<!-- components/coach-card/index.wxml -->
+
+<!-- 查看模式 -->
+<view class="coach-card" wx:if="{{!isEditing}}">
+  <view class="coach-avatar" bind:tap="startEdit" wx:if="{{editable}}">
+    <image src="{{coachInfo.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"></image>
+    <view class="edit-tag">✎</view>
+  </view>
+  <view class="coach-avatar" wx:else>
+    <image src="{{coachInfo.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"></image>
+  </view>
+  
+  <view class="coach-detail">
+    <view class="coach-name">
+      <text>{{coachInfo.name || '未填写'}}</text>
+      <text class="edit-icon" bind:tap="startEdit" wx:if="{{editable}}">点击编辑</text>
+    </view>
+    <view class="coach-bio">{{coachInfo.bio || '暂无简介'}}</view>
+  </view>
+</view>
+
+<!-- 编辑模式 -->
+<view class="coach-card editing" wx:else>
+  <view class="coach-avatar" bind:tap="chooseAvatar">
+    <image src="{{editAvatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"></image>
+    <view class="edit-tag">📷</view>
+  </view>
+  
+  <view class="coach-detail">
+    <view class="edit-field">
+      <input 
+        class="edit-name" 
+        placeholder="请输入姓名" 
+        value="{{editName}}" 
+        bindinput="onNameInput"
+        maxlength="20"
+      />
+    </view>
+    <view class="edit-field">
+      <textarea 
+        class="edit-bio" 
+        placeholder="请输入简介（如：主教练，擅长田径）" 
+        value="{{editBio}}" 
+        bindinput="onBioInput"
+        maxlength="100"
+        auto-height
+      />
+      <text class="char-count">{{editBio.length}}/100</text>
+    </view>
+    
+    <view class="edit-actions">
+      <button class="cancel-btn" size="mini" bind:tap="cancelEdit">取消</button>
+      <button class="save-btn" size="mini" type="primary" bind:tap="saveEdit" loading="{{loading}}">保存</button>
+    </view>
+  </view>
+</view>

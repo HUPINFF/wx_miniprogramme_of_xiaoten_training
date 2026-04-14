@@ -1,0 +1,242 @@
+/* pages/coach/trainings/list/index.wxss */
+.container {
+  min-height: 100vh;
+  background-color: #f5f7fa;
+}
+
+/* 筛选栏 */
+.filter-bar {
+  background-color: #fff;
+  width: 90%;
+  display: flex;
+  padding: 20rpx 32rpx;
+  border-bottom: 2rpx solid #f0f0f0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.filter-item {
+  flex: 1;
+  text-align: center;
+  padding: 16rpx 0;
+  font-size: 28rpx;
+  color: #666;
+  border-radius: 8rpx;
+  transition: all 0.2s;
+}
+
+.filter-item.active {
+  color: #07c160;
+  font-weight: 500;
+  position: relative;
+}
+
+.filter-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60rpx;
+  height: 4rpx;
+  background-color: #07c160;
+  border-radius: 2rpx;
+}
+
+/* 训练卡片 */
+.training-list {
+  width: 95%;
+  margin: 0 auto;
+  padding: 24rpx;
+}
+
+.training-card {
+  width: 90%;
+  background-color: #fff;
+  border-radius: 24rpx;
+  padding: 28rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s;
+}
+
+.training-card:active {
+  transform: scale(0.98);
+}
+
+/* 卡片头部 */
+.training-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+  padding-bottom: 16rpx;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+
+.date-info {
+  display: flex;
+  align-items: baseline;
+  gap: 12rpx;
+}
+
+.date-info .date {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.date-info .day {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.type-tag {
+  padding: 6rpx 20rpx;
+  border-radius: 30rpx;
+  font-size: 24rpx;
+  background-color: #f5f5f5;
+  color: #666;
+}
+
+.type-tag.speed {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.type-tag.endurance {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.type-tag.coordination {
+  background-color: #fff3e0;
+  color: #f57c00;
+}
+
+/* 卡片内容 */
+.training-body {
+  margin-bottom: 20rpx;
+}
+
+.training-body .name {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #333;
+  display: block;
+  margin-bottom: 16rpx;
+}
+
+.focus-info,
+.difficulty-info {
+  display: flex;
+  font-size: 26rpx;
+  margin-bottom: 12rpx;
+  line-height: 1.5;
+}
+
+.focus-info .label,
+.difficulty-info .label {
+  width: 120rpx;
+  color: #999;
+}
+
+.focus-info .content,
+.difficulty-info .content {
+  flex: 1;
+  color: #666;
+}
+
+/* 卡片底部 */
+.training-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16rpx;
+  border-top: 2rpx solid #f0f0f0;
+}
+
+.coach-info {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.coach-avatar {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 24rpx;
+  background-color: #f0f0f0;
+}
+
+.coach-name {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.photo-info {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.photo-icon {
+  font-size: 26rpx;
+}
+
+.photo-count {
+  font-size: 24rpx;
+  color: #07c160;
+}
+
+/* 加载更多 */
+.load-more,
+.no-more {
+  text-align: center;
+  padding: 32rpx;
+  font-size: 26rpx;
+  color: #999;
+}
+
+.load-more {
+  color: #07c160;
+}
+
+/* 空状态 */
+.empty {
+  text-align: center;
+  padding: 120rpx 0;
+  color: #999;
+  font-size: 28rpx;
+}
+
+/* 加载状态 */
+.loading {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20rpx;
+  background-color: rgba(0,0,0,0.7);
+  padding: 40rpx;
+  border-radius: 20rpx;
+  color: #fff;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

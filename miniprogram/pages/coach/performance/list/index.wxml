@@ -1,0 +1,141 @@
+<view class="container">
+
+  <nav-bar title="表现记录"></nav-bar>
+  <!-- 筛选栏 -->
+  <view class="filter-bar">
+    <view class="filter-item {{filterType === 'all' ? 'active':''}}" bind:tap="onFilterChange" data-type="all">
+      全部
+    </view>
+
+    <view class="filter-item {{filterType === 'thisMonth' ? 'active':''}}" bind:tap="onFilterChange" data-type="thisMonth">
+      本月  
+    </view>
+
+    <view class="filter-item {{filterType === 'lastMonth' ? 'active':''}}" bind:tap="onFilterChange" data-type="lastMonth">
+      上月
+    </view>
+  </view>
+
+  <!-- 统计信息 -->
+  <view class="stats-info" wx:if="{{performanceList.length > 0}}">
+    <text>共{{totalCount}}条记录</text>
+  </view>
+
+  <!-- 表现列表 -->
+  <view class="performance-list">
+    <block wx:for="{{performanceList}}" wx:key="_id">
+      <view class="performance-card" bind:tap="viewPerformanceDetail" data-id="{{item._id}}">
+        <!-- 日期 -->
+        <view class="performance-header">
+          <text class="week-date">{{item.weekDate}}</text>
+          <text class="arrow">></text>
+        </view>
+
+        <!-- 表现数据网格 -->
+        <view class="performance-grid">
+          <view class="performance-item">
+            <text class="label">50米跑</text>
+            <text class="value">{{item.fiftyMeter}}秒</text>
+          </view>
+
+          <view class="performance-item">
+            <text class="label">1000米跑</text>
+            <text class="vlaue">{{item.thousandMeter}}</text>
+          </view>
+
+           <!-- 【新增】800米跑 -->
+           <view class="performance-item">
+            <text class="label">800米跑</text>
+            <text class="value">{{item.eightHundredMeter || '暂无'}}</text>
+          </view>
+
+          <!-- 【新增】仰卧起坐 -->
+          <view class="performance-item">
+            <text class="label">仰卧起坐</text>
+            <text class="value">{{item.sitUp || '暂无'}}{{item.sitUp ? '个/分' : ''}}</text>
+          </view>
+
+          <!-- 【新增】跳绳 -->
+          <view class="performance-item">
+            <text class="label">跳绳</text>
+            <text class="value">{{item.ropeSkipping || '暂无'}}{{item.ropeSkipping ? '个/分' : ''}}</text>
+          </view>
+
+          <!-- 【新增】坐位体前屈 -->
+          <view class="performance-item">
+            <text class="label">坐位体前屈</text>
+            <text class="value">{{item.sitAndReach || '暂无'}}{{item.sitAndReach ? '厘米' : ''}}</text>
+          </view>
+
+          <!-- 【新增】立定跳远 -->
+          <view class="performance-item">
+            <text class="label">立定跳远</text>
+            <text class="value">{{item.standingLongJump || '暂无'}}{{item.standingLongJump ? '厘米' : ''}}</text>
+          </view>
+
+          <!-- 【新增】肺活量 -->
+          <view class="performance-item">
+            <text class="label">肺活量</text>
+            <text class="value">{{item.vitalCapacity || '暂无'}}{{item.vitalCapacity ? '毫升' : ''}}</text>
+          </view>
+
+          <view class="performance-item">
+            <text class="label">协调性</text>
+            <text class="value">{{item.coordination}}分</text>
+          </view>
+
+          <view class="performance-item">
+            <text class="label">敏捷性</text>
+            <text class="value">{{item.agility}}分</text>
+          </view>
+        </view>
+
+        <!-- 趋势分析(与上周对比) -->
+
+        <view class="trend-analysis" wx:if="{{item.trend && (item.fiftyMeter || item.trend.coordination || item.trend.agility)}}">
+          <view class="trend-item" wx:if="{{item.trend.fiftyMeter}}">
+            <text class="trend-label">50米跑</text>
+            <text class="trend-value {{item.trend.fiftyMeter.type}}">
+              {{item.trend.fiftyMeter.type === 'up' ? '↑':'↓'}} {{item.trend.fiftyMeter.value}}秒
+            </text>
+          </view>
+
+          <view class="trend-item" wx:if="{{item.trend.coordination}}">
+            <text class="trend-label">协调性</text>
+            <text class="trend-value {{item.trend.coordination.type}}">
+              {{item.trend.coordination.type === 'up' ? '↑':'↓'}} {{item.trend.coordination.value}}分
+            </text>
+          </view>
+
+          <view class="trend-item" wx:if="{{item.trend.agility}}">
+            <text class="trend-label">敏捷性</text>
+            <text class="trend-value {{item.trend.agility.type}}">
+              {{item.trend.agility.type === 'up' ? '↑':'↓'}} {{item.trend.agility.value}}分 
+            </text>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!-- 空状态 -->
+    <view wx:if="{{performanceList.length === 0 && !loading}}" class="empty">
+      <text>暂无表现记录</text>
+    </view>
+
+    <!-- 加载更多 -->
+    <view wx:if="{{hasMore && performanceList.length > 0}}" class="load-more" bind:tap="loadMore">
+      <text wx:if="{{!loadingMore}}">加载更多</text>
+      <text wx:else>加载更多...</text>
+    </view>
+
+    <view wx:elif="{{!hasMore && performanceList.length > 0 }}" class="no-more">
+      <text>没有更多了</text>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text>加载中...</text>
+  </view>
+</view>

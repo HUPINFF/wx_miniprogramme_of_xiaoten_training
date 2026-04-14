@@ -1,0 +1,132 @@
+<!--pages/coach/assessment/edit/index.wxml-->
+
+<view class="container">
+  <nav-bar title='体质测评'></nav-bar>
+
+  <form bindsubmit="onSubmit">
+    <!-- 孩子信息卡片 -->
+    <view class="child-info-card">
+      <image class="child-avatar" src="cloud://hupin255-5gfbw856b1c861ef.6875-hupin255-5gfbw856b1c861ef-1410552194/default_avatar/6756593ba0eb6a537f7060da8ede3ca8.jpeg" mode="aspectFill"></image>
+
+      <view class="child-detail">
+        <text class="child-name">{{childName}}</text>
+        <text class="child-age">{{childAge}}岁</text>
+      </view>
+      <!-- 新增】历史数据按钮 -->
+      <view class="history-btn" bind:tap="goToHistory">
+        <text class="history-icon">📊</text>
+        <text class="history-text">历史数据</text>
+      </view>
+    </view>
+
+    <!-- 基础信息 -->
+    <view class="section">
+      <view class="section-title">📋 基础信息</view>
+      <view class="form-row">
+        <view class="form-item half">
+          <text class="label">身高（cm）</text>
+          <input class="input" type="digit" placeholder="请输入身高" value="{{formData.height}}" bindinput="onInput" data-field="height"/>
+        </view>
+
+        <view class="form-item half">
+          <text class="label">体重（kg）</text>
+          <input class="input" type="digit" placeholder="请输入体重" value="{{formData.weight}}" bindinput="onInput" data-field="weight"/>
+        </view>
+      </view>
+
+      <view class="form-item">
+        <text class="label">BMI指数</text>
+        <input class="input" disabled value="{{formData.bmi}}"/>
+        <text class="bmi-tip" wx:if="{{formData.bmi}}">正常范围：18.5-23.9</text>
+      </view>
+    </view>
+
+    <!-- 核心力量 -->
+    <view class="section">
+      <view class="section-title">💪 核心力量</view>
+
+      <view class="form-item">
+        <text class="label">{{gender === '男' ? '1分钟俯卧撑(次)' : '1分钟仰卧起坐(次)'}}</text>
+        <input class="input" type="number" placeholder="请输入次数" value="{{formData.coreStrength}}" bindinput="onInput" data-field="coreStrength"/>
+      </view>
+    </view>
+
+    <!-- 基础身体素质 -->
+    <view class="section">
+      <view class="section-title">🏃 基础身体素质</view>
+
+      <view class="form-row">
+        <view class="form-item half">
+          <text class="label">坐位体前屈(cm)</text>
+          <input class="input" type="digit" placeholder="请输入成绩" value="{{formData.sitAndReach}}" bindinput="onInput" data-field="sitAndReach"/>
+        </view>
+
+        <view class="form-item half">
+          <text class="label">立定跳远(cm)</text>
+          <input class="input" type="number" placeholder="请输入距离" value="{{formData.standingLongJump}}" bindinput="onInput" data-field="standingLongJump"/>
+        </view> 
+      </view>
+
+      <view class="form-row">
+          <view class="form-item half">
+            <text class="label">平板支撑(秒)</text>
+            <input class="input" type="number" placeholder="请输入秒数" value="{{formData.plank}}" bindinput="onInput" data-field="plank"/>
+          </view>
+
+          <view class="form-item half">
+            <text class="label">靠墙静蹲(秒)</text>
+            <input class="input" type="number" placeholder="请输入秒数" value="{{formData.wallSit}}" bindinput="onInput" data-field="wallSit"/>
+          </view>
+        </view>
+
+        <view class="form-row">
+          <view class="form-item half">
+            <text class="label">5米折返跑(秒)</text>
+            <input class="input" type="digit" placeholder="请输入秒数" value="{{formData.fiveMeterShuttle}}" bindinput="onInput" data-field="fiveMeterShuttle"/>
+          </view>
+
+          <view class="form-item half">
+            <text class="label">1分钟跳绳(次)</text>
+            <input class="input" type="number" placeholder="请输入次数" value="{{formData.ropeSkipping}}" bindinput="onInput" data-field="ropeSkipping"/>
+          </view>
+        </view>
+    </view>
+
+    <!-- 专项动作模式（强/中/弱） -->
+    <view class="section">
+      <view class="section-title">🎯 专项动作模式</view>
+
+      <view class="action-item" wx:for="{{actionList}}" wx:key="field">
+        <text class="action-label">{{item.label}}</text>
+        <view class="action-options">
+          <text class="option {{formData[item.field] === '强'?'active':''}}" bind:tap="selectAction" data-field="{{item.field}}" data-value="强">强</text>
+          <text class="option {{formData[item.field] === '中' ? 'active' : ''}}" bindtap="selectAction" data-field="{{item.field}}" data-value="中">中</text>
+          <text class="option {{formData[item.field] === '弱' ? 'active' : ''}}" bindtap="selectAction" data-field="{{item.field}}" data-value="弱">弱</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 综合评定 -->
+    <view class="section">
+      <view class="section-title">📊 综合评定</view>
+
+      <view class="form-item">
+        <text class="label">整体等级</text>
+        <view class="rating-options">
+          <text class="rating-option {{formData[overallRatting] === '优秀'?'active':''}}" bind:tap="selectRating" data-value="优秀">优秀</text>
+          <text class="rating-option {{formData[overallRatting] === '良好'?'active':''}}" bind:tap="selectRating" data-value="良好">良好</text>
+          <text class="rating-option {{formData[overallRatting] === '一般'?'active':''}}" bind:tap="selectRating" data-value="一般">一般</text>
+          <text class="rating-option {{formData[overallRatting] === '需加强'?'active':''}}" bind:tap="selectRating" data-value="需加强">需加强</text>
+        </view>
+      </view>
+
+      <view class="form-item">
+        <text class="label">综合评价</text>
+        <textarea class="textarea" value="{{formData.overallComment}}" placeholder="请输入综合评价" bindinput="onInput" data-field="overallComment" maxlength="200"/>
+      </view>
+    </view>
+
+    <!-- 提交按钮 -->
+    <button class="submit-btn" type="primary" form-type="submit" loading="{{submitting}}">保存测评</button>
+  </form>
+</view>

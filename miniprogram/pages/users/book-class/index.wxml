@@ -1,0 +1,109 @@
+<view class="container">
+  <nav-bar title="预约上课"></nav-bar>
+  、
+  <!-- 选择孩子(如果有多个孩子) -->
+  <view class="section" wx:if="{{children.length > 1}}">
+    <view class="form-item">
+      <text class="label">选择孩子</text>
+      <picker mode="selector" range="{{children}}" range-key="name" bindchange="onChildChange">
+        <view class="picker">{{selectedChild.name || '请选择孩子'}}</view>
+      </picker>
+    </view>
+  </view>
+
+  <!-- 孩子信息卡片 -->
+  <!-- <view class="child-card" wx:if="{{selectedChild.name}}">
+    <image src="{{selectedChild.avatar || '/images/default-avatar.png'}}" mode="aspectFill"></image>
+
+    <view class="child-info">
+      <text class="child-name">{{selectedChild.name}}</text>
+      <text class="child-detail">{{selectedChild.age}}岁 · {{selectedChild.gender ==='male' ?'男孩':'女孩'}}</text>
+    </view>
+  </view> -->
+
+  <!-- 选择日期 -->
+  <view class="section">
+    <view class="form-item">
+      <text class="label">选择日期</text>
+      <picker mode="date" value="{{selectedDate}}" start="{{minDate}}" end="{{maxDate}}" bindchange="onDateChange">
+        <view class="picker">{{selectedDate || '请选择日期'}}</view>
+      </picker>
+    </view>
+  </view>
+
+  <!-- 选择训练类型 -->
+  <view class="section">
+    <view class="form-item">
+      <text class="label">选择训练类型</text>
+      <picker mode="selector" range="{{courseTypes}}" bindchange="onCourseTypeChange">
+        <view class="picker">{{selectedCourseType || '请选择训练类型'}}</view>
+      </picker>
+    </view>
+  </view>
+
+   <!-- 【新增】训练内容 -->
+   <view class="section">
+    <view class="form-item">
+      <text class="label">训练内容 <text class="optional">(选填)</text></text>
+      <textarea 
+        class="textarea" 
+        placeholder="请填写希望训练的内容，如：起跑反应、耐力提升、技术动作等..."
+        value="{{trainingContent}}"
+        bindinput="onTrainingContentInput"
+        maxlength="200"
+        auto-height
+      />
+      <text class="counter">{{trainingContent.length}}/200</text>
+    </view>
+  </view>
+
+  <!-- 选择教练 -->
+  <!-- <view class="section">
+    <view class="form-item">
+      <text class="label">选择教练</text>
+      <picker mode="selector" range="{{coaches}}" range-key="name" bindchange="onCoachChange">
+        <view class="picker">{{selectedCoach.name || '请选择教练'}}</view>
+      </picker>
+    </view>
+  </view> -->
+
+  <!-- 课预约时间 -->
+  <view class="section">
+    <view class="form-item">
+      <text class="label">选择时间段</text>
+      <picker mode="selector" range="{{timeSlots}}" bindchange="onTimeChange">
+        <view class="picker">{{selectedTimeSlot || '请选择时间段'}}</view>
+      </picker>
+    </view>    
+  </view>
+
+  <!-- 预约信息确认 -->
+  <view class="section" wx:if="{{selectedChild.name && selectedDate && selectedTimeSlot}}">
+    <text class="label">预约信息</text>
+    <view class="order-info">
+      <view class="info-row">
+        <text class="info-label">学员</text>
+        <text class="info-value">{{selectedChild.name}}</text>
+      </view>
+
+      <view class="info-row">
+        <text class="info-label">日期</text>
+        <text class="info-value">{{selectedDate}}</text>
+      </view>
+
+      <view class="info-row">
+        <text class="info-label">时间</text>
+        <text class="info-value">{{selectedTimeSlot}}</text>  
+      </view>
+    </view>
+  </view>
+
+    <!-- 提交按钮 -->
+  <button 
+    class="submit-btn"
+    type="primary"
+    bind:tap="handleSubmit"
+    loading="{{submintting}}"
+    disabled="{{!selectedChild._id || !selectedDate || !selectedTimeSlot}}"
+  >提交预约</button>
+</view>

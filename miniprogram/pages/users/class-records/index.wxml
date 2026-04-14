@@ -1,0 +1,75 @@
+<view class="container">
+  <nav-bar title="上课记录" showBack="{{true}}"></nav-bar>
+
+  <!-- 筛选栏 -->
+  <view class="filter-bar">
+    <view class="filter-item {{filterType ==='all' ? 'active':'' }}" bind:tap="onFilterChange" data-type="all">
+      全部
+    </view>
+
+    <view class="filter-item {{filterType ==='thisMonth' ? 'active':'' }}" bind:tap="onFilterChange" data-type="thisMonth">
+      本月
+    </view>
+
+    <view class="filter-item {{filterType ==='lastMonth' ? 'active':'' }}" bind:tap="onFilterChange" data-type="lastMonth">
+      上月
+    </view>
+  </view>
+
+  <view class="record-list">
+      <block wx:for="{{recordList}}" wx:key="_id">
+        <view class="record-card" bind:tap="viewRecordDetail" data-id="{{item._id}}">
+          <!-- 日期 -->
+          <view class="record-date">
+            <text class="day">{{item.day}}</text>
+            <text class="date">{{item.date}}</text>
+          </view>
+
+          <!-- 课程信息 -->
+          <view class="record-info">
+            <text class="course-name">{{item.type}} · {{item.name}}</text>
+            <view class="coach-info">
+              <image class="coach-avatar" src="{{item.coachAvatar}}" mode="aspectFill"></image>
+              <text class="coach-name">{{item.coachName}}教练</text>
+            </view>
+
+            <view class="record-stats">
+              <text class="stat-item">📊 协调性: {{item.coordination || '-'}}分</text>
+              <text class="stat-item">⚡ 敏捷性: {{item.agility || '-'}}分</text>
+            </view>
+
+            <view class="record-photos" wx:if="{{item.photoCount > 0}}">
+              <text class="photo-icon">📸</text>
+              <text class="photo-count">{{item.photoCount}}张照片</text>
+            </view>
+          </view>
+
+          <text class="arrow">></text>
+        </view>
+      </block>
+
+      <!-- 空状态 -->
+      <view wx:if="{{recordList.length===0 && !loading}}" class="empty">
+        <text>暂无上课记录</text>
+      </view>
+
+      <!-- 加载更多 -->
+      <view wx:if="{{hasmore && recordList.length > 0}}" class="load-more" bind:tap="loadMore">
+        <text wx:if="{{!loadingMore}}">加载更多</text>
+        <text wx:else>加载中...</text>
+      </view> 
+      <view wx:elif="{{!hasMore && recordList.length > 0}}" class="no-more">
+        <text>没有更多了</text>
+      </view>
+    </view>
+
+  <!-- 加载状态 -->
+  <view class="loading" wx:if="{{loading}}">
+      <view class="loading-spinner"></view>
+      <text>加载中...</text>
+    </view>
+</view>
+
+
+
+

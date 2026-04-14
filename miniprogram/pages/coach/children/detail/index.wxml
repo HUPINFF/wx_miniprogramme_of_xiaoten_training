@@ -1,0 +1,196 @@
+<view class="container">
+
+  <nav-bar title='学员详情'></nav-bar>
+  <!-- 加载状态 -->
+  <view class="loading" wx:if="{{load}}">
+    <view class="loading-spinner"></view>
+    <text>加载中...</text>
+  </view>
+
+  <block wx:else>
+    <!-- 学员信息卡片 -->
+    <view class="child-header">
+      <image class="avatar-large" src="cloud://hupin255-5gfbw856b1c861ef.6875-hupin255-5gfbw856b1c861ef-1410552194/default_avatar/6756593ba0eb6a537f7060da8ede3ca8.jpeg" mode="aspectFill"></image>
+      <view class="child-basic">
+        <text class="name">{{childInfo.data.name}}</text>
+        <text class="info">{{childInfo.data.age}}岁 · {{childInfo.data.gender==='male' ? '男孩':'女孩'}}</text>
+        <!-- 【新增】学时信息 -->
+        <view class="class-hours">
+          <text class="hours-label">剩余学时：</text>
+          <text class="hours-value {{childInfo.data.remainingHours <= 5 ? 'warning' : ''}}">{{childInfo.data.remainingHours || 0}} 课时</text>
+        </view>
+
+        <!-- 【新增】编辑学时按钮 -->
+      <view class="edit-hours-btn" bindtap="editHours">
+        <text class="edit-icon">✏️编辑学时</text>
+      </view>
+      </view> 
+    </view>
+
+    <!-- 快捷操作按钮 -->
+    <view class="quick-actions">
+      <view class="action-btn" bind:tap="addPerformance">
+        <text class="icon iconfont icon-luruchengji"></text>
+        <text>录入成绩</text>
+      </view>
+
+      <view class="action-btn" bind:tap="writeFeedback">
+        <text class="icon iconfont icon-tianxiefankui"></text>
+        <text>写反馈</text>
+      </view>
+
+      <view class="action-btn" bind:tap="addTraining">
+        <text class="icon iconfont icon-tianjiaxunlian"></text>
+        <text>添加训练</text>
+      </view>
+
+       <!-- 【新增】体质测评按钮 -->
+       <view class="action-btn" bindtap="goToAssessment">
+        <text class="icon iconfont icon-zhihuitizhiceping"></text>
+        <text>体质测评</text>
+      </view>
+    </view>
+
+     <!-- 最新表现 -->
+     <view class="section">
+      <view class="section-header">
+        <text class="title">📊 最新表现</text>
+        <text class="section-date">{{latestPerformance.weekDate}}</text>
+      </view>
+
+      <view class="performance-grid">
+        <view class="performance-item">
+          <text class="label">50米跑</text>
+          <text class="value">{{latestPerformance.fiftyMeter || '暂无'}}{{latestPerformance.fiftyMeter ? '秒' : ''}}</text>
+        </view>
+
+        <view class="performance-item">
+          <text class="label">1000米跑</text>
+          <text class="value">{{latestPerformance.thousandMeter || '暂无'}}</text>
+        </view>
+
+        <!-- 800米跑 - 始终显示 -->
+        <view class="performance-item">
+          <text class="label">800米跑</text>
+          <text class="value">{{latestPerformance.eightHundredMeter || '暂无'}}</text>
+        </view>
+
+        <!-- 仰卧起坐 - 始终显示 -->
+        <view class="performance-item">
+          <text class="label">仰卧起坐</text>
+          <text class="value">{{latestPerformance.sitUp || '暂无'}}{{latestPerformance.sitUp ? '个/分' : ''}}</text>
+        </view>
+
+        <!-- 跳绳 - 始终显示 -->
+        <view class="performance-item">
+          <text class="label">跳绳</text>
+          <text class="value">{{latestPerformance.ropeSkipping || '暂无'}}{{latestPerformance.ropeSkipping ? '个/分' : ''}}</text>
+        </view>
+
+          <!-- 坐位体前屈 - 始终显示 -->
+          <view class="performance-item">
+          <text class="label">坐位体前屈</text>
+          <text class="value">{{latestPerformance.sitAndReach || '暂无'}}{{latestPerformance.sitAndReach ? '厘米' : ''}}</text>
+        </view>
+
+        <!-- 立定跳远 - 始终显示 -->
+        <view class="performance-item">
+          <text class="label">立定跳远</text>
+          <text class="value">{{latestPerformance.standingLongJump || '暂无'}}{{latestPerformance.standingLongJump ? '厘米' : ''}}</text>
+        </view>
+
+         <!-- 肺活量测试 - 始终显示 -->
+         <view class="performance-item">
+          <text class="label">肺活量</text>
+          <text class="value">{{latestPerformance.vitalCapacity || '暂无'}}{{latestPerformance.vitalCapacity ? '毫升' : ''}}</text>
+        </view>
+
+        <view class="performance-item">
+          <text class="label">协调性</text>
+          <text class="value">{{latestPerformance.coordination}}分</text>
+        </view>
+
+        <view class="performance-item">
+          <text class="label">敏捷性</text>
+          <text class="value">{{latestPerformance.agility}}分</text>
+        </view> 
+      </view>
+     </view>
+
+     <!-- 表现历史 -->
+     <view class="section">
+      <view class="section-header">
+        <text class="section-title">📈 表现历史</text>
+        <text class="section-more" bind:tap="viewAllPerformance">查看全部</text>
+      </view>
+
+      <view class="history-list">
+        <view class="history-item" wx:for="{{performanceList}}" wx:key="_id" bind:tap="viewPerformanceDetail" data-id="{{item._id}}">
+          <text class="date">{{item.weekDate}}</text>
+          <view class="scores">
+            <text class="score">50m:{{item.fiftyMeter}}秒</text>
+            <text class="score">协调：{{item.coordination}}分</text>
+          </view>
+          <text class="arrow">></text>
+        </view>
+
+        <view wx:if="{{performanceList.length ===0}}" class="empty">暂无表现记录</view>
+      </view>
+     </view>
+
+     <!-- 近期训练 -->
+     <view class="section">
+      <view class="section-header">
+        <text class="section-title">🏃 近期训练</text>
+        <text class="section-more" bind:tap="viewAllTrainings">查看全部</text>
+      </view>
+
+      <view class="training-list">
+        <view class="training-item" wx:for="{{trainingList}}" wx:key="_id" bind:tap="editTraining" data-id="{{item._id}}">
+          <view class="training-header">
+            <text class="date">{{item.date}}</text>
+            <text class="type">{{item.type}}</text>
+          </view>
+
+          <text class="name">{{item.name}}</text>
+          <view class="training-footer">
+            <text class="focus">重点：{{item.focus}}</text>
+            <text class="photo-count" wx:if="{{item.photoCount > 0 }}">📸 {{item.photoCount}}张</text>
+          </view>
+        </view>
+
+        <view class="empty" wx:if="{{training.length === 0}}">暂无训练记录</view>
+      </view>
+     </view>
+
+     <!-- 教练反馈 -->
+     <view class="section">
+      <view class="section-header">
+        <text class="section-title">💬 教练反馈</text>
+        <text class="section-more" bind:tap="viewAllFeedbacks">查看全部</text>
+      </view>
+
+      <view class="feedback-list">
+        <view class="feedback-item" wx:for="{{feedbackList}}" wx:key="_id">
+          <view class="feedback-header">
+            <text class="date">{{item.date}}</text>
+            <text class="week">{{item.weekRange}}</text>
+          </view>
+          <text class="content">{{item.content}}</text>
+        </view>
+
+        <view wx:if="{{feedbackList.length === 0 }}" class="empty">暂无反馈记录</view>
+      </view>
+     </view>
+  </block>
+</view>
+
+<!-- 学时编辑弹窗组件 -->
+<edit-hours-modal 
+  show="{{showHoursModal}}"
+  childId="{{childInfo.data._id}}"
+  childName="{{childInfo.data.name}}"
+  currentHours="{{childInfo.data.remainingHours}}"
+  bind:close="closeHoursModal"
+  bind:confirm="onConfirmHours"
+/>

@@ -1,0 +1,9 @@
+{
+  "usingComponents": {
+    "nav-bar":"/components/nav-bar/nav-bar"
+  },
+  "navigationStyle": "custom",
+  "navigationBarTitleText": "添加训练",
+  "navigationBarBackgroundColor": "#07c160",
+  "navigationBarTextStyle": "white"
+}

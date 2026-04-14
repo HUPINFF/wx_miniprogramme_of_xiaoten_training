@@ -1,0 +1,8 @@
+{
+  "usingComponents": {
+    "nav-bar":"/components/nav-bar/nav-bar",
+    "add-child-modal":"/components/add-child-modal/index",
+    "edit-profile-modal": "/components/edit-profile-modal/index"
+  },
+  "navigationStyle": "custom"
+}

@@ -1,0 +1,83 @@
+{
+  "pages": [
+    "pages/common/login/index",
+    "pages/common/order-detail/index",
+    "pages/coach/workbench/index",
+    "pages/coach/schedule/index",
+    "pages/coach/children/list/index",
+    "pages/coach/children/detail/index",
+    "pages/coach/profile/index",
+    "pages/coach/performance/weekly/index",
+    "pages/coach/performance/list/index",
+    "pages/coach/feedback/write/index",
+    "pages/coach/feedback/list/index",
+    "pages/coach/trainings/list/index",
+    "pages/coach/trainings/edit/index",
+    "pages/coach/appointments/index",
+    "pages/coach/content-manage/index",
+    "pages/coach/assessment/edit/index",
+    "pages/coach/assessment/history/index",
+    "pages/users/home/index",
+    "pages/users/children/index",
+    "pages/users/orders/index",
+    "pages/users/book-class/index",
+    "pages/users/profile/index",
+    "pages/users/coach-list/index",
+    "pages/users/booking/index",
+    "pages/users/history-stats/index",
+    "pages/users/training-photos/index",
+    "pages/users/trainings/index",
+    "pages/users/class-records/index",
+    "pages/users/class-comments/index",
+    "pages/users/write-comment/index",
+    "pages/users/child-profile/index",
+    "pages/users/my-feedback/index",
+    "pages/users/about/index",
+    "pages/users/news/index",
+    "pages/users/news-detail/index",
+    "pages/users/moments/index",
+    "pages/users/moment-detail/index"
+  ],
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于小程序位置接口的效果展示"
+    }
+  },
+  "window": {
+    "backgroundColor": "#F6F6F6",
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#F6F6F6",
+    "navigationBarTitleText": "教练管理平台",
+    "navigationBarTextStyle": "black",
+    "navigationStyle": "custom"
+  },
+  "tabBar": {
+    "color": "#999",
+    "selectedColor": "#07c160",
+    "backgroundColor": "#fff",
+    "list": [
+      {
+        "pagePath": "pages/users/home/index",
+        "text": "首页",
+        "iconPath": "images_1/home.png",
+        "selectedIconPath": "images_1/home_active.png"
+      },
+      {
+        "pagePath": "pages/users/orders/index",
+        "text": "预约",
+        "iconPath": "images_1/yuyue.png",
+        "selectedIconPath": "images_1/yuyue_active.png"
+      },
+      {
+        "pagePath": "pages/users/profile/index",
+        "text": "我的",
+        "iconPath": "images_1/my.png",
+        "selectedIconPath": "images_1/my_active.png"
+      }
+    ]
+  },
+  
+  "sitemapLocation": "sitemap.json",
+  "style": "v2",
+  "lazyCodeLoading": "requiredComponents"
+}

@@ -1,0 +1,160 @@
+<view class="container">
+  <nav-bar title="预约上课" showBack="{{false}}"></nav-bar>
+
+
+  <view class="tabs">
+    <view class="tab-item {{currentType === 'pending'? 'active':''}}" bind:tap="switchTab" data-tab="pending">
+      待确定
+      <text class="bage" wx:if="{{pendingCount > 0}}">{{pendingCount}}</text>
+    </view>
+
+    <view class="tab-item {{currentType === 'approved' ? 'active':''}}" bind:tap="switchTab" data-tab="approved">
+      已同意
+
+    </view>
+    
+    <view class="tab-item {{currentType === 'rejected' ? 'active':''}}" bind:tap="switchTab" data-tab="rejected">
+      已拒绝
+    </view>
+
+    <view class="tab-item {{currentType === 'completed' ? 'active':''}}" bind:tap="switchTab" data-tab="completed">
+      已完成
+    </view>
+  </view>
+
+   <!-- 待确认列表 -->
+   <view class="appointment-list" wx:if="{{currentType === 'pending'}}">
+    <block wx:for="{{pendingList}}" wx:key="_id"> 
+      <view class="appointment-card">
+        <view class="card-header">
+          <text class="status pending">待确认</text>
+          <text class="date">{{item.date}}</text>
+        </view>
+
+        <view class="card-content">
+          <view class="info-row">
+            <text class="label">教练</text>
+            <text class="value">{{item.coachName}}</text>
+          </view>
+
+          <view class="info-row">
+            <text class="label">时间</text>
+            <text class="value">{{item.startTime}} - {{item.endTime}}</text>
+          </view>
+
+          <view class="info-row">
+            <text class="label">课程</text>
+            <text class="vlaue">{{item.courseType}}</text>
+          </view>
+        </view>
+
+        <view class="card-footer">
+          <button class="cancel-btn" size="mini" bind:tap="cancelAppointment" data-id="{{item._id}}">取消预约</button>
+        </view>
+      </view>
+    </block>
+    <view wx:if="{{pendingList.length === 0}}" class="empty">暂无待确认预约</view>
+  </view>
+
+  <!--  已同意列表  -->
+  <view class="appointment-list" wx:if="{{currentType==='approved'}}">
+    <block wx:for="{{approvedList}}" wx:key="_id"> 
+      <view class="appointment-card approved">
+        <view class="card-header">
+          <text class="status approved">已同意</text>
+          <text class="date">{{item.date}}</text>
+        </view>
+
+        <view class="card-content">
+          <view class="info-row">
+            <text class="label">教练</text>
+            <text class="value">{{item.coachName}}</text>
+          </view>
+          
+          <view class="info-row">
+            <text class="label">时间</text>
+            <text class="value">{{item.startTime}} - {{item.endTime}}</text>
+          </view>
+
+          <view class="info-row">
+            <text class="label">课程</text>
+            <text class="value">{{item.courseType}}</text>
+          </view>
+        </view>
+      </view>
+    </block>
+    <view wx:if="{{approvedList.length ===0}}" class="empty">暂无已同意预约</view>
+  </view>
+
+  <!-- 已拒绝列表 -->
+  <view class="appointment-list" wx:if="{{currentType==='rejected'}}">
+    <block wx:for="{{rejectedList}}" wx:key="_id">
+      <view class="appointment-card rejected">
+        <view class="card-header">
+          <text class="status rejected">已拒绝</text>
+          <text class="date">{{item.date}}</text>
+        </view>
+
+        <view class="card-content">
+          <view class="info-row">
+            <text class="label">教练</text>
+            <text class="value">{{item.coachName}}</text>
+          </view> 
+
+          <view class="info-row">
+            <text class="label">时间</text>
+            <text class="value">{{item.startTime}} - {{item.endTime}}</text>
+          </view>
+
+          <view class="info-row">
+            <text class="label">课程</text>
+            <text class="value">{{item.courseType}}</text>
+          </view>
+
+          <view class="info-row" wx:if="{{item.remark}}">
+            <text class="label">备注</text>
+            <text class="value remark">{{item.remark}}</text>
+          </view>
+        </view>
+      </view>
+    </block>
+    <view wx:if="{{rejectedList.length ===0}}" class="empty">暂无已拒绝预约</view>
+  </view>
+
+  <!-- 已完成列表 -->
+  <view class="appointment-list" wx:if="{{currentTab === 'completed'}}">
+    <block wx:for="{{completedList}}" wx:key="_id">
+      <view class="appointment-card completed">
+        <view class="card-header">
+          <text class="status completed">已完成</text>
+          <text class="date">{{item.date}}</text>
+        </view>
+
+        <view class="card-content">
+          <view class="info-row">
+            <text class="label">教练</text>
+            <text class="value">{{item.coachName}}</text>
+          </view>
+
+          <view class="info-row">
+            <text class="label">时间</text>
+            <text class="value">{{item.startTime}} - {{item.endTime}}</text>
+          </view>
+
+          <view class="info-row">
+            <text class="label">课程</text>
+            <text class="value">{{item.courseType}}</text>
+          </view>
+        </view>
+      </view>      
+    </block>
+    <view wx:if="{{completedList.length === 0}}" class="empty">暂无已完成预约</view>
+  </view>
+
+  <!--添加预约按钮 -->
+  <view class="add-appointment-btn" bind:tap="goToBookClass">
+    <text class="add-icon">+</text>
+    <text class="add-text">预约上课</text>
+  </view>
+
+</view>

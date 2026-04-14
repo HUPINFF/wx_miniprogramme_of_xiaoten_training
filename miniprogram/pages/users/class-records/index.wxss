@@ -1,0 +1,198 @@
+/* pages/users/class-records/index.wxss */
+.container {
+  min-height: 100vh;
+  background-color: #f5f7fa;
+  padding-bottom: 40rpx;
+}
+
+/* 筛选栏 */
+.filter-bar {
+  width: 90%;
+  display: flex;
+  background-color: #fff;
+  padding: 20rpx 32rpx;
+  margin: 0 20rpx 20rpx 20rpx;
+  border-radius: 48rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+.filter-item {
+  flex: 1;
+  text-align: center;
+  padding: 16rpx 0;
+  font-size: 28rpx;
+  color: #666;
+  border-radius: 40rpx;
+  transition: all 0.2s;
+}
+
+.filter-item.active {
+  background: linear-gradient(135deg, #07c160 0%, #06a34d 100%);
+  color: #fff;
+  font-weight: 500;
+}
+
+/* 记录列表 */
+.record-list {
+  padding: 0 20rpx;
+}
+
+.record-card {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  border-radius: 24rpx;
+  padding: 28rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s;
+}
+
+.record-card:active {
+  transform: scale(0.98);
+}
+
+/* 日期区域 */
+.record-date {
+  width: 120rpx;
+  text-align: center;
+  border-right: 2rpx solid #f0f0f0;
+  margin-right: 24rpx;
+  padding-right: 20rpx;
+}
+
+.record-date .day {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #07c160;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.record-date .date {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 课程信息区域 */
+.record-info {
+  flex: 1;
+}
+
+.course-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  display: block;
+  margin-bottom: 12rpx;
+}
+
+.coach-info {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 12rpx;
+}
+
+.coach-avatar {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+}
+
+.coach-name {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.record-stats {
+  display: flex;
+  gap: 24rpx;
+  margin-bottom: 12rpx;
+}
+
+.stat-item {
+  font-size: 24rpx;
+  color: #999;
+  background-color: #f8f9fc;
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+}
+
+.record-photos {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  background-color: #f0f9f0;
+  padding: 6rpx 16rpx;
+  border-radius: 24rpx;
+}
+
+.photo-icon {
+  font-size: 24rpx;
+}
+
+.photo-count {
+  font-size: 24rpx;
+  color: #07c160;
+}
+
+/* 箭头 */
+.arrow {
+  font-size: 32rpx;
+  color: #ccc;
+  margin-left: 16rpx;
+}
+
+/* 加载更多 */
+.load-more,
+.no-more {
+  text-align: center;
+  padding: 32rpx;
+  font-size: 26rpx;
+  color: #999;
+}
+
+.load-more {
+  color: #07c160;
+}
+
+/* 空状态 */
+.empty {
+  text-align: center;
+  padding: 120rpx 0;
+  color: #999;
+  font-size: 28rpx;
+}
+
+/* 加载状态 */
+.loading {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20rpx;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 40rpx;
+  border-radius: 20rpx;
+  color: #fff;
+  z-index: 1000;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

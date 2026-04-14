@@ -1,0 +1,111 @@
+<view class="container">
+  <nav-bar title="课堂点评" showBack="{{true}}"></nav-bar>
+
+  <!-- 筛选栏 -->
+  <view class="filter-bar">
+    <view class="filter-item {{filterType ==='all' ?'active':''}}" bind:tap="onFilterChange" data-type="all">
+      全部
+    </view>
+
+    <view class="filter-item {{filterType ==='uncommented' ?'active':''}}" bind:tap="onFilterChange" data-type="uncommented">
+      待点评
+      <text class="badge" wx:if="{{uncommentedCount > 0 }}">{{uncommentedCount}}</text>
+    </view>
+
+    <view class="filter-item {{filterType ==='commented' ?'active':''}}" bind:tap="onFilterChange" data-type="commented">
+      已点评
+    </view>
+  </view>
+
+  <!-- 课堂列表 -->
+  <view class="class-list">
+    <block wx:for="{{classList}}" wx:key="_id">
+      <view class="class-card">
+        <!-- 头部 -->
+        <view class="card-header">
+          <view class="class-info">
+            <text class="class-name">{{item.type}} · {{item.name}}</text>
+            <text class="class-date">{{item.date}} {{item.day}}</text>
+          </view>
+          <view class="status {{item.comment.isCommented ? 'commented':'uncommented'}}">
+            {{item.comment.isComment ? '已点评':'待点评'}}
+          </view>
+        </view>
+
+         <!-- 教练信息 -->
+         <view class="coach-info">
+          <image class="coach-avatar" src="{{item.coachAvatar || '/images/default-avatar.png'}}" mode="aspectFill"></image>
+          <text class="coach-name">{{item.coachName}}教练</text>
+        </view>
+
+        <!-- 训练内容 -->
+        <view class="training-content">
+          <view class="content-item">
+            <text class="label">训练重点:</text>
+            <text class="value">{{item.focus}}</text>
+          </view>
+          <view class="content-item">
+            <text class="label">训练难点:</text>
+            <text class="value">{{item.difficulty}}</text>
+          </view>
+        </view>
+
+        <!-- 照片预览 -->
+        <view class="photos" wx:if="{{item.photos && item.photos.length > 0}}">
+          <scroll-view scroll-x class="photo-scroll">
+            <view class="photo-list">
+              <image
+                class="photo-item"
+                wx:for="{{item.photos}}"
+                wx:key="index"
+                src="{{item}}"
+                mode="aspectFill"
+                bind:tap="previewPhoto"
+                data-url="{{item}}"
+                data-urls="{{item.photos}}"
+              ></image>
+            </view>
+          </scroll-view>
+        </view>
+
+        <!-- 已点评内容 -->
+        <view class="comment-section" wx:if="{{item.comment.isCommented}}">
+          <view class="comment-header">
+            <text class="comment-label">我的点评</text>
+            <view class="rating">
+              <text class="star {{index < item.comment.rating ? 'active':''}}" wx:for="{{[1,2,3,4,5]}}" wx:key="index">★</text>
+            </view>
+          </view>
+          <text class="comment-content">{{item.comment.content}}</text>
+          <text class="comment-time">{{item.comment.createTime}}</text>
+        </view>
+
+        <!-- 待点评按钮 -->
+        <view class="action-btn" wx:if="{{!item.comment.isCommented}}">
+          <button class="comment-btn" bind:tap="goToComment" data-id="{{item._id}}" data-name="{{item.name}}" data-coach="{{item.coachName}}">写点评</button>
+        </view>
+
+        <!-- 已点评按钮(可修改) -->
+        <view class="action-btn" wx:if="{{item.comment.isCommented}}">
+          <button class="edit-btn" bind:tap="goToComment" data-id="{{item._id}}" data-name="{{item.name}}" data-coach="{{item.coachName}}">修改点评</button>
+        </view>
+      </view>
+    </block>
+    <!-- 空状态 -->
+    <view wx:if="{{classList.length === 0 && !loading}}" class="empty">
+      <text>暂无课堂记录</text>
+    </view>
+     <!-- 加载更多 -->
+     <view wx:if="{{hasMore && classList.length > 0}}" class="load-more" bindtap="loadMore">
+      <text wx:if="{{!loadingMore}}">加载更多</text>
+      <text wx:else>加载中...</text>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text>加载中...</text>
+  </view>
+</view>
+

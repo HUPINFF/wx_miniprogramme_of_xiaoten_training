@@ -1,0 +1,287 @@
+/* pages/users/class-comments/index.wxss */
+.container {
+  min-height: 100vh;
+  background-color: #f5f7fa;
+  padding-bottom: 40rpx;
+}
+
+/* 筛选栏 */
+.filter-bar {
+  width: 85%;
+  display: flex;
+  background-color: #fff;
+  padding: 20rpx 32rpx;
+  margin: 0 20rpx 20rpx 20rpx;
+  border-radius: 48rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+.filter-item {
+  flex: 1;
+  text-align: center;
+  padding: 16rpx 0;
+  font-size: 28rpx;
+  color: #666;
+  border-radius: 40rpx;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.filter-item.active {
+  background: linear-gradient(135deg, #07c160 0%, #06a34d 100%);
+  color: #fff;
+  font-weight: 500;
+}
+
+.filter-item .badge {
+  position: absolute;
+  top: 6rpx;
+  right: 20rpx;
+  background-color: #ff6b6b;
+  color: #fff;
+  font-size: 20rpx;
+  padding: 2rpx 10rpx;
+  border-radius: 20rpx;
+}
+
+/* 课堂列表 */
+.class-list {
+  width: 85%;
+  margin: 0 auto; 
+  padding: 0 20rpx;
+}
+
+.class-card {
+  background-color: #fff;
+  border-radius: 24rpx;
+  padding: 28rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+/* 卡片头部 */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20rpx;
+}
+
+.class-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.class-date {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.status {
+  font-size: 24rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 24rpx;
+}
+
+.status.commented {
+  background-color: #e8f5e8;
+  color: #07c160;
+}
+
+.status.uncommented {
+  background-color: #fff3e0;
+  color: #f5a623;
+}
+
+/* 教练信息 */
+.coach-info {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 20rpx;
+  padding-bottom: 16rpx;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+
+.coach-avatar {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+}
+
+.coach-name {
+  font-size: 28rpx;
+  color: #666;
+}
+
+/* 训练内容 */
+.training-content {
+  background-color: #f8f9fc;
+  border-radius: 16rpx;
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.content-item {
+  display: flex;
+  margin-bottom: 12rpx;
+  font-size: 26rpx;
+}
+
+.content-item:last-child {
+  margin-bottom: 0;
+}
+
+.content-item .label {
+  width: 120rpx;
+  color: #999;
+}
+
+.content-item .value {
+  flex: 1;
+  color: #666;
+}
+
+/* 照片 */
+.photos {
+  margin-bottom: 20rpx;
+}
+
+.photo-scroll {
+  width: 100%;
+  white-space: nowrap;
+}
+
+.photo-list {
+  display: inline-flex;
+  gap: 16rpx;
+}
+
+.photo-item {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 12rpx;
+  background-color: #f0f0f0;
+}
+
+/* 点评区域 */
+.comment-section {
+  background-color: #f8f9fc;
+  border-radius: 16rpx;
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  margin-bottom: 12rpx;
+}
+
+.comment-label {
+  font-size: 26rpx;
+  font-weight: 500;
+  color: #07c160;
+}
+
+.rating {
+  display: flex;
+  gap: 6rpx;
+}
+
+.rating .star {
+  font-size: 28rpx;
+  color: #e0e0e0;
+}
+
+.rating .star.active {
+  color: #ffb400;
+}
+
+.comment-content {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.5;
+  display: block;
+  margin-bottom: 12rpx;
+}
+
+.comment-time {
+  font-size: 22rpx;
+  color: #999;
+}
+
+/* 按钮 */
+.action-btn {
+  margin-top: 16rpx;
+}
+
+.comment-btn, .edit-btn {
+  width: 100%;
+  height: 80rpx;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+}
+
+.comment-btn {
+  background: linear-gradient(135deg, #07c160 0%, #06a34d 100%);
+  color: #fff;
+}
+
+.edit-btn {
+  background-color: #f8f9fc;
+  color: #07c160;
+  border: 2rpx solid #07c160;
+}
+
+/* 加载更多 */
+.load-more {
+  text-align: center;
+  padding: 32rpx;
+  font-size: 26rpx;
+  color: #07c160;
+}
+
+/* 空状态 */
+.empty {
+  text-align: center;
+  padding: 120rpx 0;
+  color: #999;
+  font-size: 28rpx;
+}
+
+/* 加载状态 */
+.loading {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20rpx;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 40rpx;
+  border-radius: 20rpx;
+  color: #fff;
+  z-index: 1000;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

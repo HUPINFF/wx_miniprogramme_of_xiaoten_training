@@ -1,0 +1,151 @@
+<!--pages/coach/content-manage/index.wxml-->
+<view class="container">
+  <nav-bar title="内容管理"></nav-bar>
+
+  <!-- Tab切换 -->
+  <view class="tabs">
+    <view class="tab-item {{currentTab === 'banner' ? 'active' : ''}}" bind:tap="switchTab" data-tab="banner">
+      轮播图
+    </view>
+    
+    <view class="tab-item {{currentTab === 'news' ? 'active' : ''}}" bind:tap="switchTab" data-tab="news">
+      最新动态
+    </view>
+
+    <view class="tab-item {{currentTab === 'moment' ? 'active' : ''}}" bind:tap="switchTab" data-tab="moment">
+      精彩瞬间
+    </view>
+  </view>
+
+  <!-- 轮播图管理 -->
+  <view class="content-panel" wx:if="{{currentTab === 'banner'}}">
+    <!-- 添加按钮 -->
+    <view class="add-btn" bind:tap="addBanner">
+      <text class="add-icon">+</text>
+      <text>添加轮播图</text>
+    </view>
+
+    <!-- 轮播图列表 -->
+    <view class="banner-list">
+      <block wx:for="{{bannerList}}" wx:key="_id">
+        <view class="banner-item">
+          <image class="banner-img" src="{{item.image}}" mode="aspectFill"></image>
+          <view class="banner-info">
+            <text class="banner-text">{{item.text || '无标题'}}</text>
+            <text class="banner-sort">排序：{{item.sort}}</text>
+          </view>
+          <view class="banner-actions">
+            <button class="edit-btn" size="mini" bind:tap="editBanner" data-id="{{item._id}}">编辑</button>
+
+            <button class="delete-btn" size="mini" bind:tap="deleteBanner" data-id="{{item._id}}">删除</button>
+          </view>
+        </view>
+      </block>
+      <view wx:if="{{bannerList.length === 0}}" class="empty">暂无轮播图，点击上方按钮添加</view>
+    </view>
+  </view>
+
+  <!-- ========== 最新动态管理 ========== -->
+  <view class="content-panel" wx:if="{{currentTab === 'news'}}">
+    <!-- 添加按钮 -->
+    <view class="add-btn" bind:tap="addNews">
+      <text class="add-icon">+</text>
+      <text>添加动态</text>
+    </view>
+
+    <!-- 动态列表 -->
+    <view class="news-list">
+      <block wx:for="{{newsList}}" wx:key="_id">
+        <view class="news-item">
+          <view class="news-info">
+            <text class="news-title">{{item.title}}</text>
+            <text class="news-time">{{item.time}}</text>
+            <text class="news-sort">排序:{{item.sort}}</text>
+          </view>
+          <view class="news-actions">
+            <button class="edit-btn" size="mini" bind:tap="editNews" data-id="{{item._id}}">编辑</button>
+            <button class="delete-btn" size="mini" bind:tap="deleteNews" data-id="{{item._id}}">删除</button>
+          </view>
+        </view>
+      </block>
+      <view wx:if="{{newsList.length === 0}}" class="empty">暂无动态，点击上方按钮添加</view>
+    </view>
+  </view>
+
+   <!-- ========== 精彩瞬间管理 ========== -->
+   <view class="content-panel" wx:if="{{currentTab === 'moment'}}">
+    <!-- 添加按钮 -->
+    <view class="add-btn" bindtap="addMoment">
+      <text class="add-icon">+</text>
+      <text>添加精彩瞬间</text>
+    </view>
+
+    <!-- 精彩瞬间列表 -->
+    <view class="moment-list">
+      <block wx:for="{{momentList}}" wx:key="_id">
+        <view class="moment-item">
+          <image class="moment-img" src="{{item.image}}" mode="aspectFill"></image>
+          <view class="moment-info">
+            <text class="moment-title">{{item.title}}</text>
+            <text class="moment-sort">排序:{{item.sort}}</text>
+          </view>
+
+          <view class="moment-actions">
+            <button class="edit-btn" size="mini" bind:tap="editMoment" data-id="{{item._id}}">编辑</button>
+            <button class="delete-btn" size="mini" bind:tap="deleteMoment" data-id="{{item._id}}">删除</button>
+          </view>
+        </view>
+      </block>
+      <view wx:if="{{momentList.length === 0}}" class="empty">暂无精彩瞬间，点击上方按钮添加</view>
+    </view>
+   </view>
+
+   <!-- 添加/编辑弹窗 -->
+   <view class="modal-mask" wx:if="{{showModal}}" bind:tap="closeModal">
+    <view class="modal-container" catch:tap="stopPropagation">
+      <view class="modal-header">
+        <text class="modal-title">{{modalTitle}}</text>
+        <text class="modal-close" bind:tap="closeModal">✕</text>
+      </view>
+
+      <view class="modal-body">
+        <!-- 图片上传 -->
+        <view class="form-item" wx:if="{{currentTab !== 'news'}}">
+          <text class="label">图片 <text class="required">*</text></text>
+          <view class="upload-area" bind:tap="chooseImage">
+            <image wx:if="{{formData.image}}" class="upload-image" src="{{formData.image}}" mode="aspectFill"></image>
+            <view wx:else class="upload-placeholder">
+              <text class="upload-icon">+</text>
+              <text class="upload-text">点击上传图片</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 标题/文字 -->
+        <view class="form-item">
+          <text class="label">{{currentTab === 'news' ? '标题' : '文字'}} <text class="required">*</text></text>
+          
+          <input class="input" type="text" placeholder="请输入内容" value="{{formData.text}}" bindinput="onTextInput"/>
+        </view>
+        <!-- 排序 -->
+        <view class="form-item">
+          <text class="label">排序 <text class="hint">(数字越小越靠前)</text></text>
+          <input class="input" type="number" placeholder="请输入排序数字" value="{{formData.sort}}" bindinput="onSortInput"/>
+        </view>
+
+        <!-- 时间(仅动态) -->
+        <view class="form-item">
+          <text class="label">时间</text>
+          <picker mode="date" value="{{formData.time}}" bindchange="onTimeChange">
+            <view class="picker">{{formData.time  || '请选择日期'}}</view>
+          </picker>
+        </view>
+      </view>
+
+      <view class="modal-footer">
+        <button class="cancel-btn" bind:tap="closeModal">取消</button>
+        <button class="confirm-btn" bind:tap="confirmSubmit">确定</button>
+      </view>
+    </view>
+   </view>
+</view>

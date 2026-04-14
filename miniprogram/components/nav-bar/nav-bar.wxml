@@ -1,0 +1,23 @@
+<view class="custom-navbar" style="padding-top: {{statusBarHeight}}px;">
+
+<view class="navbar-content" style="height:{{navBarHeight - 20}}px;">
+  <!-- 左侧返回按钮（可选） -->
+  <view class="navbar-left" wx:if="{{showBack}}">
+      <view class="navbar-back" bindtap="goBack">
+        <text class="back-icon">←</text>
+      </view>
+    </view>
+
+ <!-- 中间标题 -->
+ <view class="navbar-center">
+      <text class="brand-name">{{title}}</text>
+      <text class="brand-sub" wx:if="{{subTitle}}">{{subTitle}}</text>
+    </view>
+
+    <!-- 右侧占位 -->
+    <view class="navbar-right"></view>
+</view>
+</view>
+
+<!-- 占位符，防止内容被导航栏遮挡 -->
+<view class="navbar-placeholder" style="height: {{(navBarHeight - 20)+statusBarHeight}}px;"></view>

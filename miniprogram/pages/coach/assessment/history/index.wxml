@@ -1,0 +1,94 @@
+<!--pages/coach/assessment/history/index.wxml-->
+<view class="container">
+  <nav-bar title='历史测评'></nav-bar>
+
+  <!-- 孩子信息 -->
+  <view class="child-header">
+    <text class="child-name">{{childName}}</text>
+    <text class="child-tip">历史体质测评记录</text>
+  </view>
+
+  <!-- 测评列表 -->
+  <view class="assessment-list">
+    <block wx:for="{{assessmentList}}" wx:key="_id">
+      <view class="assessment-card">
+        <view class="card-header">
+          <!-- 月份和综合等级 -->
+          <text class="month">{{item.year}}年{{item.month}}月</text>
+          <text class="rating {{item.overallRating === '优秀' ? 'excellent' : (item.overallRating === '良好' ? 'good' : (item.overallRating === '一般' ? 'normal' : 'poor'))}}">
+            {{item.overallRating}}
+          </text>
+        </view>
+
+        <!-- 基础信息 -->
+        <view class="section">
+          <view class="section-title">📋 基础信息</view>
+          <view class="info-grid">
+            <text class="info-item">身高：{{item.basicInfo.height}}cm</text>
+            <text class="info-item">体重：{{item.basicInfo.weight}}kg</text>
+            <text class="info-item">BMI:{{item.basicInfo.bmi}}</text>
+          </view>
+        </view>
+
+        <!-- 核心力量 -->
+        <view class="section">
+          <view class="section-title">💪 核心力量</view>
+          <text class="core-value">{{item.gender === '男' ? '俯卧撑' : '仰卧起坐'}}: {{item.coreStrength.value}}次/分钟</text>
+        </view>
+
+        <!-- 基础身体素质 -->
+        <view class="section">
+          <view class="section-title">🏃 基础身体素质</view>
+          <view class="fitness-grid">
+            <text class="fitness-item">坐位体前屈: {{item.physicalFitness.sitAndReach}}cm</text>
+            <text class="fitness-item">立定跳远: {{item.physicalFitness.standingLongJump}}cm</text>
+            <text class="fitness-item">平板支撑: {{item.physicalFitness.plank}}秒</text>
+            <text class="fitness-item">靠墙静蹲: {{item.physicalFitness.wallSit}}秒</text>
+            <text class="fitness-item">5米折返跑: {{item.physicalFitness.fiveMeterShuttle}}秒</text>
+            <text class="fitness-item">1分钟跳绳: {{item.physicalFitness.ropeSkipping}}次</text>
+          </view>
+        </view>
+
+        <!-- 专项动作模式 -->
+        <view class="section">
+          <view class="section-title">🎯 专项动作模式</view>
+          <view class="action-grid">
+            <text class="action-item">跑步动作: {{item.actionPatterns.running || '未评'}}</text>
+            <text class="action-item">立定跳远动作: {{item.actionPatterns.longJump || '未评'}}</text>
+            <text class="action-item">跳绳动作: {{item.actionPatterns.ropeJumping || '未评'}}</text>
+            <text class="action-item">深蹲测试: {{item.actionPatterns.squat || '未评'}}</text>
+            <text class="action-item">跨栏步测试: {{item.actionPatterns.hurdleStep || '未评'}}</text>
+            <text class="action-item">直线弓步测试: {{item.actionPatterns.lunge || '未评'}}</text>
+            <text class="action-item">肩部灵活性: {{item.actionPatterns.shoulderFlexibility || '未评'}}</text>
+            <text class="action-item">主动直腿上抬: {{item.actionPatterns.legRaise || '未评'}}</text>
+            <text class="action-item">躯干稳定俯卧撑: {{item.actionPatterns.trunkPushup || '未评'}}</text>
+            <text class="action-item">旋转稳定性: {{item.actionPatterns.rotationStability || '未评'}}</text>
+          </view>
+        </view>
+
+        <!-- 综合测评 -->
+        <view class="section" wx:if="{{item.overallComment}}">
+          <view class="section-title">📝 综合评价</view>
+          <text class="comment-text">{{item.overallComment}}</text>
+        </view>
+
+        <!-- 测评时间 -->
+        <view class="footer-time">
+          <text>测评时间: {{item.assessmentDate}}</text>
+        </view>
+      </view>
+    </block>
+
+    <!-- 空状态 -->
+    <view wx:if="{{assessmentList.length === 0 && !loading}}" class="empty">
+      <text>暂无测评记录</text>
+      <text class="empty-hint">请先录入体测测评数据</text>
+    </view>
+  </view>
+
+  <!-- 加载状态-->
+  <view class="loading" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text>加载中...</text>
+  </view>
+</view>

@@ -1,0 +1,107 @@
+<view class="container">
+
+  <nav-bar title='写反馈'></nav-bar>
+  <view class="form-card">
+    <!-- 选择学员 -->
+    <view class="form-item" wx:if="{{!childId}}">
+      <text class="label">选择成员</text>
+      <picker mode="selector" range="{{children}}" range-key="name" bindchange="onChildChange">
+        <view class="picker">
+          {{selectedChild.name || '请选着学员'}}
+        </view>
+      </picker>
+    </view>
+
+    <!-- 显示学员信息 -->
+    <view class="child-info" wx:if="{{childName}}">
+      <image class="avatar" src="cloud://hupin255-5gfbw856b1c861ef.6875-hupin255-5gfbw856b1c861ef-1410552194/default_avatar/6756593ba0eb6a537f7060da8ede3ca8.jpeg" mode="aspectFill"></image>
+
+      <view class="info">
+        <text class="name">{{childName}}</text>
+        <text class="hint">正在为TA写反馈</text>
+      </view>
+    </view>
+
+    <!-- 反馈周期 -->
+    <view class="form-item">
+      <text class="label">反馈周期</text>
+      <text class="week-range">{{weekRange}}</text>
+    </view>
+
+    <!-- 评分表现 -->
+    <view class="form-item">
+      <text class="label">评分表现</text>
+      <view class="rating">
+        <text 
+          class="star {{rating >= item ? 'active' : ''}}" 
+          wx:for="{{[1,2,3,4,5]}}" 
+          wx:key="index"
+          bindtap="setRating" 
+          data-rating="{{item}}"
+        >★</text>
+      </view>
+    </view>
+
+    <!-- 进步标签 -->
+
+    <view class="form-item">
+      <text class="label">进步标签</text>
+      <view class="tags">
+        <text class="tag {{selectedTags.indexOf(item) > -1 ? 'active' : ''}}"
+          wx:for="{{tagList}}"  
+          wx:key="index"
+          bindtap="toggleTag" 
+          data-tag="{{item}}"
+        >{{item}}</text>
+      </view>
+    </view>
+
+    <!-- 本周表现总结 -->
+    <view class="form-item">
+      <text class="label">本周表现</text>
+      <view class="performance-summary" wx:if="{{weeklyPerformance}}">
+        <view class="summary-item">
+          <text class="label">50米跑</text>
+          <text class="value">{{weeklyPerformance.fiftyMeter}}秒</text>
+        </view>
+
+        <view class="summary-item">
+          <text class="label">1000米跑</text>
+          <text class="value">{{weeklyPerformance.thousandMeter}}</text>
+        </view>
+
+        <view class="summary-item">
+          <text class="label">协调性</text>
+          <text class="value">{{weeklyPerformance.coordination}}分</text>
+        </view>
+
+        <view class="summary-item">
+          <text class="label">敏捷性</text>
+          <text class="value">{{weeklyPerformance.agility}}分</text>
+        </view>
+      </view>
+
+      <view class="no-data" wx:else >
+        <text>本周暂无表现数据</text>
+      </view>      
+    </view>
+
+    <!-- 反馈内容 -->
+
+    <view class="form-item">
+      <text class="label">反馈内容</text>
+      <textarea 
+      value="{{content}}"
+      placeholder="请输入反馈内容，例如：本周训练情况、进步点、待提升点、建议等..."
+      bindinput="onContentInput"
+      maxlength="500"
+      auto-height
+      />
+      <text class="counter">{{content.length / '500'}}</text>
+    </view>
+
+    <!-- 提交按钮 -->
+    <button class="submit-btn" type="primary" bind:tap="onSubmit" loading="{{submitting}}">发布反馈</button>
+  </view>
+</view>
+<!-- <view class="test-tag" style="padding:20rpx;">测试红色背景</view> -->

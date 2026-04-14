@@ -1,0 +1,125 @@
+<view class="container">
+  <nav-bar title="我的" showBack="{{false}}"></nav-bar>
+
+  <!-- 用户信息卡片 -->
+  <view class="user-card">
+    <image class="user-avatar" src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"></image>
+    <view class="user-info">
+      <text class="user-name">{{userInfo.nickName || '家长'}}</text>
+      <!-- <text class="user-phone">{{userInfo.phone || '未绑定手机号'}}</text> -->
+    </view>
+    <view class="edit-btn" bind:tap="editProfile">
+      <text>编辑</text>
+    </view>
+  </view>
+
+  <!-- 孩子卡片信息 -->
+  <view class="child-section">
+    <view class="section-header">
+      <text class="section-title">我的孩子</text>
+    </view>
+
+    <block wx:if="{{childInfo}}">
+      <view class="child-card">
+        <view class="child-header">
+          <view class="child-info">
+            <text class="child-name">{{childInfo.name}}</text>
+            <text class="child-age">{{childInfo.age}}岁</text>
+            <text class="child-gender">{{childInfo.gender === 'male'?'男孩':'女孩'}}</text>
+          </view>
+          <view class="child-actions">
+            <text class="edit-child" bind:tap="editChild">编辑</text>
+            <text class="delete-child" bind:tap="deleteChild">删除</text>
+          </view>
+        </view>
+        <!-- 生日信息 -->
+        <view class="child-birthday" wx:if="{{childInfo.birthday}}">
+          <text class="birthday-label">生日：</text>
+          <text class="birthday-value">{{childInfo.birthday}}</text>
+        </view>
+        <!-- 孩子ID信息 -->
+      <view class="child-id" wx:if="{{childInfo._id}}">
+        <!-- <text class="id-label">孩子ID：</text> -->
+        <text class="id-value">孩子ID: {{childInfo._id}}</text>
+
+      </view>
+      </view>
+    </block>
+
+    <!-- 无孩子时的占位 -->
+    <view wx:else class="empty-child">
+      <text class="empty-icon">👶</text>
+      <text class="empty-text">暂无孩子信息</text>
+      <text class="empty-hint">点击上方"添加孩子"按钮添加</text>
+    </view>
+    <!-- 添加孩子按钮 （仅在无孩子时显示）-->
+    <button wx:if="{{!childInfo}}" class="add-child-btn" bind:tap="addChild">+添加孩子</button>
+  </view>
+
+  <!-- 【新增】我的教练面板 -->
+  <view class="coach-section" wx:if="{{coachInfo}}">
+    <view class="section-header">
+      <text class="section-title">👨‍🏫 我的教练</text>
+    </view>
+    <view class="coach-card">
+      <text class="coach-name">{{coachInfo.name}} 教练</text>
+      <text class="coach-desc">个人简介：{{coachInfo.bio || '暂无简介'}}</text>
+    </view>
+  </view>
+
+
+  <!-- 功能彩蛋 -->
+  <view class="menu-list">
+    <view class="menu-item" bind:tap="goToMyAppointments">
+      <view class="menu-left">
+        <text class="menu-icon">📋</text>
+        <text class="menu-title">我的预约</text>
+      </view>
+      <text class="menu-arrow">></text>
+    </view>
+
+    <view class="menu-item" bind:tap="goToMyFeedbacks">
+      <view class="menu-left">
+        <text class="menu-icon">⭐</text>
+        <text class="menu-title">我的反馈</text>
+      </view>
+      <text class="menu-arrow">></text>
+    </view>
+
+    <view class="menu-item" bind:tap="goToSettings">
+      <view class="menu-left">
+        <text class="menu-icon">⚙️</text>
+        <text class="menu-title">设置</text>
+      </view>
+      <text class="menu-arrow">></text>
+    </view>
+
+    <view class="menu-item" bind:tap="aboutUs">
+      <view class="menu-left">
+        <text class="menu-icon">ℹ️</text>
+        <text class="menu-title">关于我们</text>
+      </view>
+      <text class="menu-arrow">></text>
+    </view>
+  </view>
+
+  <button class="logout-btn" bind:tap="logout">退出登录</button>
+</view>
+
+<!-- 添加/编辑孩子弹窗 -->
+<add-child-modal 
+  show="{{showAddChildModal}}" 
+  editData="{{editChildData}}"
+  bind:close="closeModal"
+  bind:confirm="onConfirmChild"
+/>
+
+
+<!-- 编辑资料弹窗 -->
+<edit-profile-modal 
+  show="{{showEditProfileModal}}"
+  userData="{{editProfileData}}"
+  bind:close="closeEditProfileModal"
+  bind:confirm="onConfirmEditProfile"
+/>
+

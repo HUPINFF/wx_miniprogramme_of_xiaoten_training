@@ -1,0 +1,140 @@
+<!--pages/coach/workbench/index.wxml-->
+<!-- <text>pages/coach/workbench/index.wxml</text> -->
+<view class="container">
+  <nav-bar title="工作台" showBack="{{false}}"></nav-bar>
+  
+
+  <!-- 顶部轮播图 -->
+  <view class="banner-wrapper">
+    <swiper class="banner" indicator-dots autoplay interval="3000" circular>
+      <swiper-item wx:for="{{banners}}" wx:key="index">
+        <image src="{{item.image}}" mode="aspectFill" class="banner-image"/>
+        <view class="banner-text" wx:if="{{item.text}}">
+          <text>{{item.text}}</text>
+        </view>
+      </swiper-item>
+    </swiper>
+  </view>
+
+ <!-- 使用教练卡片组件 -->
+<coach-card 
+  coachInfo="{{coachInfo}}" 
+  editable="{{true}}"
+  bind:update="onCoachUpdate"
+/>
+
+  <!-- 欢迎不分 -->
+  <view class="welcome">
+    <text class="greeting">👋 早上好{{coachInfo.name}}</text>
+    <text class="date">{{todayDate}}</text>
+  </view>
+
+  <!-- 快捷入口 -->
+  <view class="quick-actions">
+    <view class="action" bind:tap="gotoChildrenList">
+      <text class="iconfont icon-wodexueyuan"></text>
+      <text>学员管理</text>
+    </view>
+
+    <view class="action" bind:tap="gotoWeeklyPerformance">
+      <text class="iconfont icon-luruchengji"></text>
+      <text>录入成绩</text>
+    </view>
+
+    <view class="action" bind:tap="gotoFeedback">
+      <text class="iconfont icon-tianxiefankui"></text>
+      <text>写反馈</text>
+    </view>
+
+    <view class="action" bind:tap="gotoAppointments">
+      <text class="iconfont icon-yuyueshenpi"></text>
+      <text>预约审批</text>
+    </view>
+
+     <!-- 新增：内容管理入口 -->
+     <view class="action" bindtap="gotoContentManage">
+      <text class="iconfont icon-neirongguanli"></text>
+      <text>内容管理</text>
+    </view>
+
+  </view>
+
+  <!-- 今日课程 -->
+
+  <view class="section">
+    <view class="section-header">
+      <text class="title iconfont icon-jinrikecheng"> 今日课程</text>
+      <text class="count">{{todayTrainings.length}}节</text>
+    </view>
+
+    <view class="training-list">
+      <view class="training-item" wx:for="{{todayTrainings}}" wx:key="id">
+        <view class="time">{{item.date}}</view>
+        <view class="info">
+          <text class="name">{{item.name}}</text>
+          <text class="child">{{item.childName}}</text>
+        </view>
+      </view>
+
+      <view wx:if="{{todayTrainings.length === 0}}" class="empty">暂无今日课程</view>
+    </view>
+  </view>
+
+  <!-- 代办事项 -->
+
+  <view class="section">
+    <view class="section-header">
+      <text class="title iconfont icon-jinrikecheng"> 今日待办</text>
+    </view>
+
+    <view class="todo-list">
+      <view class="todo-item" bind:tap="gotoWeeklyPerformance">
+        <text>📊 待录入周表现</text>
+        <text class="badge">{{todo.weeklyPerformance}}</text>
+      </view>
+
+      <view class="todo-item" bind:tap="gotoFeedback">
+        <text>💬 待写反馈</text>
+        <text class="badge">{{todo.feedback}}</text>
+      </view> 
+
+    </view>
+  </view>
+
+  <!-- 最新动态/公告 -->
+
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title iconfont icon-zuixindongtai"> 最新动态</text>
+      <text class="section-more" bind:tap="viewAllNews">查看更多</text>
+    </view>
+
+    <view class="news-list">
+      <view class="news-item" wx:for="{{newsList}}" wx:key="index" bind:tap="viewNews" data-id="{{item.id}}">
+        <view class="news-dot"></view>
+        <text class="news-title">{{item.title}}</text>
+        <text class="news-time">{{item.time}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 近期精彩瞬间 -->
+
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title iconfont icon-jingcaishunjian"> 精彩瞬间</text>
+      <text class="section-more" bind:tap="viewMoreMoments">更多</text>
+    </view>
+
+    <scroll-view class="moment-scroll" scroll-x="true">
+      <view class="moment-list">
+        <view class="moment-item" wx:for="{{moments}}" wx:key="index" bind:tap="viewMoment" data-id="{{item._id}}">
+          <image class="moment-image" src="{{item.image}}" mode="aspectFill"></image>
+          <text class="moment-title">{{item.title}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+</view>
+

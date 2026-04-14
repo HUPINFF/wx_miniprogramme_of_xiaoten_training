@@ -1,0 +1,41 @@
+<!--pages/users/training-photos/index.wxml-->
+<!-- <text>pages/users/training-photos/index.wxml</text> -->
+
+<view class="container">
+  <nav-bar title='训练照片'></nav-bar>
+
+  <!-- 训练信息 -->
+  <view class="training-info" wx:if="{{trainingInfo}}">
+    <text class="training-name">{{trainingInfo.name}}</text>
+    <text class="training-date">{{trainingInfo.date}} · {{trainingInfo.day}}</text>
+    <text class="training-coach">{{trainingInfo.coachName}}教练</text>
+  </view>
+
+  <!-- 照片列表 -->
+  <view class="photos-list" wx:if="{{photoList.length > 0}}">
+    <view class="photo-grid">
+      <image
+        wx:for="{{photoList}}"
+        wx:key="{{index}}"
+        class="photo-item"
+        src="{{item}}"
+        mode="aspectFill"
+        bindtap="previewPhoto"
+        data-url="{{item}}"
+        data-urls="{{photoList}}"
+      />
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:if="{{!loading && photoList.length === 0}}" class="empty">
+    <text>暂无照片</text>
+  </view>
+
+  
+  <!-- 加载状态 -->
+  <view class="loading" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text>加载中...</text>
+  </view>
+</view>

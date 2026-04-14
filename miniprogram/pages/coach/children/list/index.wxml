@@ -1,0 +1,78 @@
+<!--pages/coach/children/index.wxml-->
+<!-- <text>pages/coach/children/index.wxml</text> -->
+<view class="container">
+  <nav-bar title="学员管理" showBack="{{true}}"></nav-bar>
+
+
+<!-- <view>显示</view> -->
+<view class="header">
+  <input placeholder="搜索学员" bindinput="onSearch"/>
+</view>
+
+<view class="child-list">
+  <view class="child-item" wx:for="{{children}}" wx:key="_id" bind:tap="viewDetail" data-id="{{item._id}}">
+    <image class="avatar" src="cloud://hupin255-5gfbw856b1c861ef.6875-hupin255-5gfbw856b1c861ef-1410552194/default_avatar/6756593ba0eb6a537f7060da8ede3ca8.jpeg" mode="aspectFill"></image>
+
+    <view class="Info">
+      <text class="name">{{item.name}}</text>
+      <text class="age">{{item.age}}岁 · {{item.gender === 'male' ? '男':'女'}} </text>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:if="{{children.length === 0 && !loading}}" class="empty">
+      <text>暂无关联学员</text>
+      <text class="empty-hint">点击上方按钮关联学员</text>
+    </view>
+</view>
+
+<!-- 添加学员 -->
+<view class="add-btn" bind:tap="addChild">
+    <text class="add-icon">+</text>
+    <text class="add-text">关联学员</text>
+  </view>
+
+<!-- 关联学员弹窗 -->
+  <view class="modal-mask" wx:if="{{showAddModal}}" bind:tap="closeModal">
+    <view class="moal-container" catch:tap="stopPropagation">
+      <view class="modal-header">
+        <text class="modal-title">关联学员</text>
+        <text class="modal-close" bind:tap="closeModal">✕</text>
+      </view>
+
+      <view class="modal-body">
+        <view class="form-item">
+          <text class="label">学员ID <text class="required">*</text></text>
+            <input 
+            class="input" 
+            placeholder="请输入学员ID" 
+            value="{{childId}}" 
+            bindinput="onChildIdInput"
+            />
+          <text class="hint">请输入家长端孩子的ID</text>  
+        </view>
+
+        <!-- 查询到孩子的信息 -->
+        <view class="child-preview" wx:if="{{previewChild}}">
+          <text class="preview-title">找到孩子：</text>
+
+          <view class="preview-info">
+            <text class="preview-name">{{previewChild.name}}</text>
+            <text class="preview-age">{{previewChild.age}}</text>
+            <text class="preview-gender">{{previewChild.gender ==='male'?'男孩':'女孩'}}</text>
+          </view>
+        </view>
+
+        <!-- 错误信息 -->
+        <view class="modal-tip" wx:if="{{errorMsg}}">
+          <text>{{errorMsg}}</text>
+        </view>
+      </view>
+
+      <view class="modal-footer">
+        <button class="cancel-btn" bindtap="closeModal">取消</button>
+        <button class="confirm-btn" bind:tap="confirmAdd" loading="{{submitting}}" disabled="{{!previewChild}}">确认关联</button>
+      </view>
+    </view>
+  </view>
+</view>

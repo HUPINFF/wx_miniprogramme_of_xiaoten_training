@@ -1,0 +1,32 @@
+<!-- components/edit-profile-modal/index.wxml -->
+<view class="modal-mask" wx:if="{{show}}" bindtap="close">
+  <view class="modal-container" catchtap="stopPropagation">
+    <view class="modal-header">
+      <text class="modal-title">编辑资料</text>
+      <text class="modal-close" bindtap="close">✕</text>
+    </view>
+    
+    <view class="modal-body">
+      <!-- 头像上传 -->
+      <view class="form-item">
+        <text class="label">头像</text>
+        <view class="avatar-upload" bindtap="chooseAvatar">
+          <image class="avatar-preview" src="{{formData.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"></image>
+          <text class="upload-tip">点击更换头像</text>
+        </view>
+      </view>
+
+      <!-- 昵称输入 -->
+      <view class="form-item">
+        <text class="label">昵称</text>
+        <input class="input" type="nickname" placeholder="请输入昵称" value="{{formData.nickName}}" bindinput="onNicknameInput" />
+        <text class="hint">支持中文、英文、数字</text>
+      </view>
+    </view>
+    
+    <view class="modal-footer">
+      <button class="cancel-btn" bindtap="close">取消</button>
+      <button class="confirm-btn" bindtap="confirm" loading="{{submitting}}">保存</button>
+    </view>
+  </view>
+</view>

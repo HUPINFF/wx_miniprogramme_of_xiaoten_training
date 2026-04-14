@@ -1,0 +1,358 @@
+/* pages/user/home/index.wxss */
+.container {
+  min-height: 100vh;
+  background-color: #f5f7fa;
+  padding-bottom: 40rpx;
+}
+
+.custom-navbar {
+  position: fixed;
+  top: 0;
+  left:0;
+  right: 0;   
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.85) 0%, rgba(16, 185, 129, 0.85) 100%);
+  backdrop-filter: blur(20px);
+  z-index: 999;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05) ;
+}
+
+/* 导航栏内容区域 */
+.navbar-content {
+  /* margin-top: 20rpx; */
+  display: flex;
+  /* align-items: center; */
+  justify-content: center;
+  padding: 0 30rpx;
+  position: relative;
+  /* background-color: rgba(0, 255, 255, 0.5) ; */
+}
+
+.navbar-center {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  /* justify-content: center; */
+}
+
+.brand-name {
+  font-size: 36rpx;
+  font-weight:bold;
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;
+  letter-spacing:2rpx;
+  text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.brand-name .inner {
+  font-size: 28rpx;
+  font-weight: 600;
+  opacity: 0.95;
+}
+
+
+/* 导航栏占位符 */
+.navbar-placeholder {
+  width: 100%;
+  background-color: transparent;
+}
+
+
+
+/* 轮播图外层容器 */
+.banner-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 0;
+  /* background: linear-gradient(135deg, #3b82f6 0%, #10b981 100%); */
+  /* padding: 12rpx; */
+  /* border-radius: 28rpx; */
+  padding: 20rpx 0;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
+}
+
+/* 轮播图 */
+.banner {
+  width: 90%;
+  height: 300rpx;
+  position: relative;
+  background-color: linear-gradient(135deg, rgba(59, 130, 246, 0.85) 0%, rgba(16, 185, 129, 0.85) 100%);
+}
+
+.banner-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 5%
+}
+
+.banner-text {
+  position: absolute;
+  bottom: 30rpx;
+  left: 30rpx;
+  background-color: rgba(0,0,0,0.5);
+  padding: 10rpx 20rpx;
+  border-radius: 30rpx;
+  color: #fff;
+  font-size: 24rpx;
+}
+
+/* 欢迎语 */
+.welcome-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx 30rpx 20rpx 30rpx;
+  background-color: #fff;
+  margin: 20rpx;
+  border-radius: 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.05);
+}
+
+.greeting {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #333;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.tip {
+  font-size: 26rpx;
+  color: #999;
+}
+
+.avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+}
+
+/* 孩子信息卡片 */
+.child-card {
+  width: 85%;
+  margin: 0 auto;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.85) 0%, rgba(16, 185, 129, 0.85) 100%);
+  border-radius: 24rpx;
+  padding: 30rpx;
+  margin: 0 20rpx 20rpx 20rpx;
+  color: #fff;
+}
+
+.child-name .name {
+  font-size: 40rpx;
+  font-weight: 600;
+  margin-right: 20rpx;
+}
+
+.child-name .age {
+  font-size: 28rpx;
+  opacity: 0.9;
+}
+
+.child-tag {
+  font-size: 26rpx;
+  opacity: 0.8;
+  margin-top: 12rpx;
+}
+
+/* 快速入口 */
+.quick-entry {
+  margin: 0 auto;
+  width: 90%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20rpx;
+  background-color: #fff;
+  padding: 30rpx 20rpx;
+  margin: 0 20rpx 20rpx 20rpx;
+  border-radius: 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.05);
+}
+
+.entry-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
+  padding: 16rpx 0;
+}
+
+.entry-icon {
+  width: 80rpx;
+  height: 80rpx;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.85) 0%, rgba(16, 185, 129, 0.85) 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40rpx;
+  color: #fff;
+}
+
+.entry-text {
+  font-size: 26rpx;
+  font-weight: 500;
+  color: #333;
+}
+
+/* 通用区块 */
+.section {
+  width: 88%;
+  background-color: #fff;
+  border-radius: 24rpx;
+  margin: 0 20rpx 20rpx 20rpx;
+  padding: 30rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.05);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.section-title {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.section-more {
+  font-size: 26rpx;
+  color: #07c160;
+}
+
+/* 最新动态 */
+.news-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.news-item {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 12rpx 0;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+
+.news-item:last-child {
+  border-bottom: none;
+}
+
+.news-dot {
+  width: 12rpx;
+  height: 12rpx;
+  background-color: #07c160;
+  border-radius: 50%;
+}
+
+.news-title {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.news-time {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 关于我们 */
+
+.about-logo {
+  width: 400rpx;
+  height: 300rpx;
+}
+
+.about-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.about-text {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.6;
+  text-align: center;
+}
+
+/* pages/users/profile/index.wxss */
+.moment-scroll {
+  width: 650rpx;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.moment-list {
+  display: flex;
+  gap: 20rpx;
+  padding: 8rpx 0 20rpx 0;
+}
+
+.moment-item {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  width: 200rpx;
+  flex-shrink: 0;
+}
+
+.moment-image {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 16rpx;
+  background-color: #e0e0e0;
+}
+
+.moment-title {
+  font-size: 24rpx;
+  color: #666;
+  text-align: center;
+  margin-top: 12rpx;
+  width: 100%;
+  overflow: hidden;
+  /* text-overflow: ellipsis; */
+  white-space: nowrap;
+}
+/* 联系我们 */
+.contact-section {
+
+  width: 85%;
+  background: linear-gradient(135deg, #07c160 0%, #06a34d 100%);
+  border-radius: 24rpx;
+  margin: 0 20rpx 20rpx 20rpx;
+  margin: 0 auto;
+  padding: 30rpx;
+  color: #fff;
+}
+
+.contact-title {
+  font-size: 34rpx;
+  font-weight: 600;
+  margin-bottom: 24rpx;
+  text-align: center;
+}
+
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  font-size: 28rpx;
+}
+
+.contact-icon {
+  font-size: 32rpx;
+}

@@ -1,0 +1,5 @@
+<view class="container">
+  <nav-bar title="成长档案" showBack="{{true}}"></nav-bar>
+
+  <view class="hint">开发中,敬请期待</view>
+</view>

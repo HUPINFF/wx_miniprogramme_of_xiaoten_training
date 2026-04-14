@@ -1,0 +1,102 @@
+<view class="container">
+
+  <nav-bar title="添加训练"></nav-bar>
+  <view class="form-card">
+    <!-- 选择学员 -->
+    <view class="form-item" wx:if="{{!childId}}">
+      <text class="label">选择学员</text>
+      <picker mode="selector" range="{{children}}" range-key="name" bindchange="onChildChange">
+        <view class="picker">{{selectedChild.name || '请选择学员'}}</view>
+      </picker>
+    </view>
+
+    <!-- 显示学员信息 -->
+    <view class="child-info" wx:if="{{childName}}">
+      <image class="avatar" src="cloud://hupin255-5gfbw856b1c861ef.6875-hupin255-5gfbw856b1c861ef-1410552194/default_avatar/6756593ba0eb6a537f7060da8ede3ca8.jpeg" mode="aspectFill"></image>
+      <view class="info">
+        <text class="name">{{childName}}</text>
+        <text class="hint">正在为TA添加训练记录</text>
+      </view>
+    </view>
+
+    <!-- 训练日期 -->
+    <view class="form-item">
+      <text class="label">训练日期</text>
+      <picker mode="date" value="{{date}}" bindchange="onDateChange"> 
+        <view class="picker">{{date || '请选择日期'}}</view>
+      </picker>
+    </view>
+
+    <!-- 【新增】训练时间 -->
+    <view class="form-item">
+      <text class="label">训练时间</text>
+      <picker mode="time" value="{{startTime}}" bindchange="onTimeChange">
+        <view class="picker">{{startTime || '请选择时间'}}</view>
+      </picker>
+    </view>
+
+     <!-- 训练时长 -->
+     <view class="form-item">
+      <text class="label">训练时长</text>
+      <picker mode="selector" range="{{durationList}}" bindchange="onDurationChange">
+        <view class="picker">{{duration || '请选择时长'}}</view>
+      </picker>
+       <!-- 【新增】课时提示 -->
+       <text class="hint" wx:if="{{duration}}">约 {{duration}}，扣减 {{trainingHoursDisplay}} 课时</text>
+    </view>
+
+    <!-- 训练类型 -->
+    <view class="form-item">
+      <text class="label">训练类型</text>
+      <picker mode="selector" range="{{typeList}}" bindchange="onTypeChange">
+        <view class="picker">{{selectedType || '请选择训练类型'}}</view>
+      </picker>
+    </view>
+
+    <!-- 训练名称 -->
+    <view class="form-item">
+      <text class="label">训练名称</text>
+      <input placeholder="例如:起跑反应训练" value="{{name}}" bindinput="onNameInput"/>
+    </view>
+
+    <!-- 训练重点 -->
+    <view class="form-item">
+      <text class="label">训练重点</text> 
+      <input 
+        placeholder="例如：起跑反应速度" 
+        value="{{focus}}" 
+        bindinput="onFocusInput"
+      />
+    </view> 
+
+    <!-- 训练难点 -->
+    <view class="form-item">
+      <text class="label">训练难点</text>
+      <input 
+        placeholder="例如：保持低重心" 
+        value="{{difficulty}}" 
+        bindinput="onDifficultyInput"
+      />
+    </view>
+
+    <!-- 上传照片 -->
+    <view class=""form-item>
+      <text class="label">上课照片</text>
+      <view class="photo-upload-area" bind:tap="uploadPhotos">
+        <view class="upload-icon">+</view>
+        <text class="upload-text">上传照片</text>
+      </view>
+
+      <view class="photo-list" wx:if="{{photoUrls.length > 0}}">
+        <view class="photo-item" wx:for="{{photoUrls}}" wx:key="index">
+            <image src="{{item}}" mode="aspectFill"></image>
+            <view class="photo-delete" catch:tap="deletePhoto" data-index="{{index}}">✕</view>
+        </view>
+      </view>
+
+      <text class="hint">支持jpg/png格式，最多9张</text>
+    </view>
+
+    <button class="submit-btn" type="primary" bind:tap="onSubmit" loading="{{submitting}}">保存训练记录</button>
+  </view>
+</view>

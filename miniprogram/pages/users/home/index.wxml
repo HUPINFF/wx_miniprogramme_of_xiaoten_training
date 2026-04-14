@@ -1,0 +1,162 @@
+<view class="container">
+
+  <view class="custom-navbar" style="padding-top: {{statusBarHeight}}px;">
+
+    <view class="navbar-content" style="height:{{navBarHeight - 20}}px;">
+      <!-- 中间标题 -->
+        <view class="navbar-center">
+          <text class="brand-name">腾鑫体育 | <text class="inner">{{childInfo.name}}家长你好</text> </text>
+        </view>
+    </view>
+  </view>
+
+  <!-- 占位符，防止内容被导航栏遮挡 -->
+<view class="navbar-placeholder" style="height: {{(navBarHeight - 20)+statusBarHeight}}px;"></view>
+
+
+
+
+
+  <!-- 顶部轮播图 -->
+ <view class="banner-wrapper">
+  <swiper class="banner" indicator-dots autoplay interval="3000" circular>
+        <swiper-item wx:for="{{banners}}" wx:key="index">
+          <image src="{{item.image}}" mode="aspectFill" class="banner-image" />
+         <view class="banner-text" wx:if="{{item.text}}"> 
+            <text>{{item.text}}</text>
+          </view>
+        </swiper-item>
+      </swiper>
+ </view>
+      
+
+<!-- <view class="welcome-section">
+    <view class="welcome-text">
+      <text class="greeting">👋 下午好，{{parentInfo.nickName || '家长'}}</text>
+      <text class="tip">让孩子爱上运动，健康成长</text>
+    </view>
+    <image class="avatar" src="{{parentInfo.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"></image>
+  </view>  -->
+
+  <!-- 孩子信息卡 -->
+  <view class="child-card" wx:if="{{childInfo}}">
+    <view class="child-name">
+      <text class="name">{{childInfo.name}}</text>
+      <text class="age">{{childInfo.age}}岁</text>
+    </view>
+    <view class="child-tag">训练中 · 坚持就是胜利 💪</view>
+  </view>
+
+  <!-- 快捷入口 -->
+  <view class="quick-entry  ">
+    <view class="entry-item" bind:tap="goToTrainingData">
+      <view class="entry-icon">📊</view>
+      <text class="entry-text">训练数据</text>
+    </view>
+
+    <view class="entry-item" bind:tap="goToSchedule">
+      <view class="entry-icon">📅</view>
+      <text class="entry-text">课程表</text>
+    </view>
+
+    <view class="entry-item" bindtap="goToBookClass">
+      <view class="entry-icon">📚</view>
+      <text class="entry-text">预约上课</text>
+    </view>
+
+    <view class="entry-item" bind:tap="goToClassRecords">
+      <view class="entry-icon">📝</view>
+      <text class="entry-text">上课记录 </text>
+    </view>
+    
+    <view class="entry-item" bind:tap="goToClassComments">
+      <view class="entry-icon">💬</view>
+      <text class="entry-text">课堂点评</text>
+    </view>
+
+    <view class="entry-item" bind:tap="goToFeedback">
+      <view class="entry-icon">⭐</view>
+      <text class="entry-text">我的反馈</text>
+    </view>
+
+    <view class="entry-item" bind:tap="goToChildProfile">
+      <view class="entry-icon">👤</view>
+      <text class="entry-text">成长档案</text>
+    
+    </view>
+
+    <view class="entry-item" bind:tap="contactCoach">
+      <view class="entry-icon">💬</view>
+      <text class="entry-text">联系我们</text>
+    </view>
+  </view>
+
+  <!-- 最新动态/公告 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">📢 最新动态</text>
+      <text class="section-more" bind:tap="viewAllNews">查看更多</text>
+    </view>
+
+    <view class="news-list">
+      <view class="news-item" wx:for="{{newList}}" wx:key="index" bind:tap="viewNews" data-id="{{item.id}}">
+        <view class="news-dot"></view>
+        <text class="news-title">{{item.title}}</text>
+        <text class="news-time">{{item.time}}</text>
+      </view>
+    </view>
+  </view>
+
+
+
+  <!-- 机构介绍 -->
+
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">🏆 关于我们</text>
+      <text class="section-more" bind:tap="aboutUs">了解更多</text>
+    </view>
+
+    <view class="about-content">
+      <image class="about-logo" src="/images_1/logo_20251126_34991.uugai.com-1764133166493.png" mode="aspectFill"/>
+      <text class="about-text">专业青少年体育训练机构，专注于6-15岁青少年体能训练、专项技能提升。拥有国家级教练团队，科学训练体系，已服务超过5000名学员。</text>
+    </view>
+  </view>
+
+  <!-- 近期精彩瞬间 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">📸 精彩瞬间</text>
+      <text class="section-more" bind:tap="viewMoreMoments">更多</text>
+    </view>
+    <scroll-view class="moment-scroll" scroll-x="true" >
+      <view class="moment-list">
+          <view class="moment-item" wx:for="{{moments}}" wx:key="index" bind:tap="viewMoment"   data-id="{{item._id}}">
+            <image class="moment-image" src="{{item.image}}" mode="aspectFill"></image>
+            <text class="moment-title">{{item.title}}</text>
+          </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 联系我们 -->
+  <view class="contact-section">
+    <view class="contact-title">📞 联系我们</view>
+    <view class="contact-info">
+      <view class="contact-item" bind:tap="callPhone">
+        <text class="contact-icon">📱</text>
+        <text>咨询热线：400-888-6666</text>
+      </view>
+
+      <view class="contact-item" bind:tap="viewAddress">
+        <text class="contact-icon">📍</text>
+        <text>训练地址:天津师范大学</text>
+      </view>
+
+      <view class="contact-item" bind:tap="viewWechat">
+        <text class="contact-icon">💬</text>
+        <text>官方微信：sports_training</text>
+      </view>
+    </view>
+  </view>
+</view>

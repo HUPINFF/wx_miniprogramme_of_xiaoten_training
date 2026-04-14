@@ -1,0 +1,93 @@
+{
+  "id": "5156334",
+  "name": "xiaochengxu",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "1858886",
+      "name": "预约审批",
+      "font_class": "yuyueshenpi",
+      "unicode": "e63e",
+      "unicode_decimal": 58942
+    },
+    {
+      "icon_id": "3873018",
+      "name": "最新动态",
+      "font_class": "zuixindongtai",
+      "unicode": "e677",
+      "unicode_decimal": 58999
+    },
+    {
+      "icon_id": "4263581",
+      "name": "录入成绩",
+      "font_class": "luruchengji",
+      "unicode": "e65c",
+      "unicode_decimal": 58972
+    },
+    {
+      "icon_id": "8125638",
+      "name": "今日课程",
+      "font_class": "jinrikecheng",
+      "unicode": "e6e7",
+      "unicode_decimal": 59111
+    },
+    {
+      "icon_id": "10234876",
+      "name": "精彩瞬间",
+      "font_class": "jingcaishunjian",
+      "unicode": "e60c",
+      "unicode_decimal": 58892
+    },
+    {
+      "icon_id": "19460645",
+      "name": "填写反馈",
+      "font_class": "tianxiefankui",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "21196866",
+      "name": "添加训练",
+      "font_class": "tianjiaxunlian",
+      "unicode": "e7c7",
+      "unicode_decimal": 59335
+    },
+    {
+      "icon_id": "26360482",
+      "name": "内容管理",
+      "font_class": "neirongguanli",
+      "unicode": "e624",
+      "unicode_decimal": 58916
+    },
+    {
+      "icon_id": "33327808",
+      "name": "我的学员",
+      "font_class": "wodexueyuan",
+      "unicode": "e60d",
+      "unicode_decimal": 58893
+    },
+    {
+      "icon_id": "38948875",
+      "name": "智慧体质测评",
+      "font_class": "zhihuitizhiceping",
+      "unicode": "e645",
+      "unicode_decimal": 58949
+    },
+    {
+      "icon_id": "46008910",
+      "name": "037_主页9",
+      "font_class": "a-037_zhuye9",
+      "unicode": "e6a8",
+      "unicode_decimal": 59048
+    },
+    {
+      "icon_id": "46330759",
+      "name": "体质测评",
+      "font_class": "tianjing",
+      "unicode": "e697",
+      "unicode_decimal": 59031
+    }
+  ]
+}

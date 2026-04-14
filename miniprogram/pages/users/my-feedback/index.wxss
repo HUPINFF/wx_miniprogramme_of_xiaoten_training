@@ -1,0 +1,227 @@
+/* pages/users/my-feedback/index.wxss */
+.container {
+  min-height: 100vh;
+  background-color: #f5f7fa;
+  padding-bottom: 40rpx;
+}
+
+/* 统计卡片 */
+.stats-card {
+  width: 90%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 24rpx;
+  margin: 20rpx;
+  padding: 40rpx 20rpx;
+  color: #fff;
+  box-shadow: 0 8rpx 20rpx rgba(102, 126, 234, 0.3);
+}
+
+.stat-item {
+  flex: 1;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.stat-number {
+  font-size: 56rpx;
+  font-weight: 700;
+}
+
+.stat-label {
+  font-size: 26rpx;
+  opacity: 0.9;
+}
+
+.stat-divider {
+  width: 2rpx;
+  height: 60rpx;
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* 反馈列表 */
+.feedback-list {
+  padding: 0 20rpx;
+}
+
+.feedback-card {
+  background-color: #fff;
+  border-radius: 24rpx;
+  padding: 28rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+/* 卡片头部 */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16rpx;
+}
+
+.course-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  display: block;
+  margin-bottom: 6rpx;
+}
+
+.course-date {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.rating {
+  display: flex;
+  gap: 6rpx;
+}
+
+.rating .star {
+  font-size: 28rpx;
+  color: #e0e0e0;
+}
+
+.rating .star.active {
+  color: #ffb400;
+}
+
+/* 教练信息 */
+.coach-info {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 20rpx;
+  padding-bottom: 16rpx;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+
+.coach-avatar {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+}
+
+.coach-name {
+  font-size: 28rpx;
+  color: #666;
+}
+
+/* 标签 */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  margin-bottom: 20rpx;
+}
+
+.tag {
+  background-color: #e8f5e8;
+  border-radius: 24rpx;
+  padding: 8rpx 20rpx;
+  font-size: 24rpx;
+  color: #07c160;
+}
+
+/* 反馈内容 */
+.feedback-content {
+  background-color: #f8f9fc;
+  border-radius: 16rpx;
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.feedback-content text {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.5;
+}
+
+/* 卡片底部 */
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16rpx;
+  border-top: 2rpx solid #f0f0f0;
+}
+
+.feedback-time {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.edit-btn {
+  background-color: #f8f9fc;
+  color: #07c160;
+  border: 2rpx solid #07c160;
+  border-radius: 30rpx;
+  font-size: 24rpx;
+  padding: 8rpx 32rpx;
+  line-height: 1.4;
+}
+
+.edit-btn::after {
+  border: none;
+}
+
+/* 空状态 */
+.empty {
+  text-align: center;
+  padding: 120rpx 0;
+  color: #999;
+  font-size: 28rpx;
+}
+
+.empty-hint {
+  display: block;
+  font-size: 24rpx;
+  color: #ccc;
+  margin-top: 12rpx;
+}
+
+/* 加载更多 */
+.load-more {
+  text-align: center;
+  padding: 32rpx;
+  font-size: 26rpx;
+  color: #07c160;
+}
+
+/* 加载状态 */
+.loading {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20rpx;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 40rpx;
+  border-radius: 20rpx;
+  color: #fff;
+  z-index: 1000;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

@@ -1,0 +1,148 @@
+/* pages/coach/appointments/index.wxss */
+.container {
+  min-height: 100vh;
+  background-color: #f5f7fa;
+  padding-bottom: 40rpx;
+}
+
+/* Tab 切换 */
+.tabs {
+  width: 100%;
+  display: flex;
+  background-color: #fff;
+  padding: 20rpx 0;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+.tab-item {
+  flex: 1;
+  text-align: center;
+  font-size: 28rpx;
+  color: #666;
+  padding: 16rpx 0;
+  position: relative;
+}
+
+.tab-item.active {
+  color: #07c160;
+  font-weight: 500;
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60rpx;
+  height: 4rpx;
+  background-color: #07c160;
+  border-radius: 2rpx;
+}
+
+.tab-item .badge {
+  background-color: #ff6b6b;
+  color: #fff;
+  font-size: 20rpx;
+  padding: 2rpx 12rpx;
+  border-radius: 20rpx;
+  margin-left: 8rpx;
+}
+
+/* 预约卡片 */
+.appointmentList {
+  width: 90%;
+  margin: 0 auto;
+  padding: 0 20rpx;
+}
+
+.appointment-card {
+  background-color: #fff;
+  border-radius: 24rpx;
+  padding: 28rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 16rpx;
+  border-bottom: 2rpx solid #f0f0f0;
+  margin-bottom: 16rpx;
+}
+
+.child-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.date {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.card-content {
+  margin-bottom: 20rpx;
+}
+
+.info-row {
+  display: flex;
+  margin-bottom: 16rpx;
+}
+
+.info-row:last-child {
+  margin-bottom: 0;
+}
+
+.label {
+  width: 80rpx;
+  font-size: 26rpx;
+  color: #999;
+}
+
+.value {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.value.remark {
+  color: #ff6b6b;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 20rpx;
+  padding-top: 16rpx;
+  border-top: 2rpx solid #f0f0f0;
+}
+
+.approve-btn {
+  background-color: #07c160;
+  color: #fff;
+  border: none;
+  border-radius: 30rpx;
+  font-size: 24rpx;
+  padding: 10rpx 40rpx;
+}
+
+.reject-btn {
+  background-color: #fff;
+  color: #ff6b6b;
+  border: 2rpx solid #ff6b6b;
+  border-radius: 30rpx;
+  font-size: 24rpx;
+  padding: 10rpx 40rpx;
+}
+
+.empty {
+  text-align: center;
+  padding: 100rpx 0;
+  color: #999;
+  font-size: 28rpx;
+}

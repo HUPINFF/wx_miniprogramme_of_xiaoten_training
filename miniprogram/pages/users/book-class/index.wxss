@@ -1,0 +1,153 @@
+/* pages/users/book-class/index.wxss */
+.container {
+  min-height: 100vh;
+  background-color: #f5f7fa;
+  padding-bottom: 40rpx;
+}
+
+/* 通用区块 */
+.section {
+  width: 80%;
+  background-color: #fff;
+  border-radius: 24rpx;
+  margin: 20rpx;
+  padding: 30rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.form-item {
+  margin-bottom: 0;
+}
+
+.label {
+  font-size: 28rpx;
+  color: #666;
+  display: block;
+  margin-bottom: 16rpx;
+  font-weight: 500;
+}
+
+.picker {
+  background-color: #f8f9fc;
+  padding: 24rpx;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  color: #333;
+}
+
+/* 孩子信息卡片 */
+.child-card {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.85) 0%, rgba(16, 185, 129, 0.85) 100%);
+  border-radius: 24rpx;
+  margin: 20rpx;
+  padding: 30rpx;
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  color: #fff;
+}
+
+.child-avatar {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  background-color: #fff;
+}
+
+.child-info {
+  flex: 1;
+}
+
+.child-name {
+  font-size: 36rpx;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.child-detail {
+  font-size: 26rpx;
+  opacity: 0.9;
+}
+
+/* 预约信息 */
+.order-info {
+  background-color: #f8f9fc;
+  border-radius: 16rpx;
+  padding: 20rpx;
+}
+
+.info-row {
+  display: flex;
+  padding: 16rpx 0;
+  border-bottom: 2rpx solid #e0e0e0;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  width: 120rpx;
+  font-size: 28rpx;
+  color: #999;
+}
+
+.info-value {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+/* 提交按钮 */
+.submit-btn {
+  background-color: #07c160;
+  color: #fff;
+  border-radius: 44rpx;
+  height: 88rpx;
+  font-size: 32rpx;
+  margin: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+}
+
+.submit-btn::after {
+  border: none;
+}
+
+.submit-btn[disabled] {
+  background-color: #ccc;
+  opacity: 0.6;
+}
+
+
+/* 文本域 */
+.textarea {
+  width: 100%;
+  background-color: #f8f9fc;
+  padding: 24rpx;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  color: #333;
+  box-sizing: border-box;
+  min-height: 160rpx;
+  line-height: 1.5;
+}
+
+.optional {
+  font-size: 24rpx;
+  color: #999;
+  font-weight: normal;
+  margin-left: 8rpx;
+}
+
+.counter {
+  display: block;
+  text-align: right;
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 12rpx;
+}

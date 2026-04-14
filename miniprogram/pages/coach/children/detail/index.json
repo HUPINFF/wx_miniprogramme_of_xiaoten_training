@@ -1,0 +1,11 @@
+{
+  "usingComponents": {
+    "nav-bar":"/components/nav-bar/nav-bar",
+    "edit-hours-modal": "/components/edit-hours-modal/index"
+  },
+  "navigationStyle": "custom",
+  
+  "enablePullDownRefresh": true,
+  "navigationBarTextStyle": "white",
+  "backgroundTextStyle":"dark"
+}

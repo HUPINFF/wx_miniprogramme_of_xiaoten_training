@@ -1,0 +1,72 @@
+/* pages/coach/performance/weekly/index.wxss */
+@import "../../common.wxss";
+
+/* 表单 */
+.form {
+  width: 90%;
+  background-color: #fff;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin:0 auto ; 
+}
+
+.form-item {
+  margin-bottom: 40rpx;
+}
+
+.form-item:last-child {
+  margin-bottom: 0;
+}
+
+.label {
+  font-size: 28rpx;
+  color: #666;
+  display: block;
+  margin-bottom: 16rpx;
+}
+
+.picker {
+  background-color: #f8f9fc;
+  padding: 24rpx;
+  height: 24rpx;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  color: #333;
+}
+
+input {
+  background-color: #f8f9fc;
+  padding: 24rpx;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.hint {
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 12rpx;
+  display: block;
+}
+
+.tips-text {
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 12rpx;
+  display: block;
+} 
+
+.slider {
+  margin: 16rpx 0;
+}
+
+.submit-btn {
+  background-color: #07c160;
+  color: #fff;
+  border-radius: 44rpx;
+  height: 88rpx;
+  line-height: 88rpx;
+  font-size: 32rpx;
+  margin-top: 40rpx;
+  padding: 0;
+}

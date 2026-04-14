@@ -1,0 +1,96 @@
+<!--pages/users/history-stats/index.wxml-->
+<view class="container">
+  <nav-bar title="每周记录"></nav-bar>
+  
+  <!-- 每周记录列表 -->
+  <view class="weekly-list">
+    <block wx:for="{{weeklyList}}" wx:key="_id">
+      <view class="weekly-card">
+        <!-- 周次 -->
+        <view class="week-header">
+          <text class="week-range">{{item.weekRange || item.weekStart}}</text>
+        </view>
+
+        <!-- 【修改】表现数据 - 显示所有项目 -->
+        <view class="stats-grid">
+          <!-- 50米跑 -->
+          <view class="stat-item">
+            <text class="stat-label">50米跑</text>
+            <text class="stat-value">{{item.fiftyMeter || '暂无'}}{{item.fiftyMeter ? '秒' : ''}}</text>
+          </view>
+
+          <!-- 1000米跑 -->
+          <view class="stat-item">
+            <text class="stat-label">1000米跑</text>
+            <text class="stat-value">{{item.thousandMeter || '暂无'}}</text>
+          </view>
+
+          <!-- 【新增】800米跑 -->
+          <view class="stat-item">
+            <text class="stat-label">800米跑</text>
+            <text class="stat-value">{{item.eightHundredMeter || '暂无'}}</text>
+          </view>
+
+          <!-- 【新增】仰卧起坐 -->
+          <view class="stat-item">
+            <text class="stat-label">仰卧起坐</text>
+            <text class="stat-value">{{item.sitUp || '暂无'}}{{item.sitUp ? '个/分' : ''}}</text>
+          </view>
+
+          <!-- 【新增】跳绳 -->
+          <view class="stat-item">
+            <text class="stat-label">跳绳</text>
+            <text class="stat-value">{{item.ropeSkipping || '暂无'}}{{item.ropeSkipping ? '个/分' : ''}}</text>
+          </view>
+
+          <!-- 【新增】坐位体前屈 -->
+          <view class="stat-item">
+            <text class="stat-label">坐位体前屈</text>
+            <text class="stat-value">{{item.sitAndReach || '暂无'}}{{item.sitAndReach ? '厘米' : ''}}</text>
+          </view>
+
+          <!-- 【新增】立定跳远 -->
+          <view class="stat-item">
+            <text class="stat-label">立定跳远</text>
+            <text class="stat-value">{{item.standingLongJump || '暂无'}}{{item.standingLongJump ? '厘米' : ''}}</text>
+          </view>
+
+          <!-- 【新增】肺活量 -->
+          <view class="stat-item">
+            <text class="stat-label">肺活量</text>
+            <text class="stat-value">{{item.vitalCapacity || '暂无'}}{{item.vitalCapacity ? '毫升' : ''}}</text>
+          </view>
+
+          <!-- 协调性 -->
+          <view class="stat-item">
+            <text class="stat-label">协调性</text>
+            <text class="stat-value">{{item.coordination || '暂无'}}{{item.coordination ? '分' : ''}}</text>
+          </view>
+
+          <!-- 敏捷性 -->
+          <view class="stat-item">
+            <text class="stat-label">敏捷性</text>
+            <text class="stat-value">{{item.agility || '暂无'}}{{item.agility ? '分' : ''}}</text>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!-- 空状态 -->
+    <view wx:if="{{weeklyList.length === 0 && !loading}}" class="empty">
+      <text>暂无每周记录</text>
+    </view>
+
+    <!-- 加载更多 -->
+    <view wx:if="{{hasMore && weeklyList.length > 0}}" class="load-more" bindtap="loadMore">
+      <text wx:if="{{!loadingMore}}">加载更多</text>
+      <text wx:else>加载中...</text>
+    </view>
+  </view>
+  
+  <!-- 加载状态 -->
+  <view class="loading" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text>加载中...</text>
+  </view>
+</view>

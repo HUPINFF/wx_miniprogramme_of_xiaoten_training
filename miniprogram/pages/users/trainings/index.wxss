@@ -1,0 +1,130 @@
+/* pages/users/trainings/index.wxss */
+.container {
+  padding: 20rpx;
+  background-color: #f5f7fa;
+  min-height: 100vh;
+}
+
+.header {
+  font-size: 36rpx;
+  font-weight: bold;
+  margin-bottom: 20rpx;
+  padding-left: 10rpx;
+}
+
+.schedule-list {
+  height: calc(100vh - 200rpx);
+}
+
+.day-card {
+  background-color: #fff;
+  border-radius: 24rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.day-header {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.weekday {
+  font-weight: bold;
+  color: #333;
+  font-size: 30rpx;
+}
+
+.date {
+  color: #666666;
+  font-size: 26rpx;
+}
+
+.lesson-count {
+  background-color: #eef2f6;
+  border-radius: 30rpx;
+  padding: 4rpx 16rpx;
+  font-size: 24rpx;
+  color: #666666;
+}
+
+.course-item {
+  margin-top:35rpx; 
+  display: flex;
+  align-items: flex-start;
+  gap: 30rpx;
+  padding: 20rpx 0;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.time {
+  font-weight: bold;
+  color: #1a73e8;
+  min-width: 120rpx;
+  font-size: 28rpx;
+}
+
+.course-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.course-name {
+  font-weight: bold;
+  margin-bottom: 6rpx;
+  font-size: 30rpx;
+  color: #333;
+}
+
+.coach {
+  font-size: 26rpx;
+  color: #888888;
+}
+
+.no-course {
+  text-align: center;
+  color: #aaa;
+  padding: 20rpx;
+  font-size: 26rpx;
+}
+
+.empty {
+  text-align: center;
+  padding: 100rpx 0;
+  color: #999;
+  font-size: 28rpx;
+}
+
+/* 加载状态 */
+.loading {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20rpx;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 40rpx;
+  border-radius: 20rpx;
+  color: #fff;
+  z-index: 1000;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

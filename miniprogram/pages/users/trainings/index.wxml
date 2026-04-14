@@ -1,0 +1,46 @@
+<!-- pages/users/trainings/index.wxml -->
+<view class="container">
+  <nav-bar title="课表" showBack="{{true}}"></nav-bar>
+  
+  <view class="header">
+    <text class="title">📅 课表 · {{currentYearMonth}}</text>
+  </view>
+
+  <scroll-view scroll-y class="schedule-list">
+    <view wx:for="{{schedule}}" wx:key="index" class="day-card">
+      <view class="day-header">
+        <text class="weekday">周{{item.weekday}}</text>
+        <text class="date">{{item.date}}</text>
+        <text class="lesson-count">{{item.count}}节课</text>
+      </view>
+
+      <view wx:if="{{item.courses.length > 0}}" class="courses">
+        <view wx:for="{{item.courses}}" wx:key="courseIndex" class="course-item">
+          <view class="time-info">
+            <text class="time">{{item.startTime || item.time}}</text>
+            <text class="duration" wx:if="{{item.duration}}">({{item.duration}})</text>
+          </view>
+          <view class="course-info">
+            <text class="course-name">{{item.name}}</text>
+            <text class="coach">{{item.coach}}教练</text>
+          </view>
+        </view>
+      </view>
+
+      <view wx:else class="no-course">
+        <text>暂无课程</text>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view wx:if="{{schedule.length === 0 && !loading}}" class="empty">
+      <text>暂无未来课程安排</text>
+    </view>
+  </scroll-view>
+
+  <!-- 加载状态 -->
+  <view class="loading" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text>加载中...</text>
+  </view>
+</view>

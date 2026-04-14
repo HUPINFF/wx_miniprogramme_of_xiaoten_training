@@ -1,0 +1,234 @@
+/* pages/coach/assessment/history/index.wxss */
+.container {
+  min-height: 100vh;
+  background-color: #f5f7fa;
+  padding-bottom: 40rpx;
+}
+
+/* 孩子信息头部 */
+.child-header {
+  width: 85%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  margin: 20rpx;
+  padding: 30rpx;
+  border-radius: 24rpx;
+  text-align: center;
+  color: #fff;
+}
+
+.child-name {
+  font-size: 40rpx;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.child-tip {
+  font-size: 26rpx;
+  opacity: 0.9;
+}
+
+/* 测评列表 */
+.assessment-list {
+  width: 90%;
+  margin: 0 auto;
+  padding: 0 20rpx;
+}
+
+.assessment-card {
+  /* width: %; */
+  background-color: #fff;
+  border-radius: 24rpx;
+  padding: 28rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+/* 卡片头部 */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+  padding-bottom: 16rpx;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+
+.month {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #07c160;
+}
+
+.rating {
+  padding: 0 24rpx;
+  border-radius: 32rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  padding-bottom: 30rpx;
+  line-height: 1;
+  /* vertical-align: top; */
+  padding-bottom: 30rpx ;
+}
+
+.rating.excellent {
+  background-color: #e8f5e8;
+  color: #07c160;
+}
+
+.rating.good {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.rating.normal {
+  background-color: #fff3e0;
+  color: #f5a623;
+}
+
+.rating.poor {
+  background-color: #ffe0e0;
+  color: #ff6b6b;
+}
+
+/* 通用区块 */
+.section {
+  margin-bottom: 24rpx;
+  padding-bottom: 16rpx;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+
+.section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.section-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 16rpx;
+}
+
+/* 信息网格 */
+.info-grid {
+  display: flex;
+  gap: 24rpx;
+  flex-wrap: wrap;
+}
+
+.info-item {
+  font-size: 26rpx;
+  color: #666;
+  background-color: #f8f9fc;
+  padding: 8rpx 20rpx;
+  border-radius: 30rpx;
+}
+
+/* 核心力量 */
+.core-value {
+  font-size: 28rpx;
+  color: #07c160;
+  background-color: #e8f5e8;
+  padding: 12rpx 24rpx;
+  border-radius: 30rpx;
+  display: inline-block;
+}
+
+/* 身体素质网格 */
+.fitness-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16rpx;
+}
+
+.fitness-item {
+  font-size: 26rpx;
+  color: #666;
+  background-color: #f8f9fc;
+  padding: 10rpx 16rpx;
+  border-radius: 20rpx;
+}
+
+/* 动作模式网格 */
+.action-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16rpx;
+}
+
+.action-item {
+  font-size: 26rpx;
+  color: #666;
+  background-color: #f8f9fc;
+  padding: 10rpx 16rpx;
+  border-radius: 20rpx;
+}
+
+/* 综合评价 */
+.comment-text {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.5;
+  display: block;
+  background-color: #f8f9fc;
+  padding: 20rpx;
+  border-radius: 16rpx;
+}
+
+/* 底部时间 */
+.footer-time {
+  margin-top: 20rpx;
+  padding-top: 16rpx;
+  border-top: 2rpx solid #f0f0f0;
+  text-align: right;
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 空状态 */
+.empty {
+  text-align: center;
+  padding: 120rpx 0;
+  color: #999;
+  font-size: 28rpx;
+}
+
+.empty-hint {
+  display: block;
+  font-size: 24rpx;
+  color: #ccc;
+  margin-top: 12rpx;
+}
+
+/* 加载状态 */
+.loading {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20rpx;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 40rpx;
+  border-radius: 20rpx;
+  color: #fff;
+  z-index: 1000;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

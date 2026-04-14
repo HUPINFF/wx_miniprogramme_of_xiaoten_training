@@ -1,0 +1,174 @@
+/* pages/common/login/index.wxss */
+
+
+
+/* .contain {
+  min-width: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(180deg, #f0f9f0 0%, #ffffff 100%);
+} */
+
+.container {
+  width: 100%;
+}
+
+/* 只显示顶部，不占满 */
+.bg-image {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 700rpx;
+  z-index: -1;
+  border-radius: 65rpx;
+}
+
+.op {
+  width: 100%;
+  height: 700rpx;
+}
+
+/* pages/common/login/index.wxss */
+.mian {
+  width: 100%;
+  margin-top: 30rpx;
+  background: #fff;
+  border-radius: 65rpx;
+  height: 2000rpx;
+}
+
+/* 其余样式保持不变 */
+
+.header {
+  margin-top: 200rpx;
+  text-align: center;
+}
+
+.title {
+  font-size: 64rpx;
+  font-weight: 600;
+  color:#333;
+  display: block;
+}
+
+.desc {
+  font-size: 28rpx;
+  color:#999;
+  margin-top: 20rpx;
+  display: block;
+}
+
+.login-btn {
+  width: 100%;
+  height: 88rpx;
+  background: #07c160;
+  color: #fff;
+  padding-top: 0;
+  /* border-radius: ; */
+}
+
+.agreement {
+  margin-top:40rpx;
+  font-size: 26rpx;
+  color:#999;
+  text-align: center;
+}
+
+.agreement checkbox {
+  tranform:scale(0.3)
+}
+
+.agreement navigator {
+  display: inline;
+  color:#07c160
+}
+
+.role {
+  width: 75%;
+  margin: 0 auto;
+  margin-top: 50rpx;
+  gap: 40rpx;
+  margin-bottom: 60rpx;
+  display: flex;
+  height: 85rpx;
+  justify-content: center;
+  align-items: center;
+  padding: 20rpx;
+  background-color: #fff;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.09);
+  border-radius: 60rpx;
+  /* margin: 20rpx; */
+} 
+
+.role .user,.coach {
+  flex: 1;
+  text-align: center;
+  padding: 20rpx 40rpx;
+  font-size: 32rpx;
+  border-radius: 50rpx;
+  transition: 0.5s all ease;
+  cursor: pointer;
+
+}
+
+/* 默认未选中状态 */
+.user, .coach {
+  background:transparent;
+  color: #999;
+  font-weight: normal;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+
+.user:active .coach:active {
+  transform: scale(0.98);
+  background: linear-gradient(135deg, #07c160 0%, #06a34d 100%);
+  color: #fff;
+  box-shadow: 0 4rpx 12rpx rgba(7, 193, 96, 0.3);
+}
+
+.user.active, .coach.active {
+  background: #07c160;
+  font-weight: bold;
+  color: #fff;
+  box-shadow: 0 4rpx 12rpx rgba(7, 193, 96, 0.3);
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* .login-btn .register_btn {
+  border-radius: 52rpx;
+} */
+
+.login_btn {
+  border-radius: 52rpx;
+}
+
+.login-btn {
+  border-radius: 52rpx;
+}
+
+.register_btn {
+  margin-top: 35rpx;
+  background-color: #fff;
+  border-radius: 52rpx;
+  color: #07c160;
+  border: 2rpx solid #07c160;
+}
+
+
+
+
+

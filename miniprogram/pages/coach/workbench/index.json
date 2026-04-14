@@ -1,0 +1,8 @@
+{
+  "usingComponents": {
+    "nav-bar":"/components/nav-bar/nav-bar",
+    "coach-card": "/components/coach-card/index"
+  },
+  "navigationStyle": "custom",
+  "enablePullDownRefresh": true
+}

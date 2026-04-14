@@ -1,0 +1,138 @@
+/* components/coach-card/index.wxss */
+.coach-card {
+  width: 90%;
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  background: linear-gradient(135deg, #07C160 0%, #059669 100%);
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin: 24rpx 0;
+  box-shadow: 0 8rpx 20rpx rgba(7, 193, 96, 0.3);
+  /* margin-bottom:0 ; */
+}
+
+.coach-card.editing {
+  background: #FFFFFF;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.coach-avatar {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.coach-avatar image {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 60rpx;
+  border: 3rpx solid #FFFFFF;
+}
+
+.coach-card.editing .coach-avatar image {
+  border: 3rpx solid #07C160;
+}
+
+.coach-avatar .edit-tag {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-color: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 4rpx 8rpx;
+  font-size: 20rpx;
+  color: #07C160;
+}
+
+.coach-detail {
+  flex: 1;
+}
+
+.coach-name {
+  display: flex;
+  align-items: baseline;
+  gap: 16rpx;
+  margin-bottom: 12rpx;
+  flex-wrap: wrap;
+}
+
+.coach-name text:first-child {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.coach-name .edit-icon {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.coach-bio {
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.4;
+  word-break: break-all;
+}
+
+/* 编辑模式样式 */
+.coach-card.editing .coach-name text:first-child {
+  color: #1A1A1A;
+}
+
+.coach-card.editing .coach-bio {
+  color: #666666;
+}
+
+.edit-field {
+  margin-bottom: 16rpx;
+}
+
+.edit-name {
+  background-color: #F5F7FA;
+  border-radius: 16rpx;
+  padding: 20rpx 24rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1A1A1A;
+}
+
+.edit-bio {
+  background-color: #F5F7FA;
+  border-radius: 16rpx;
+  padding: 20rpx 24rpx;
+  font-size: 26rpx;
+  color: #666666;
+  width: 90%;
+  min-height: 80rpx;
+}
+
+.char-count {
+  display: block;
+  text-align: right;
+  font-size: 22rpx;
+  color: #999999;
+  margin-top: 8rpx;
+}
+
+.edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16rpx;
+  margin-top: 16rpx;
+}
+
+.cancel-btn {
+  background-color: #F5F7FA;
+  color: #666666;
+  border-radius: 40rpx;
+  font-size: 26rpx;
+  padding: 12rpx 32rpx;
+}
+
+.save-btn {
+  background-color: #07C160;
+  color: #FFFFFF;
+  border-radius: 40rpx;
+  font-size: 26rpx;
+  padding: 12rpx 32rpx;
+}

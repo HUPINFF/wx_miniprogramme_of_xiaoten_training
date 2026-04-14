@@ -1,0 +1,322 @@
+/* pages/users/profile/index.wxss */
+.container {
+  min-height: 100vh;
+  background-color: #f5f7fa;
+  padding-bottom: 40rpx;
+}
+
+/* 用户信息卡片 */
+.user-card {
+  width: 90%;
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  border-radius: 24rpx;
+  margin: 20rpx;
+  padding: 30rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  position: relative;
+}
+
+.user-avatar {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  margin-right: 24rpx;
+  background-color: #f0f0f0;
+}
+
+.user-info {
+  flex: 1;
+}
+
+.user-name {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #333;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.user-phone {
+  font-size: 26rpx;
+  color: #999;
+}
+
+.edit-btn {
+  padding: 12rpx 24rpx;
+  background-color: #f8f9fc;
+  border-radius: 30rpx;
+  font-size: 26rpx;
+  color: #07c160;
+}
+
+/* 孩子区域 */
+.child-section {
+  width: 90%;
+  background-color: #fff;
+  border-radius: 24rpx;
+  margin: 20rpx;
+  padding: 30rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+  padding-bottom: 16rpx;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+/* 孩子卡片 */
+.child-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 20rpx;
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+  color: #fff;
+}
+
+.child-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+
+.child-info {
+  display: flex;
+  align-items: baseline;
+  gap: 12rpx;
+  flex-wrap: wrap;
+}
+
+.child-name {
+  font-size: 36rpx;
+  font-weight: 600;
+}
+
+.child-age {
+  font-size: 26rpx;
+  opacity: 0.9;
+}
+
+.child-gender {
+  font-size: 24rpx;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 4rpx 12rpx;
+  border-radius: 20rpx;
+}
+
+.child-actions {
+  display: flex;
+  gap: 20rpx;
+}
+
+.edit-child, .delete-child {
+  font-size: 24rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.edit-child:active, .delete-child:active {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* 生日信息 */
+.child-birthday {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-top: 8rpx;
+  padding-top: 12rpx;
+  border-top: 2rpx solid rgba(255, 255, 255, 0.2);
+  font-size: 24rpx;
+  opacity: 0.8;
+}
+
+.birthday-label {
+  font-size: 24rpx;
+}
+
+.birthday-value {
+  font-size: 24rpx;
+}
+
+/* 添加孩子按钮 */
+.add-child-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #07c160 0%, #06a34d 100%);
+  color: #fff;
+  border-radius: 48rpx;
+  height: 88rpx;
+  font-size: 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  margin-top: 20rpx;
+}
+
+.add-child-btn::after {
+  border: none;
+}
+
+/* 空状态 */
+.empty-child {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40rpx 0;
+}
+
+.empty-icon {
+  font-size: 80rpx;
+  margin-bottom: 20rpx;
+  opacity: 0.5;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #999;
+  margin-bottom: 12rpx;
+}
+
+.empty-hint {
+  font-size: 24rpx;
+  color: #ccc;
+}
+
+/* 功能菜单 */
+.menu-list {
+  width: 90%;
+  background-color: #fff;
+  border-radius: 24rpx;
+  margin: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.menu-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.menu-left {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+}
+
+.menu-icon {
+  font-size: 40rpx;
+}
+
+.menu-title {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #333;
+}
+
+.menu-arrow {
+  font-size: 32rpx;
+  color: #ccc;
+}
+
+/* 退出登录按钮 */
+.logout-btn {
+  background-color: #fff;
+  color: #ff6b6b;
+  border: 2rpx solid #ff6b6b;
+  border-radius: 48rpx;
+  height: 88rpx;
+  font-size: 32rpx;
+  margin: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logout-btn::after {
+  border: none;
+}
+
+.logout-btn:active {
+  background-color: #fff5f5;
+}
+
+.child-id {
+  display: flex;
+  align-items: center;
+  padding: 12rpx 0;
+  margin-top: 10rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.id-label {
+  font-size: 28rpx;
+  color: #ffffff;
+  width: 120rpx;
+}
+
+.id-value {
+  font-size: 28rpx;
+  color: #fff;
+  flex: 1;
+}
+
+
+/* 【新增】教练区域样式 */
+.coach-section {
+  width: 85%;
+  background-color: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.02);
+}
+
+.coach-section .section-header {
+  margin-bottom: 20rpx;
+}
+
+.coach-section .section-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1A1A1A;
+}
+
+.coach-card {
+  padding: 8rpx 0;
+}
+
+.coach-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1A1A1A;
+  display: block;
+  margin-bottom: 12rpx;
+}
+
+.coach-desc {
+  font-size: 26rpx;
+  color: #666666;
+  line-height: 1.5;
+}

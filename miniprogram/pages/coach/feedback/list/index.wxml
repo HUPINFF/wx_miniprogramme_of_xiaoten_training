@@ -1,0 +1,87 @@
+<view class="container">
+
+  <nav-bar title='反馈'></nav-bar>
+  <!-- 筛选栏 -->
+  <view class="filter-bar">
+    <view class="filter-item {{filterType === 'all' ? 'active' : ''}}" bind:tap="onFilterChange" data-type="all">全部
+    </view>
+
+    <view class="filter-item {{filterType === 'thisWeek' ? 'active':''}}" bind:tap="onFilterChange" data-type="thisWeek">
+      本周
+    </view>
+
+    <view class="filter-item {{filterType === 'lastWeek' ? 'active':''}}" bind:tap="onFilterChange" data-type="lastWeek">
+      上周
+    </view>
+
+    <view class="filter-item {{filterType ==='thisMonth' ? 'active':''}}" bind:tap="onFilterChange" data-type="thisMonth">
+      本月
+    </view>
+  </view>
+
+  <!-- 反馈列表 -->
+  <view class="feedback-list">
+    <block wx:for="{{feedbackList}}" wx:key="_id">
+      <view class="feedback-card" bind:tap="viewFeedbackDetail" data-id="{{item._id}}">
+        <!-- 反馈头部 -->
+        <view class="feedback-header">
+          <view class="child-info">
+            <image class="child-avatar" src="cloud://hupin255-5gfbw856b1c861ef.6875-hupin255-5gfbw856b1c861ef-1410552194/default_avatar/6756593ba0eb6a537f7060da8ede3ca8.jpeg" mode="aspectFill"></image>
+            <view class="child-detail">
+              <text class="child-name">{{item.childName}}</text>
+              <text class="feedback-date">{{item.date}}</text>
+            </view>
+          </view>
+
+          <view class="rating">
+            <text class="star {{index < item.rating ? 'active' :'' }}" wx:for="{{[1,2,3,4,5]}}" wx:key="index">★</text>
+          </view>
+        </view>
+
+        <!-- 反馈周期 -->
+        <view class="week-range">
+          <text>📅 {{item.weekRange}}</text>
+        </view>
+
+        <!-- 进步标签 -->
+        <view class="tags" wx:if="{{item.tags && item.tags.length > 0}}">
+          <text class="tag" wx:for="{{item.tags}}" wx:key="index">{{item}}</text>
+        </view>
+
+        <!-- 反馈内容 -->
+        <view class="feedback-content">
+          <text>{{item.content}}</text>
+        </view>
+
+        <!-- 底部信息 -->
+        <view class="feedback-footer">
+          <view class="coach-info">
+            <!-- <image src="{{item.coachAvatar || '/images/default-avatar.png'}}" mode="aspectFill"></image> -->
+            <text class="coach-name">{{item.coachName}}教练</text>
+          </view>
+          <text class="edit-btn" catch:tap="editFeedback" data-id="{{item._id}}">编辑</text>
+        </view>
+      </view>
+    </block>
+
+    <!-- 空状态 -->
+    <view class="empty" wx:if="{{feedbcakList.lenght === 0 &&!loading}}">
+      <text>暂无反馈记录</text>
+    </view>
+
+    <!-- 加载更多 -->
+    <view wx:if="{{hasMore && feedbackList.length > 0}}" class="load-more" bind:tap="loadMore">
+      <text wx:if="{{!loadingMore}}">加载更多</text>
+      <text wx:else>加载中</text>
+    </view>
+    <view wx:elif="{{!hasMore && feedbackList.length > 0}}" class="no-more">
+      <text>没有更多了</text>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading" wx:if="{{loading}}">
+    <text class="loading-spinner"></text>
+    <text>加载中...</text>  
+  </view>
+</view>

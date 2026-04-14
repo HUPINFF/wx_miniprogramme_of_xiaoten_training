@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "表现历史",
+  "usingComponents": {
+    "nav-bar":"/components/nav-bar/nav-bar"
+  },
+  "navigationStyle": "custom",
+  "navigationBarBackgroundColor": "#07c160",
+  "navigationBarTextStyle":"white",
+  "enablePullDownRefresh": true
+}

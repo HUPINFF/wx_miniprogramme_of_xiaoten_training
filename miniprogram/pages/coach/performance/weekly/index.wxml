@@ -1,0 +1,86 @@
+<!--pages/coach/performance/weekly/index.wxml-->
+<!-- <text>pages/coach/performance/weekly/index.wxml</text> -->
+
+<view class="container">
+
+  <nav-bar title='录入成绩'></nav-bar>
+  <view class="form">
+    <view class="form-item">
+      <text class="label">选择学员</text>
+      <picker mode="selector" range="{{children}}" range-key="name" bindchange="onChildChange">
+        <view class="picker">{{selectedChild.name || '请选择'}}</view>
+      </picker>
+    </view>
+
+    <view class="form-item">
+      <text class="label">周次</text>
+      <picker mode="date" value="{{weekDate}}" bindchange="onDateChange">
+          <view class="picker">{{weekRange || weekDate}}</view>
+      </picker>
+    </view>
+
+    <!-- 【修改】添加提示：所有项目均为可选 -->
+    <view class="tips-tag">
+      <text class="tips-text">💡 所有项目均为可选，只填写有数据的项目即可</text>
+    </view>
+
+    <view class="form-item">
+      <text class="label">50米跑(秒)</text>
+      <input type="digit" placeholder="例如:8.5"  bindinput="onFiftyInput"/>
+    </view>
+
+    <view class="form-item">
+      <text class="label">1000米跑(秒)</text>
+      <input type="text" placeholder="例如:3分20秒"  bindinput="onThousandInput"/>
+      <!-- <text class="hint">输入秒数，如320表示5分20秒</text> -->
+    </view>
+
+     <!-- 【新增】仰卧起坐 -->
+     <view class="form-item">
+      <text class="label">仰卧起坐（个/分钟）</text>
+      <input type="number" placeholder="例如：45（可选）" value="{{form.sitUp}}" bindinput="onSitUpInput"/>
+    </view>
+
+    <!-- 【新增】跳绳 -->
+    <view class="form-item">
+      <text class="label">跳绳（个/分钟）</text>
+      <input type="number" placeholder="例如：120（可选）" value="{{form.ropeSkipping}}" bindinput="onRopeSkippingInput"/>
+    </view>
+
+    <!-- 【新增】800米跑 -->
+    <view class="form-item">
+      <text class="label">800米跑</text>
+      <input type="text" placeholder="例如：2分50秒" value="{{form.eightHundredMeter}}" bindinput="onEightHundredInput"/>
+    </view>
+
+    <!-- 【新增】坐位体前屈 -->
+    <view class="form-item">
+      <text class="label">坐位体前屈（厘米）</text>
+      <input type="digit" placeholder="例如：12.5（可选）" value="{{form.sitAndReach}}" bindinput="onSitAndReachInput"/>
+    </view>
+
+    <!-- 【新增】立定跳远 -->
+    <view class="form-item">
+      <text class="label">立定跳远（厘米）</text>
+      <input type="number" placeholder="例如：180（可选）" value="{{form.standingLongJump}}" bindinput="onStandingLongJumpInput"/>
+    </view>
+
+    <!-- 【新增】肺活量测试 -->
+    <view class="form-item">
+      <text class="label">肺活量测试（毫升）</text>
+      <input type="number" placeholder="例如：2500（可选）" value="{{form.vitalCapacity}}" bindinput="onVitalCapacityInput"/>
+    </view>
+
+    <view class="form-item">
+      <text class="label">敏捷性（分）</text>
+      <slider min="0" max="100" value="{{form.agility}}" bindchange="onAgilityChange" show-value/>
+    </view>
+    
+    <view class="form-item">
+      <text class="label">协调性（分）</text>
+      <slider min="0" max="100" value="{{form.coordination}}" bindchange="onCoordinationChange" show-value/>
+    </view>
+
+    <button class="submit-btn" type="primary" bind:tap="onSubmit">保存</button>
+  </view>
+</view>

@@ -1,0 +1,27 @@
+<view class="container">
+  <nav-bar title="更多动态"></nav-bar>
+  <!-- 动态列表 -->
+  <view class="news-list">
+    <block wx:for="{{newsList}}" wx:key="_id">
+      <view class="news-card" bind:tap="viewNewsDetail" data-id="{{item._id}}">
+        <view class="news-title">{{item.title}}</view>
+        <view class="news-time">{{item.time}}</view>
+      </view>
+    </block>
+    <!-- 空状态 -->
+    <view class="{{newsList.length ===0 && !loading}}" class="empty">
+      <text>暂无动态</text>
+    </view>
+
+    <!-- 加载更多 -->
+    <view wx:if="{{hasMore && newsList.length > 0}}" class="load-more" bind:tap="loadMore">
+      <text wx:if="{{!loadingMore}}">加载更多</text>
+      <text wx:else>加载中...</text>
+    </view>
+  </view>
+  <!-- 加载状态 -->
+  <view class="loading" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text>加载中...</text>
+  </view>
+</view>

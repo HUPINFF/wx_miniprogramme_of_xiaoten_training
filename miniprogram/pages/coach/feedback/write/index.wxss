@@ -1,0 +1,210 @@
+/* pages/coach/feedback/write/index.wxss */
+.container {
+  min-height: 100vh;
+  background-color: #f5f7fa;
+  padding: 24rpx;
+}
+
+.form-card {
+  width: 90%;
+  margin: 0 auto ;
+  background-color: #fff;
+  border-radius: 24rpx;
+  padding: 32rpx;
+}
+
+.form-item {
+  margin-bottom: 40rpx;
+}
+
+.form-item:last-child {
+  margin-bottom: 0;
+}
+
+.label {
+  font-size: 28rpx;
+  color: #666;
+  display: block;
+  margin-bottom: 16rpx;
+  font-weight: 500;
+}
+
+.picker {
+  background-color: #f8f9fc;
+  padding: 24rpx;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  color: #333;
+}
+
+/* 孩子信息 */
+.child-info {
+  display: flex;
+  align-items: center;
+  background-color: #f8f9fc;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 40rpx;
+}
+
+.child-info .avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  margin-right: 20rpx;
+  background-color: #e0e0e0;
+}
+
+.child-info .name {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #333;
+  display: block;
+  margin-bottom: 6rpx;
+}
+
+.child-info .hint {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 周期显示 */
+.week-range {
+  background-color: #f8f9fc;
+  padding: 24rpx;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  color: #07c160;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* 评分星星 */
+.rating {
+  display: flex;
+  gap: 16rpx;
+}
+
+.star {
+  font-size: 48rpx;
+  color: #e0e0e0;
+  transition: color 0.2s;
+}
+
+.star.active {
+  color: #ffb400;
+}
+
+/* 标签 */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+}
+
+.tag {
+  padding: 12rpx 24rpx;
+  background-color: #f5f5f5;
+  border-radius: 32rpx;
+  font-size: 26rpx;
+  color: #666;
+  display: inline-block;
+  margin: 0 8rpx 16rpx 0;
+  transition: all 0.2s;
+  border: 2rpx solid transparent;  /* 添加透明边框 */
+}
+
+/* 选中高亮样式 */
+.tag.op {
+  background-color: #07c160 !important ;  
+  color: #fff !important;
+  border: 2rpx solid #ffb400 !important;  
+  transform: scale(1.02) !important;
+}
+
+/* 点击效果 */
+.tag:active {
+  transform: scale(0.98);
+  opacity: 0.8;
+}
+
+/* 本周表现总结 */
+.performance-summary {
+  background-color: #f8f9fc;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+}
+
+.summary-item {
+  flex: 1;
+  min-width: 120rpx;
+  text-align: center;
+}
+
+.summary-item .label {
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 8rpx;
+}
+
+.summary-item .value {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.no-data {
+  background-color: #f8f9fc;
+  border-radius: 16rpx;
+  padding: 40rpx;
+  text-align: center;
+  color: #999;
+  font-size: 28rpx;
+}
+
+/* 文本框 */
+textarea {
+  background-color: #f8f9fc;
+  padding: 24rpx;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  color: #333;
+  width: 100%;
+  min-height: 300rpx;
+  box-sizing: border-box;
+  line-height: 1.5;
+}
+
+.counter {
+  display: block;
+  text-align: right;
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 12rpx;
+}
+
+/* 提交按钮 */
+.submit-btn {
+  padding: 0;
+  background-color: #07c160;
+  color: #fff;
+  border-radius: 44rpx;
+  height: 88rpx;
+  line-height: 88rpx;
+  font-size: 32rpx;
+  margin-top: 32rpx;
+  /* display: flex; */
+  /* align-items: center; */
+  /* text-align: center; */
+  /* justify-content: center; */
+}
+
+.submit-btn[disabled] {
+  background-color: #ccc;
+}
+
+
+

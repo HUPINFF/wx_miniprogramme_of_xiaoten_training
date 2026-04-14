@@ -1,0 +1,10 @@
+{
+  "usingComponents": {
+    "nav-bar":"/components/nav-bar/nav-bar"
+  },
+  "navigationStyle": "custom",
+  "enablePullDownRefresh": true,
+  "backgroundColor": "#F5F7FA",
+  "backgroundTextStyle":"dark",
+  "enablePullDownRefresh": true
+}

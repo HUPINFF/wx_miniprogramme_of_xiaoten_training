@@ -1,0 +1,75 @@
+<view class="container">
+  <nav-bar title="写点评"></nav-bar>
+
+  <view class="form-card">
+    <!-- 课程信息卡片 -->
+    <view class="course-info">
+      <text class="course-name">{{courseName}}</text>
+      <text class="coach-name">{{coachName}}教练</text>
+    </view>
+
+    <!-- 评分 -->
+    <view class="form-item">
+      <text class="label">评分<text class="required">*</text></text>
+      <view class="rating">
+        <text
+          class="star {{rating >= item ? 'active':''}}"
+          wx:for="{{[1,2,3,4,5]}}"
+          wx:key="index"
+          bind:tap="setRating"
+          data-rating="{{item}}"
+        >★</text>
+      </view>
+      <text class="rating-tip" wx:if="{{rating > 0}}">
+        {{rating === 1 ?'很差' : rating === 2 ? '较差' : rating === 3 ? '一般' : rating === 4 ? '满意' : '非常满意'}}
+      </text>
+    </view>
+
+    <!-- 点评内容 -->
+    <view class="form-item">
+      <text class="label">点评内容 <text class="required">*</text></text>
+      <textarea
+        placeholder="请分享您对这节课的评价和建议..."
+        value="{{content}}"
+        bindinput="onContentInput"
+        maxlength="300"
+        auto-height=""
+      />
+      <text class="counter">{{content.length }}/300</text>
+    </view>
+
+    <!-- 标签选择 -->
+    <view class="form-item">
+      <text class="label">标签（可多选）</text>
+      <view class="tags">
+        <text
+          class="tag {{tagCheckedStatus[item] ? 'active' : ''}}"
+          wx:for="{{tagList}}"
+          wx:key="index"
+          bind:tap="toggleTag"
+          data-tag="{{item}}"
+        >{{item}}
+        <text style="color:red; font-size:20rpx;" wx:if="{{selectedTags.indexOf(item) > -1 ? 'active':''}}">✓</text>
+        </text>
+      </view>
+    </view>
+
+    <!-- 匿名选项 -->
+    <view class="form-item">
+      <view class="anonymous" bind:tap="toggleAnonymous">
+        <checkbox value="{{isAnonymous}}" color="#07c160"/>
+        <text>匿名点评</text>
+        <text class="anonymous-hint">（匿名后其他家长看不到您的昵称）</text>
+      </view>
+    </view>
+
+      <!-- 提交按钮 -->
+      <button
+        class="submit-btn"
+        type="primary"
+        bind:tap="onSubmit"
+        loading="{{submitting}}"
+        disabled="{{rating === 0 || content.length ===0}}"
+      >提交点评</button>
+  </view>
+</view>

@@ -1,0 +1,213 @@
+/* pages/coach/performance/list/index.wxss */
+.container {
+  min-height: 100vh;
+  background-color: #f5f7fa;
+}
+
+/* 筛选栏 */
+.filter-bar {
+  width: 95%;
+  background-color: #fff;
+  display: flex;
+  padding: 20rpx 32rpx;
+  border-bottom: 2rpx solid #f0f0f0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.filter-item {
+  flex: 1;
+  text-align: center;
+  padding: 16rpx 0;
+  font-size: 28rpx;
+  color: #666;
+  border-radius: 8rpx;
+  transition: all 0.2s;
+}
+
+.filter-item.active {
+  color: #07c160;
+  font-weight: 500;
+  position: relative;
+}
+
+.filter-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60rpx;
+  height: 4rpx;
+  background-color: #07c160;
+  border-radius: 2rpx;
+}
+
+/* 统计信息 */
+.stats-info {
+  background-color: #fff;
+  padding: 16rpx 32rpx;
+  font-size: 24rpx;
+  color: #999;
+  border-bottom: 2rpx solid #f0f0f0;
+  text-align: center;
+}
+
+/* 表现列表 */
+.performance-list {
+  width: 90%;
+  margin: 0 auto;
+  
+  padding: 24rpx;
+}
+
+/* 表现卡片 */
+.performance-card {
+  background-color: #fff;
+  border-radius: 24rpx;
+  padding: 28rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s;
+}
+
+.performance-card:active {
+  transform: scale(0.98);
+}
+
+/* 卡片头部 */
+.performance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+  padding-bottom: 16rpx;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+
+.week-date {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #07c160;
+}
+
+.arrow {
+  font-size: 28rpx;
+  color: #ccc;
+}
+
+/* 表现数据网格 */
+.performance-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.performance-item {
+  background-color: #f8f9fc;
+  border-radius: 16rpx;
+  padding: 20rpx;
+  text-align: center;
+}
+
+.performance-item .label {
+  font-size: 24rpx;
+  color: #999;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.performance-item .value {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+/* 趋势分析 */
+.trend-analysis {
+  display: flex;
+  gap: 24rpx;
+  padding-top: 16rpx;
+  border-top: 2rpx solid #f0f0f0;
+}
+
+.trend-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f8f9fc;
+  padding: 12rpx 20rpx;
+  border-radius: 20rpx;
+}
+
+.trend-label {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.trend-value {
+  font-size: 26rpx;
+  font-weight: 500;
+}
+
+.trend-value.up {
+  color: #f5a623;
+}
+
+.trend-value.down {
+  color: #07c160;
+}
+
+/* 加载更多 */
+.load-more,
+.no-more {
+  text-align: center;
+  padding: 32rpx;
+  font-size: 26rpx;
+  color: #999;
+}
+
+.load-more {
+  color: #07c160;
+}
+
+/* 空状态 */
+.empty {
+  text-align: center;
+  padding: 120rpx 0;
+  color: #999;
+  font-size: 28rpx;
+}
+
+/* 加载状态 */
+.loading {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20rpx;
+  background-color: rgba(0,0,0,0.7);
+  padding: 40rpx;
+  border-radius: 20rpx;
+  color: #fff;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

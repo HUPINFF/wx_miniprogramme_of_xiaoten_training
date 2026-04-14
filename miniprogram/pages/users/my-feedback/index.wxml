@@ -1,0 +1,91 @@
+<view class="container">
+  <nav-bar title="我的反馈" showBack="{{true}}"></nav-bar>
+
+  <!-- 统计卡片 -->
+  <view class="stats-card">
+    <view class="stat-item">
+      <text class="stat-number">{{totalCount}}</text>
+      <text class="stat-label">总反馈数</text>
+    </view>
+    <view class="stat-divider"></view>
+
+    <view class="stat-item">
+      <text class="stat-number">{{avgRating}}</text>
+      <text class="stat-label">平均评分</text>
+    </view>
+  </view>
+
+  <!-- 反馈列表 -->
+  <view class="feedback-list">
+    <block wx:for="{{feedbackList}}" wx:key="_id">
+      <view class="feedback-card">
+        <!-- 头部 -->
+        <view class="card-header">
+          <view class="course-info">
+            <text class="course-name">{{item.courseName || item.type}}</text>
+            <text class="course-date">{{item.date}}</text>
+          </view>
+
+          <view class="rating">
+            <text class="star {{index < item.rating ? 'active':''}}" wx:for="{{[1,2,3,4,5]}}" wx:key="index">★</text>
+          </view>
+        </view>
+
+        <!-- 教练信息 -->
+        <view class="coach-info">
+          <!-- <image class="coach-avatar" src="{{item.coachAvatar || '/images/default-avatar.png'}}" mode="aspectFill"></image> -->
+          <text class="coach-name">{{item.coachName}}教练</text>
+        </view>
+
+        <!-- 反馈内容 -->
+        <view class="feedback-content">
+          <text>{{item.content}}</text>
+        </view>
+
+        <!-- 反馈标签 -->
+        <view class="tags" wx:if="{{item.tags && item.tags.length > 0 }}">
+          <text class="tag" wx:for="{{item.tags}}" wx:key="index">{{item}}</text>
+        </view>
+
+        <!-- 反馈周期 -->
+        <view class="week-range" wx:if="{{item.weekRange}}">
+          <text>📅 反馈周期：{{item.weekRange}}</text>
+        </view>
+
+        <!-- 底部信息 -->
+        <view class="card-footer">
+          <text class="feedback-time">{{String(item.createdAt) || item.date}}</text>
+        </view>
+      </view>
+    </block>
+
+    <!-- 空状态 -->
+    <view wx:if="{{feedbackList.length === 0 && !loading}}" class="empty">
+      <text>暂无反馈记录</text>
+      <text class="empty-hint">教练会定期给孩子写反馈哦~</text>
+    </view>
+    <!-- 加载更多 -->
+    <view wx:if="{{hasMore && feedbackList.length > 0}}" class="load-more" bind:tap="loadMore">
+      <text wx:if="{{!loadingMore}}">加载更多</text>
+      <text wx:else>加载中...</text>
+    </view>
+  </view>
+
+  <!-- 加载更多 -->
+  <view class="loading" wx:if="{{loading}}">
+      <view class="loading-spinner"></view>
+      <text>加载中...</text>
+  </view>
+</view>
+
+
+
+
+
+
+
+
+
+
+
+

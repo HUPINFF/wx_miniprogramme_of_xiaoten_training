@@ -1,0 +1,69 @@
+<view class="container">
+  <nav-bar title="联系我们" showBack="{{true}}"></nav-bar>
+
+  <!-- 顶部横幅 -->
+  <view class="contact-header">
+    <view class="header-content">
+      <text class="header-title">📞 随时为您服务</text>
+      <text class="header-subtitle">有任何问题或建议，欢迎随时联系</text>
+    </view>
+  </view>
+
+  <!-- 联系方式卡片 -->
+  <view class="contact-cards">
+    <!-- 电话咨询 -->
+    <view class="contact-card" bind:tap="makePhoneCall">
+      <view class="card-icon phone-icon">📱</view>
+
+      <view class="card-info">
+        <text class="card-label">咨询热线</text>
+        <text class="card-value">400-888-666</text>
+      </view>
+      <view class="card-arrow">></view>
+    </view>
+
+    <!-- 微信咨询 -->
+    <view class="contact-card" bind:tap="copyWechat">
+      <view class="card-icon wechat-icon">💬</view>
+      <view class="card-info">
+        <text class="card-label">官方微信</text>
+        <text class="card-value">sports_training</text>
+      </view>
+      <view class="card-arrow">></view>
+    </view>
+
+    <!-- 地址 -->
+  <view class="contact-card" bind:tap="openLocation">
+    <view class="card-icon address-icon">📍</view>
+    <view class="card-info">
+      <text class="card-label">训练地址</text>
+      <text class="card-value">天津师范大学体育馆</text>
+    </view>
+    <view class="card-arrow">></view>
+  </view>
+  </view>
+
+  <!-- 地图区域 -->
+  <view class="map-section">
+    <view class="section-header">
+      <text class="section-icon">🗺️</text>
+      <text class="section-title">找到我们</text>
+    </view>
+    <view class="map-card" bind:tap="openLocation">
+      <map class="location-map"
+       longitude="{{longitude}}" 
+       latitude="{{latitude}}"
+       markers="{{markers}}"
+       show-location></map>
+       <view class="map-info">
+        <text class="map-address">📍 天津市西青区宾水西道393号 天津师范大学体育馆</text>
+        <text class="map-nav">点击导航</text>
+       </view>
+    </view>
+  </view>
+
+<!-- 底部间距 -->
+<view class="bottom-space"></view>
+  
+
+</view>

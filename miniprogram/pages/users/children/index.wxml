@@ -1,0 +1,643 @@
+<view class="container1">
+  <nav-bar title="训练主页" showBack="{{true}}"></nav-bar>
+  <view class="welcom_seesion">
+    <!-- 孩子信息卡片 -->
+  <view class="child-card" wx:if="{{childInfo}}">
+    <view class="child-name">
+      <text class="name">{{childInfo.name}}</text>
+      <text class="age">{{childInfo.age}}岁</text>
+    </view>
+
+    <view class="child-tag" wx:if="{{childInfo.gender}}">
+      {{childInfo.gender === 'male'? '男孩':'女孩'}}
+    </view>
+  </view>
+    <!-- <image class="avatar" src="{{parentInfo.avatarUrl}}" mode="aspectFill"/> -->
+  </view>
+</view>
+
+
+<view class="container">
+  <!-- 本周核心表现 -->
+  <view class="section">
+    <view class="section-header">
+      <view class="header-left">
+        <text class="section-title">📊 本周核心表现</text>
+        <text class="section-date">{{currentWeek}}</text>
+      </view>
+      <text class="section-more" bind:tap="viewHistoryStats">每周记录</text>
+    </view>
+
+    <view class="stats-grid">
+      <!-- 50米跑 -->
+      <view class="stat-item">
+        <view class="stat-label">50米跑</view>
+        <view class="stat-value">{{performance.fiftyMeter}}秒</view>
+        <view class="stat-trend {{performance.fiftyMeter.trendClass}}">
+          <text class="trend-arrow">{{performance.fiftyMeter.trend}}</text>
+          <text class="trend-value">{{performance.fiftyMeter.trendValue}}</text>
+          <text class="trend-desc">{{performance.fiftyMeter.desc}}</text>
+        </view>
+      </view>
+
+      <!-- 1000米跑 -->
+      <view class="stat-item">
+        <view class="stat-label">1000米跑</view>
+        <view class="stat-value">{{performance.thousandMeter || '暂无'}}</view>
+        <view class="stat-trend {{performance.thousandMeter.trendClass}}">
+          <text class="trend-arrow">{{performance.thousandMeter.trend}}</text>
+          <text class="trend-value">{{performance.thousandMeter.trendValue}}</text>
+          <text class="trend-desc">{{performance.thousandMeter.desc}}</text>
+        </view>
+      </view>
+
+      <!-- 【新增】800米跑 -->
+      <view class="stat-item">
+        <view class="stat-label">800米跑</view>
+        <view class="stat-value">{{performance.eightHundredMeter || '暂无'}}</view>
+        <view class="stat-trend" wx:if="{{performance.eightHundredMeter && performance.eightHundredMeter.trend}}">
+          <text class="trend-arrow">{{performance.eightHundredMeter.trend}}</text>
+          <text class="trend-value">{{performance.eightHundredMeter.trendValue}}</text>
+          <text class="trend-desc">{{performance.eightHundredMeter.desc}}</text>
+        </view>
+      </view>
+
+      <!-- 【新增】仰卧起坐 -->
+      <view class="stat-item">
+        <view class="stat-label">仰卧起坐</view>
+        <view class="stat-value">{{performance.sitUp || '暂无'}}{{performance.sitUp ? '个/分' : ''}}</view>
+        <view class="stat-trend" wx:if="{{performance.sitUp && performance.sitUp.trend}}">
+          <text class="trend-arrow">{{performance.sitUp.trend}}</text>
+          <text class="trend-value">{{performance.sitUp.trendValue}}</text>
+          <text class="trend-desc">{{performance.sitUp.desc}}</text>
+        </view>
+      </view>
+
+       <!-- 【新增】跳绳 -->
+       <view class="stat-item">
+        <view class="stat-label">跳绳</view>
+        <view class="stat-value">{{performance.ropeSkipping || '暂无'}}{{performance.ropeSkipping ? '个/分' : ''}}</view>
+        <view class="stat-trend" wx:if="{{performance.ropeSkipping && performance.ropeSkipping.trend}}">
+          <text class="trend-arrow">{{performance.ropeSkipping.trend}}</text>
+          <text class="trend-value">{{performance.ropeSkipping.trendValue}}</text>
+          <text class="trend-desc">{{performance.ropeSkipping.desc}}</text>
+        </view>
+      </view>
+
+      <!-- 【新增】坐位体前屈 -->
+      <view class="stat-item">
+        <view class="stat-label">坐位体前屈</view>
+        <view class="stat-value">{{performance.sitAndReach || '暂无'}}{{performance.sitAndReach ? '厘米' : ''}}</view>
+        <view class="stat-trend" wx:if="{{performance.sitAndReach && performance.sitAndReach.trend}}">
+          <text class="trend-arrow">{{performance.sitAndReach.trend}}</text>
+          <text class="trend-value">{{performance.sitAndReach.trendValue}}</text>
+          <text class="trend-desc">{{performance.sitAndReach.desc}}</text>
+        </view>
+      </view>
+
+      <!-- 【新增】立定跳远 -->
+      <view class="stat-item">
+        <view class="stat-label">立定跳远</view>
+        <view class="stat-value">{{performance.standingLongJump || '暂无'}}{{performance.standingLongJump ? '厘米' : ''}}</view>
+        <view class="stat-trend" wx:if="{{performance.standingLongJump && performance.standingLongJump.trend}}">
+          <text class="trend-arrow">{{performance.standingLongJump.trend}}</text>
+          <text class="trend-value">{{performance.standingLongJump.trendValue}}</text>
+          <text class="trend-desc">{{performance.standingLongJump.desc}}</text>
+        </view>
+      </view>
+
+      <!-- 【新增】肺活量测试 -->
+      <view class="stat-item">
+        <view class="stat-label">肺活量</view>
+        <view class="stat-value">{{performance.vitalCapacity || '暂无'}}{{performance.vitalCapacity ? '毫升' : ''}}</view>
+        <view class="stat-trend" wx:if="{{performance.vitalCapacity && performance.vitalCapacity.trend}}">
+          <text class="trend-arrow">{{performance.vitalCapacity.trend}}</text>
+          <text class="trend-value">{{performance.vitalCapacity.trendValue}}</text>
+          <text class="trend-desc">{{performance.vitalCapacity.desc}}</text>
+        </view>
+      </view>
+
+      <!-- 协调性 -->
+      <view class="stat-item">
+        <view class="stat-label">协调性</view>
+        <view class="stat-value">{{performance.coordination}}分</view>
+        <view class="stat-trend {{performance.coordination.trendClass}}">
+          <text class="trend-arrow">{{performance.coordination.trend}}</text>
+          <text class="trend-value">{{performance.coordination.trendValue}}</text>
+          <text class="trend-desc">{{performance.coordination.desc}}</text>
+        </view>
+      </view>
+
+      <!-- 敏捷性 -->
+      <view class="stat-item">
+        <view class="stat-label">敏捷性</view>
+        <view class="stat-value">{{performance.agility}}分</view>
+        <view class="stat-trend {{performance.agility.trendClass}}">
+          <text class="trend-arrow">{{performance.agility.trend}}</text>
+          <text class="trend-value">{{performance.agility.trendValue}}</text>
+          <text class="trend-desc">{{performance.agility.desc}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 本周训练列表 -->
+  <view class="section">
+    <view class="section-header">
+      <view class="header-left">
+        <text class="section-title">📅 本周训练</text>
+        <text class="section-date">{{weekTrainings.length}}节课</text>
+      </view>
+      <text class="section-more" bind:tap="viewAllTrainings">查看全部</text>
+    </view>
+
+    <view class="training-list">
+      <block wx:for="{{weekTrainings}}" wx:key="id">
+        <view class="training-item" catch:tap="viewTrainingDetail" data-id="{{item.id}}">
+          <!-- 训练头部 -->
+          <view class="training-header">
+            <view class="training-day">
+              <text class="day">{{item.day}}</text>
+              <text class="date">{{item.date}}</text>
+              <text class="date">{{item.startTime}} - {{item.endTime}}</text>
+            </view>
+            <view class="training-tag {{item.typeClass}}">{{item.type}}</view>
+          </view>
+
+          <!-- 训练内容 -->
+          <view class="training-content">
+            <view class="training-row">
+              <text class="label">训练内容:</text>
+              <text class="text">{{item.name}}</text>
+            </view>
+
+            <view class="training-row">
+              <text class="label">训练重点:</text>
+              <text class="text highlight">{{item.focus}}</text>
+            </view>
+
+            <view class="training-row">
+              <text class="label">训练难点:</text>
+              <text class="text">{{item.difficulty}}</text>
+            </view>
+          </view>
+
+
+           <!-- 训练照片和教练 -->
+           <view class="training-footer">
+            <view class="coach-info">
+              <image class="coach-avatar" src="{{item.coachAvatar}}" mode="aspectFill"/>
+              <text class="coach-name">{{item.coachName}}教练</text>
+            </view>
+
+            <view class="photo-info" catch:tap="viewTrainingPhotos" data-id="{{item._id}}">
+              <text class="photo-icon">📸</text>
+              <text class="photo-count">{{item.photoCount}}张照片</text>
+              <text class="arrow">></text>
+            </view>
+           </view>
+        </view>
+      </block>
+
+      <!-- 空状态 -->
+      <view class="empty-tip" wx:if="{{weekTrainings.length === 0}}">
+        <text>本周暂无训练安排</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 月度对比图表 -->
+  <view class="section">
+    <view class="section-header">
+      <view class="header-left">
+        <text class="title">📈 月度对比</text>
+        <text class="section-date">{{monthCompare.title}}</text>
+        <!-- <text class="change" bind:tap="changeMonthCompareTitle">更多对比</text> -->
+        <picker class="picker_one" mode="selector" range="{{monthArray}}" value="{{currentMonthIndex}}" bindchange="onCurrentMonthChange" >
+          <view class="picker-view">{{monthArray[currentMonthIndex]}}月<text style="margin-left: 2rpx; font-size: 25rpx">▼</text></view>
+        </picker>
+        <text style="margin: 0 7rpx;">vs</text>
+        <picker class="picker_two" mode="selector" range="{{monthArray}}" value="{{lastMonthIndex}}" bindchange="onLastMonthChange">
+          <view class="picker-view">{{monthArray[lastMonthIndex]}}月<text style="margin-left: 2rpx; font-size: 25rpx;">▼</text></view>
+        </picker>
+      </view>
+    </view>
+
+    <view class="chart-container">
+      <!-- 50米跑对比 -->
+      <view class="chart-item">
+        <text class="chart-label">50米跑</text>
+        <view class="chart-bars">
+          <view class="bar-group">
+            <view class="bar" style="height:{{monthCompare.fiftyMeter.lastMonth.height}}px; background-color: #CCCCCC;">
+              <text class="bar-value">{{monthCompare.fiftyMeter.lastMonth.value}}s</text>
+            </view>
+            <text class="bar-month">{{monthCompare.lastMonthName}}</text> 
+          </view>
+
+          <view class="bar-group">
+            <view class="bar" style="height:{{monthCompare.fiftyMeter.currentMonth.height}}px; background-color: #07c160;">
+              <text class="bar-value">{{monthCompare.fiftyMeter.currentMonth.value}}s</text>
+            </view>
+            <text class="bar-month">{{monthCompare.currentMonthName}}</text>
+          </view>
+        </view>
+        <text class="chart-compare {{monthCompare.fiftyMeter.trendClass}}">
+          {{monthCompare.fiftyMeter.compareText}}
+        </text>
+      </view>
+
+      <!-- 1000米跑对比 -->
+      <view class="chart-item">
+        <text class="chart-label">1000米跑</text>
+        <view class="chart-bars">
+          <view class="bar-group">
+            <view class="bar" style="height:{{monthCompare.thousandMeter.lastMonth.height}}px; background-color: #CCCCCC;">
+              <text class="bar-value">{{monthCompare.thousandMeter.lastMonth.value}}</text>
+            </view>
+            <text class="bar-month">{{monthCompare.lastMonthName}}</text> 
+          </view>
+
+          <view class="bar-group">
+            <view class="bar" style="height:{{monthCompare.thousandMeter.currentMonth.height}}px; background-color: #07c160;">
+              <text class="bar-value">{{monthCompare.thousandMeter.currentMonth.value}}</text>
+            </view>
+            <text class="bar-month">{{monthCompare.currentMonthName}}</text>
+          </view>
+        </view>
+        <text class="chart-compare {{monthCompare.thousandMeter.trendClass}}">
+          {{monthCompare.thousandMeter.compareText}}
+        </text>
+      </view>
+
+       <!-- 【新增】800米跑对比 -->
+       <view class="chart-item">
+        <text class="chart-label">800米跑</text>
+        <view class="chart-bars">
+          <view class="bar-group">
+            <view class="bar" style="height:{{monthCompare.eightHundredMeter.lastMonth.height}}px; background-color: #CCCCCC;">
+              <text class="bar-value">{{monthCompare.eightHundredMeter.lastMonth.value || '暂无'}}</text>
+            </view>
+            <text class="bar-month">{{monthCompare.lastMonthName}}</text> 
+          </view>
+
+          <view class="bar-group">
+            <view class="bar" style="height:{{monthCompare.eightHundredMeter.currentMonth.height}}px; background-color: #07c160;">
+              <text class="bar-value">{{monthCompare.eightHundredMeter.currentMonth.value || '暂无'}}</text>
+            </view>
+            <text class="bar-month">{{monthCompare.currentMonthName}}</text>
+          </view>
+        </view>
+        <text class="chart-compare {{monthCompare.eightHundredMeter.trendClass}}">
+          {{monthCompare.eightHundredMeter.compareText}}
+        </text>
+      </view>
+
+       <!-- 【新增】仰卧起坐对比 -->
+       <view class="chart-item">
+        <text class="chart-label">仰卧起坐</text>
+        <view class="chart-bars">
+          <view class="bar-group">
+            <view class="bar" style="height:{{monthCompare.sitUp.lastMonth.height}}px; background-color: #CCCCCC;">
+              <text class="bar-value">{{monthCompare.sitUp.lastMonth.value || '暂无'}}个</text>
+            </view>
+            <text class="bar-month">{{monthCompare.lastMonthName}}</text> 
+          </view>
+
+          <view class="bar-group">
+            <view class="bar" style="height:{{monthCompare.sitUp.currentMonth.height}}px; background-color: #07c160;">
+              <text class="bar-value">{{monthCompare.sitUp.currentMonth.value || '暂无'}}个</text>
+            </view>
+            <text class="bar-month">{{monthCompare.currentMonthName}}</text>
+          </view>
+        </view>
+        <text class="chart-compare {{monthCompare.sitUp.trendClass}}">
+          {{monthCompare.sitUp.compareText}}
+        </text>
+      </view>
+
+      <!-- 【新增】跳绳对比 -->
+      <view class="chart-item">
+        <text class="chart-label">跳绳</text>
+        <view class="chart-bars">
+          <view class="bar-group">
+            <view class="bar" style="height:{{monthCompare.ropeSkipping.lastMonth.height}}px; background-color: #CCCCCC;">
+              <text class="bar-value">{{monthCompare.ropeSkipping.lastMonth.value || '暂无'}}个</text>
+            </view>
+            <text class="bar-month">{{monthCompare.lastMonthName}}</text> 
+          </view>
+
+          <view class="bar-group">
+            <view class="bar" style="height:{{monthCompare.ropeSkipping.currentMonth.height}}px; background-color: #07c160;">
+              <text class="bar-value">{{monthCompare.ropeSkipping.currentMonth.value || '暂无'}}个</text>
+            </view>
+            <text class="bar-month">{{monthCompare.currentMonthName}}</text>
+          </view>
+        </view>
+        <text class="chart-compare {{monthCompare.ropeSkipping.trendClass}}">
+          {{monthCompare.ropeSkipping.compareText}}
+        </text>
+      </view>
+
+      <!-- 【新增】坐位体前屈对比 -->
+      <view class="chart-item">
+        <text class="chart-label">坐位体前屈</text>
+        <view class="chart-bars">
+          <view class="bar-group">
+            <view class="bar" style="height:{{monthCompare.sitAndReach.lastMonth.height}}px; background-color: #CCCCCC;">
+              <text class="bar-value">{{monthCompare.sitAndReach.lastMonth.value || '暂无'}}厘米</text>
+            </view>
+            <text class="bar-month">{{monthCompare.lastMonthName}}</text> 
+          </view>
+
+          <view class="bar-group">
+            <view class="bar" style="height:{{monthCompare.sitAndReach.currentMonth.height}}px; background-color: #07c160;">
+              <text class="bar-value">{{monthCompare.sitAndReach.currentMonth.value || '暂无'}}厘米</text>
+            </view>
+            <text class="bar-month">{{monthCompare.currentMonthName}}</text>
+          </view>
+        </view>
+        <text class="chart-compare {{monthCompare.sitAndReach.trendClass}}">
+          {{monthCompare.sitAndReach.compareText}}
+        </text>
+      </view>
+
+       <!-- 【新增】立定跳远对比 -->
+       <view class="chart-item">
+        <text class="chart-label">立定跳远</text>
+        <view class="chart-bars">
+          <view class="bar-group">
+            <view class="bar" style="height:{{monthCompare.standingLongJump.lastMonth.height}}px; background-color: #CCCCCC;">
+              <text class="bar-value">{{monthCompare.standingLongJump.lastMonth.value || '暂无'}}厘米</text>
+            </view>
+            <text class="bar-month">{{monthCompare.lastMonthName}}</text> 
+          </view>
+
+          <view class="bar-group">
+            <view class="bar" style="height:{{monthCompare.standingLongJump.currentMonth.height}}px; background-color: #07c160;">
+              <text class="bar-value">{{monthCompare.standingLongJump.currentMonth.value || '暂无'}}厘米</text>
+            </view>
+            <text class="bar-month">{{monthCompare.currentMonthName}}</text>
+          </view>
+        </view>
+        <text class="chart-compare {{monthCompare.standingLongJump.trendClass}}">
+          {{monthCompare.standingLongJump.compareText}}
+        </text>
+      </view>
+
+      <!-- 【新增】肺活量对比 -->
+      <view class="chart-item">
+        <text class="chart-label">肺活量</text>
+        <view class="chart-bars">
+          <view class="bar-group">
+            <view class="bar" style="height:{{monthCompare.vitalCapacity.lastMonth.height}}px; background-color: #CCCCCC;">
+              <text class="bar-value">{{monthCompare.vitalCapacity.lastMonth.value || '暂无'}}毫升</text>
+            </view>
+            <text class="bar-month">{{monthCompare.lastMonthName}}</text> 
+          </view>
+
+          <view class="bar-group">
+            <view class="bar" style="height:{{monthCompare.vitalCapacity.currentMonth.height}}px; background-color: #07c160;">
+              <text class="bar-value">{{monthCompare.vitalCapacity.currentMonth.value || '暂无'}}毫升</text>
+            </view>
+            <text class="bar-month">{{monthCompare.currentMonthName}}</text>
+          </view>
+        </view>
+        <text class="chart-compare {{monthCompare.vitalCapacity.trendClass}}">
+          {{monthCompare.vitalCapacity.compareText}}
+        </text>
+      </view>
+
+      <!-- 协调性对比 -->
+      <view class="chart-item">
+        <text class="chart-label">协调性</text>
+        <view class="chart-bars">
+          <view class="chart-group">
+            <view class="bar" style="height:{{monthCompare.coordination.lastMonth.height}}px;background-color: #CCCCCC;">
+              <text class="bar-value">{{monthCompare.coordination.lastMonth.value}}分</text>
+            </view>
+            <text class="bar-month">{{monthCompare.lastMonthName}}</text>
+          </view>
+
+          <view class="bar-group">
+            <view class="bar" style="height:{{monthCompare.coordination.currentMonth.height}}px; background-color: #07c160;">
+              <text class="bar-value">{{monthCompare.coordination.currentMonth.value}}分</text>
+            </view>
+            <text class="bar-month">{{monthCompare.currentMonthName}}</text>
+          </view>
+        </view>
+        <text class="chart-compare {{monthCompare.coordination.trendClass}}">
+          {{monthCompare.coordination.compareText}}
+        </text>
+      </view>
+
+      <!-- 敏捷性对比 -->
+      <view class="chart-item">
+        <text class="chart-label">敏捷性</text>
+        <view class="chart-bars">
+          <view class="chart-group">
+              <view class="bar" style="height:{{monthCompare.agility.lastMonth.height}}px; background-color: #CCCCCC;">
+                <text class="bar-value">{{monthCompare.agility.lastMonth.value}}分</text>
+              </view>
+              <text class="bar-month">{{monthCompare.agility.lastMonthName}}</text>
+          </view>
+
+          <view class="chart-group">
+            <view class="bar" style="height:{{monthCompare.agility.currentMonth.height}}px; background-color: #07c160;">
+              <text class="bar-value">{{monthCompare.agility.currentMonth.value}}分</text>
+            </view>
+            <text class="bar-month">{{monthCompare.agility.currentMonthName}}</text>
+          </view>
+        </view>
+        <text class="chart-compare {{monthCompare.agility.trendClass}}">
+          {{monthCompare.agility.compareText}}
+        </text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 每周反馈 -->
+  <view class="section">
+    <view class="section-header">
+      <view class="header-left">
+        <text class="section-title">📝 每周反馈</text>
+        <text class="section-date">{{weeklyFeedback.weekRange}}</text>
+      </view>
+      <text class="section-more" bind:tap="viewAllFeedbacks">查看全部</text>
+    </view>
+
+    <view class="feedback-list">
+      <block wx:for="{{weeklyFeedback.list}}" wx:key="id">
+        <view class="feedback-item">
+          <view class="feedback-header">
+            <image class="coach-avatar" src="{{ item.coachAvatar}}" mode="aspectFill"/>
+            <view class="feedback-info">
+              <text class="coach-name">{{item.coachName}} 教练</text>
+              <text class="feedback-time">{{item.time}}</text>
+            </view>
+          </view>
+
+          <view class="feedback-content">
+            <text>{{item.content}}</text>
+          </view>
+        </view>
+      </block>
+
+      <view class="empty-tip" wx:if="{{weeklyFeedback.list.length === 0}}">
+        <text>本周暂无反馈</text>
+      </view>
+    </view>
+  </view>
+
+
+  <!-- 新增 本月体质测评 -->
+  <view class="section" wx:if="{{currentAssessment}}">
+    <view class="section-header">
+      <view class="header-left">
+        <text class="section-title">📋 本月体质测评</text>
+        <text class="section-date">{{currentAssessment.year}}年{{currentAssessment.month}}月</text>
+      </view>
+      <text class="section-more" bind:tap="viewAssessmentHistory">历史记录</text>
+    </view> 
+
+      <!-- 综合等级 -->
+    <view class="rating-badge {{currentAssessment.overallRating === '优秀' ? 'excellent' : (currentAssessment.overallRating === '良好' ? 'good' : (currentAssessment.overallRating === '一般' ? 'normal' : 'poor'))}}">
+      {{currentAssessment.overallRating}}
+    </view>
+
+    <!-- 基础信息 -->
+    <view class="assessment-row">
+      <view class="assessment-label">📊 基础信息</view>
+      <view class="assessment-values">
+        <text class="assessment-tag">身高：{{currentAssessment.basicInfo.height}}cm</text>
+        <text class="assessment-tag">体重：{{currentAssessment.basicInfo.weight}}kg</text>
+        <text class="assessment-tag">BMI:{{currentAssessment.basicInfo.bmi}}</text>
+      </view>
+    </view>
+
+    <!-- 核心力量 -->
+    <view class="assessment-row">
+      <view class="assessment-label">💪 核心力量</view>
+      <view class="assessment-values">
+        <text class="assessment-tag">{{currentAssessment.gender === '男' ? '俯卧撑' : '仰卧起坐'}}: {{currentAssessment.coreStrength.value}}次/分钟</text>
+      </view>
+    </view>
+
+    <!-- 基础身体素质 -->
+    <view class="assessment-row">
+      <view class="assessment-label">🏃 基础身体素质</view>
+      <view class="assessment-values grid-2">
+        <text class="assessment-tag">坐位体前屈: {{currentAssessment.physicalFitness.sitAndReach}}cm</text>
+        <text class="assessment-tag">立定跳远: {{currentAssessment.physicalFitness.standingLongJump}}cm</text>
+        <text class="assessment-tag">平板支撑: {{currentAssessment.physicalFitness.plank}}秒</text>
+        <text class="assessment-tag">靠墙静蹲: {{currentAssessment.physicalFitness.wallSit}}秒</text>
+        <text class="assessment-tag">5米折返跑: {{currentAssessment.physicalFitness.fiveMeterShuttle}}秒</text>
+        <text class="assessment-tag">1分钟跳绳: {{currentAssessment.physicalFitness.ropeSkipping}}次</text>
+      </view>
+    </view>
+
+    <!-- 【新增】专项动作模式 -->
+    <view class="assessment-row">
+      <view class="assessment-label">🎯 专项动作模式</view>
+      <view class="assessment-values grid-2">
+        <text class="assessment-tag">跑步动作: {{currentAssessment.actionPatterns.running || '未评'}}</text>
+        <text class="assessment-tag">立定跳远动作: {{currentAssessment.actionPatterns.longJump || '未评'}}</text>
+        <text class="assessment-tag">跳绳动作: {{currentAssessment.actionPatterns.ropeJumping || '未评'}}</text>
+        <text class="assessment-tag">深蹲测试: {{currentAssessment.actionPatterns.squat || '未评'}}</text>
+        <text class="assessment-tag">跨栏步测试: {{currentAssessment.actionPatterns.hurdleStep || '未评'}}</text>
+        <text class="assessment-tag">直线弓步测试: {{currentAssessment.actionPatterns.lunge || '未评'}}</text>
+        <text class="assessment-tag">肩部灵活性: {{currentAssessment.actionPatterns.shoulderFlexibility || '未评'}}</text>
+        <text class="assessment-tag">主动直腿上抬: {{currentAssessment.actionPatterns.legRaise || '未评'}}</text>
+        <text class="assessment-tag">躯干稳定俯卧撑: {{currentAssessment.actionPatterns.trunkPushup || '未评'}}</text>
+        <text class="assessment-tag">旋转稳定性: {{currentAssessment.actionPatterns.rotationStability || '未评'}}</text>
+      </view>
+    </view>
+
+    <!-- 综合评价 -->
+    <view class="assessment-row" wx:if="{{currentAssessment.overallComment}}">
+      <view class="assessment-label">📝 综合评价</view>
+      <view class="assessment-comment">{{currentAssessment.overallComment}}</view>
+    </view>
+
+    <!-- 测评时间 -->
+    <view class="assessment-footer">
+      测评时间: {{currentAssessment.assessmentDate}}
+    </view>
+  </view>
+
+  <!-- 无测评数据时的占位 -->
+  <view class="section" wx:if="{{!currentAssessment && !loading}}">
+    <view class="section-header">
+      <view class="header-left">
+        <text class="section-title">📋 本月体质测评</text>
+      </view>
+      <text class="section-more" bindtap="viewAssessmentHistory">历史记录 ></text>
+    </view>
+    <view class="empty-assessment">
+      <text>本月暂无体质测评数据</text>
+    </view>
+  </view>
+
+  <!-- 月度总结 -->
+  <!-- <view class="section">
+    <view class="section-header">
+      <view class="header-left">
+        <text class="section-title">📊 月度总结</text>
+        <text class="section-date">{{monthlySummary.month}}</text>
+      </view>
+    </view>
+
+    <view class="summary-card">
+
+      <view class="summary-stats">
+        <view class="stat-block">
+          <text class="stat-number">{{monthlySummary.totalClasses}}</text>
+          <text class="stat-label">总课时</text>
+        </view>
+
+        <view class="stat-block">
+          <text class="stat-number">{{monthlySummary.attendanceRate}}%</text>
+          <text class="stat-label">出勤率</text>
+        </view>
+
+        <view class="stat-block">
+          <text class="stat-number">{{monthlySummary.coachCount || 2}}</text>
+          <text class="stat-label">教练数</text>
+        </view>
+      </view>
+
+
+      <view class="summary-progress">
+        <view class="progress-item improve">
+          <text class="progress-label">👍 进步项:</text>
+          <text class="progress-text">{{monthlySummary.improvements}}</text>
+        </view>
+
+        <view class="progress-item need-improve">
+          <text class="progress-label">💪 待提升：</text>
+          <text class="progress-text">{{monthlySummary.toImprove}}</text>
+        </view>
+      </view>
+
+ 
+
+      <view class="summary-content">
+        <view class="comment-header">
+          <image class="head-coach-avatar" src="{{monthlySummary.headCoachAvatar}}" mode="aspectFill"/>
+          <view class="comment-title">
+            <text class="coach-name">{{monthlySummary.headerCoachName || '王教练'}}</text>
+            <text class="coach-title">总教练</text>
+          </view>
+        </view>
+
+        <text class="comment-text">{{monthlySummary.coachComment}}</text>
+      </view>
+    </view>
+  </view> -->
+
+  <!-- 加载状态 -->
+  <view class="loading" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text>加载中...</text>
+  </view> 
+</view>

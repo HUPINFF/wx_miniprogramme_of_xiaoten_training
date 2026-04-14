@@ -1,0 +1,9 @@
+/* pages/users/child-profile/index.wxss */
+
+.hint {
+  /* margin: 0 auto; */
+  font-size: 40rpx;
+  font-weight: bold;
+  /* margin-top: 300rpx; */
+  margin: 150rpx 300rpx; 
+}

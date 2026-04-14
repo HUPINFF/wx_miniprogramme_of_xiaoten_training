@@ -1,0 +1,294 @@
+/* pages/coach/content-manage/index.wxss */
+.container {
+  min-height: 100vh;
+  background-color: #f5f7fa;
+  padding-bottom: 40rpx;
+}
+
+/* Tab 切换 */
+.tabs {
+  width: 100%;
+  display: flex;
+  background-color: #fff;
+  padding: 20rpx 0;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+.tab-item {
+  flex: 1;
+  text-align: center;
+  font-size: 28rpx;
+  color: #666;
+  padding: 16rpx 0;
+  position: relative;
+}
+
+.tab-item.active {
+  color: #07c160;
+  font-weight: 500;
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60rpx;
+  height: 4rpx;
+  background-color: #07c160;
+  border-radius: 2rpx;
+}
+
+/* 内容面板 */
+.content-panel {
+  width: 90%;
+  margin: 0 auto;
+  padding: 20rpx;
+}
+
+/* 添加按钮 */
+.add-btn {
+  width: 50%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  background: linear-gradient(135deg, #07c160 0%, #06a34d 100%);
+  margin-bottom: 20rpx;
+  padding: 24rpx;
+  border-radius: 48rpx;
+  color: #fff;
+  box-shadow: 0 4rpx 12rpx rgba(7, 193, 96, 0.3);
+}
+
+.add-icon {
+  font-size: 40rpx;
+  font-weight: bold;
+}
+
+/* 轮播图列表 */
+.banner-list, .news-list, .moment-list {
+  width: 100%;
+  margin: 0 auto; 
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.banner-item, .news-item, .moment-item {
+  display: flex;
+  /* margin: 0 auto; */
+  align-items: center;
+  background-color: #fff;
+  border-radius: 20rpx;
+  padding: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.banner-img, .moment-img {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 12rpx;
+  background-color: #f0f0f0;
+  margin-right: 20rpx;
+}
+
+.banner-info, .moment-info, .news-info {
+  flex: 1;
+}
+
+.banner-text, .moment-title, .news-title {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.banner-sort, .moment-sort, .news-sort, .news-time {
+  font-size: 24rpx;
+  color: #999;
+  display: block;
+}
+
+.news-time {
+  margin-top: 4rpx;
+}
+
+.banner-actions, .moment-actions, .news-actions {
+  display: flex;
+  gap: 16rpx;
+}
+
+.edit-btn, .delete-btn {
+  background-color: #f8f9fc;
+  border-radius: 30rpx;
+  font-size: 24rpx;
+  padding: 8rpx 24rpx;
+}
+
+.edit-btn {
+  color: #07c160;
+  border: 2rpx solid #07c160;
+}
+
+.delete-btn {
+  color: #ff6b6b;
+  border: 2rpx solid #ff6b6b;
+}
+
+/* 弹窗样式 */
+.modal-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-container {
+  width: 85%;
+  background-color: #fff;
+  border-radius: 32rpx;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32rpx;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+
+.modal-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.modal-close {
+  font-size: 44rpx;
+  color: #999;
+  padding: 10rpx;
+  line-height: 1;
+}
+
+.modal-body {
+  padding: 32rpx;
+}
+
+.form-item {
+  margin-bottom: 32rpx;
+}
+
+.label {
+  font-size: 28rpx;
+  color: #666;
+  display: block;
+  margin-bottom: 12rpx;
+}
+
+.required {
+  color: #ff6b6b;
+}
+
+.hint {
+  font-size: 24rpx;
+  color: #999;
+  margin-left: 8rpx;
+}
+
+.input, .picker {
+  /* vertical-align: middle; */
+  width: 100%;
+  height: 80rpx;
+  background-color: #f8f9fc;
+  /* padding: 24rpx; */
+  padding-left: 24rpx ;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  color: #333;
+  box-sizing: border-box;
+  line-height: 80rpx;  /* 添加这行，与 height 一致 */
+}
+
+
+/* 上传图片区域 */
+.upload-area {
+  width: 100%;
+  background-color: #f8f9fc;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+.upload-image {
+  width: 100%;
+  height: 200rpx;
+}
+
+.upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40rpx;
+  border: 2rpx dashed #ccc;
+  border-radius: 16rpx;
+}
+
+.upload-icon {
+  font-size: 60rpx;
+  color: #ccc;
+}
+
+.upload-text {
+  font-size: 26rpx;
+  color: #999;
+  margin-top: 12rpx;
+}
+
+.modal-footer {
+  display: flex;
+  padding: 24rpx 32rpx 32rpx;
+  gap: 24rpx;
+  border-top: 2rpx solid #f0f0f0;
+}
+
+.cancel-btn, .confirm-btn {
+  flex: 1;
+  height: 88rpx;
+  border-radius: 44rpx;
+  font-size: 30rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+}
+
+.cancel-btn {
+  background-color: #f8f9fc;
+  color: #666;
+}
+
+.confirm-btn {
+  background: linear-gradient(135deg, #07c160 0%, #06a34d 100%);
+  color: #fff;
+}
+
+.empty {
+  text-align: center;
+  padding: 80rpx 0;
+  color: #999;
+  font-size: 28rpx;
+}

@@ -1,0 +1,36 @@
+
+<view class="container">
+  <!-- 背景图片 -->
+  <image class="bg-image" src="cloud://hupin255-5gfbw856b1c861ef.6875-hupin255-5gfbw856b1c861ef-1410552194/logo_20251126_34991.uugai.com-1764133166493.png" mode="aspectFill"></image>
+  <!-- 【新增】Logo区域  -->
+  <!-- <view class="logo-area">
+    <image class="logo" src="/images_1/logo_20251126_34991.uugai.com-1764133166493.png" mode="aspectFit"></image>
+    <text class="app-name">腾鑫体育</text>
+    <text class="app-slogan">专业青少年体育训练机构</text>
+  </view> -->
+  <view class="op">
+    .
+  </view>
+
+   <view class="mian">
+    <view class="role">
+    
+    <view class="user {{selectedRole === 'user' ? 'active':''}}" data-role="user" bind:tap="onRoleSelect">用户端</view>
+    <view class="coach {{selectedRole === 'coach'?'active':''}}" data-role="coach" bind:tap="onRoleSelect">教练端</view>
+   </view>
+  <view class="login-box">
+    <button class="login_btn" type="primary" open-type="getUserInfo" bindgetuserinfo="onLogin" loading="{{loading}}">{{selectedRole === 'user' ? '家长' : '教练'}}登录</button>
+
+    <!-- 注册按钮 -->
+    <button class="register_btn" type="default" bind:tap="onRegister" loading="{{registerLoading}}">
+      注册{{selectedRole === 'user' ? '家长' : '教练'}}账号
+    </button>
+
+    <view class="agreement">
+    <checkbox checked="{{agree}}" bindtap ="onAgreeChange" color="#07c160"></checkbox>
+    <text>我已同意阅读并同意</text>
+    <navigator url="/pages/common/agreement" open-type="navigate">用户协议</navigator>
+    </view>
+  </view>
+   </view>
+</view>
