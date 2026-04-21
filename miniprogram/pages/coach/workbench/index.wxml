@@ -25,7 +25,7 @@
 
   <!-- 欢迎不分 -->
   <view class="welcome">
-    <text class="greeting">👋 早上好{{coachInfo.name}}</text>
+    <text class="greeting">👋 你好{{coachInfo.name}}</text>
     <text class="date">{{todayDate}}</text>
   </view>
 

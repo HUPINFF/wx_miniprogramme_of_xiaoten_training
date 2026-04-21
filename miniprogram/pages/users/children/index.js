@@ -17,70 +17,70 @@ Page({
       currentMonthName: '2月',
       // 【修改】添加所有新增项目的对比数据
       fiftyMeter: {
-        lastMonth: { value: '8.0', height: 80 },
-        currentMonth: { value: '8.5', height: 85 },
-        compareText: '↑0.5',
-        trendClass: 'up'
+        lastMonth: { value: '0', height: 0 },
+        currentMonth: { value: '0', height: 0 },
+        compareText: '',
+        trendClass: ''
       },
       thousandMeter: {
-        lastMonth: { value: '5分30秒', height: 80 },
-        currentMonth: { value: '5分20秒', height: 75 },
-        compareText: '↑10秒',
-        trendClass: "up"
+        lastMonth: { value: '0', height: 0 },
+        currentMonth: { value: '0', height: 0 },
+        compareText: '',
+        trendClass: ""
       },
       // 【新增】800米跑
       eightHundredMeter: {
-        lastMonth: { value: '3分30秒', height: 80 },
-        currentMonth: { value: '3分20秒', height: 75 },
-        compareText: '↑10秒',
-        trendClass: "up"
+        lastMonth: { value: '0', height: 0 },
+        currentMonth: { value: '0', height: 0 },
+        compareText: '',
+        trendClass: ""
       },
       // 【新增】仰卧起坐
       sitUp: {
-        lastMonth: { value: '35', height: 35 },
-        currentMonth: { value: '40', height: 40 },
-        compareText: '↑5个',
-        trendClass: "up"
+        lastMonth: { value: '0', height: 0 },
+        currentMonth: { value: '0', height: 0 },
+        compareText: '',
+        trendClass: ""
       },
       // 【新增】跳绳
       ropeSkipping: {
-        lastMonth: { value: '100', height: 100/5 },
-        currentMonth: { value: '110', height: 110/5 },
-        compareText: '↑10个',
-        trendClass: "up"
+        lastMonth: { value: '0', height: 0 },
+        currentMonth: { value: '0', height: 0 },
+        compareText: '',
+        trendClass: ""
       },
       // 【新增】坐位体前屈
       sitAndReach: {
-        lastMonth: { value: '8.0', height: 80 },
-        currentMonth: { value: '9.0', height: 90 },
-        compareText: '↑1.0厘米',
-        trendClass: "up"
+        lastMonth: { value: '0', height: 0 },
+        currentMonth: { value: '0', height: 0 },
+        compareText: '',
+        trendClass: ""
       },
       // 【新增】立定跳远
       standingLongJump: {
-        lastMonth: { value: '120', height: 120/5 },
-        currentMonth: { value: '125', height: 125/5 },
-        compareText: '↑5厘米',
-        trendClass: "up"
+        lastMonth: { value: '0', height: 0 },
+        currentMonth: { value: '0', height: 0 },
+        compareText: '',
+        trendClass: ""
       },
       // 【新增】肺活量
       vitalCapacity: {
-        lastMonth: { value: '1800', height: 1800/60 },
-        currentMonth: { value: '2000', height: 2000/60 },
-        compareText: '↑200毫升',
-        trendClass: "up"
+        lastMonth: { value: '0', height: 0 },
+        currentMonth: { value: '0', height: 0 },
+        compareText: '',
+        trendClass: ""
       },
       coordination: {
-        lastMonth: { value: '82', height: 82 },
-        currentMonth: { value: '85', height: 85 },
-        compareText: '↑3分',
-        trendClass: "up"
+        lastMonth: { value: '0', height: 0 },
+        currentMonth: { value: '0', height: 0 },
+        compareText: '',
+        trendClass: ""
       },
       agility: {
-        lastMonth: { value: '73', height: 73 },
-        currentMonth: { value: '78', height: 78 },
-        compareText: '↑5分',
-        trendClass: 'up'
+        lastMonth: { value: '0', height: 0 },
+        currentMonth: { value: '0', height: 0 },
+        compareText: '',
+        trendClass: ''
       }
     },
     monthArray: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],

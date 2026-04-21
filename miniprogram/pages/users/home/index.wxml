@@ -145,7 +145,7 @@
     <view class="contact-info">
       <view class="contact-item" bind:tap="callPhone">
         <text class="contact-icon">📱</text>
-        <text>咨询热线：400-888-6666</text>
+        <text>咨询热线：19212218300</text>
       </view>
 
       <view class="contact-item" bind:tap="viewAddress">
@@ -155,7 +155,7 @@
 
       <view class="contact-item" bind:tap="viewWechat">
         <text class="contact-icon">💬</text>
-        <text>官方微信：sports_training</text>
+        <text>官方微信：The120307</text>
       </view>
     </view>
   </view>

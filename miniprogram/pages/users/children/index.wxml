@@ -30,7 +30,7 @@
 
     <view class="stats-grid">
       <!-- 50米跑 -->
-      <view class="stat-item">
+      <view class="stat-item" wx:if="{{performance.fiftyMeter !== NAN}}">
         <view class="stat-label">50米跑</view>
         <view class="stat-value">{{performance.fiftyMeter}}秒</view>
         <view class="stat-trend {{performance.fiftyMeter.trendClass}}">
@@ -41,7 +41,7 @@
       </view>
 
       <!-- 1000米跑 -->
-      <view class="stat-item">
+      <view class="stat-item" wx:if="{{performance.thousandMeter !==NAN}}">
         <view class="stat-label">1000米跑</view>
         <view class="stat-value">{{performance.thousandMeter || '暂无'}}</view>
         <view class="stat-trend {{performance.thousandMeter.trendClass}}">
@@ -52,7 +52,7 @@
       </view>
 
       <!-- 【新增】800米跑 -->
-      <view class="stat-item">
+      <view class="stat-item" wx:if="{{performance.eightHundredMeter !== NAN}}">
         <view class="stat-label">800米跑</view>
         <view class="stat-value">{{performance.eightHundredMeter || '暂无'}}</view>
         <view class="stat-trend" wx:if="{{performance.eightHundredMeter && performance.eightHundredMeter.trend}}">
@@ -63,7 +63,7 @@
       </view>
 
       <!-- 【新增】仰卧起坐 -->
-      <view class="stat-item">
+      <view class="stat-item" wx:if="{{performance.sitUp !==nan}}">
         <view class="stat-label">仰卧起坐</view>
         <view class="stat-value">{{performance.sitUp || '暂无'}}{{performance.sitUp ? '个/分' : ''}}</view>
         <view class="stat-trend" wx:if="{{performance.sitUp && performance.sitUp.trend}}">
@@ -74,7 +74,7 @@
       </view>
 
        <!-- 【新增】跳绳 -->
-       <view class="stat-item">
+       <view class="stat-item" wx:if="{{performance.ropeSkipping !== NAN}}">
         <view class="stat-label">跳绳</view>
         <view class="stat-value">{{performance.ropeSkipping || '暂无'}}{{performance.ropeSkipping ? '个/分' : ''}}</view>
         <view class="stat-trend" wx:if="{{performance.ropeSkipping && performance.ropeSkipping.trend}}">
@@ -85,7 +85,7 @@
       </view>
 
       <!-- 【新增】坐位体前屈 -->
-      <view class="stat-item">
+      <view class="stat-item" wx:if="{{performance.sitAndReach !== NAN}}">
         <view class="stat-label">坐位体前屈</view>
         <view class="stat-value">{{performance.sitAndReach || '暂无'}}{{performance.sitAndReach ? '厘米' : ''}}</view>
         <view class="stat-trend" wx:if="{{performance.sitAndReach && performance.sitAndReach.trend}}">
@@ -96,7 +96,7 @@
       </view>
 
       <!-- 【新增】立定跳远 -->
-      <view class="stat-item">
+      <view class="stat-item" wx:if="{{performance.standingLongJump !== NAN}}">
         <view class="stat-label">立定跳远</view>
         <view class="stat-value">{{performance.standingLongJump || '暂无'}}{{performance.standingLongJump ? '厘米' : ''}}</view>
         <view class="stat-trend" wx:if="{{performance.standingLongJump && performance.standingLongJump.trend}}">
@@ -107,7 +107,7 @@
       </view>
 
       <!-- 【新增】肺活量测试 -->
-      <view class="stat-item">
+      <view class="stat-item" wx:if="{{performance.vitalCapacity!==NAN}}">
         <view class="stat-label">肺活量</view>
         <view class="stat-value">{{performance.vitalCapacity || '暂无'}}{{performance.vitalCapacity ? '毫升' : ''}}</view>
         <view class="stat-trend" wx:if="{{performance.vitalCapacity && performance.vitalCapacity.trend}}">
@@ -118,7 +118,7 @@
       </view>
 
       <!-- 协调性 -->
-      <view class="stat-item">
+      <view class="stat-item" wx:if="{{performance.coordination !== NAN}}">
         <view class="stat-label">协调性</view>
         <view class="stat-value">{{performance.coordination}}分</view>
         <view class="stat-trend {{performance.coordination.trendClass}}">
@@ -129,7 +129,7 @@
       </view>
 
       <!-- 敏捷性 -->
-      <view class="stat-item">
+      <view class="stat-item" wx:if="{{performance.agility !== NAN}}">
         <view class="stat-label">敏捷性</view>
         <view class="stat-value">{{performance.agility}}分</view>
         <view class="stat-trend {{performance.agility.trendClass}}">
@@ -138,6 +138,10 @@
           <text class="trend-desc">{{performance.agility.desc}}</text>
         </view>
       </view>
+
+    </view>
+    <view class="emp-grip" wx:if="{{performance.fiftyMeter ===NAN && performance.thousandMeter ===NAN && performance.eightHundredMeter ===NAN && performance.sitUp === NAN && performance.ropeSkipping ===NAN && performance.sitAndReach ===NAN && performance.standingLongJump ===NAN && performance.vitalCapacity ===NAN && performance.coordination ===NAN && performance.agility ===NAN}}">
+      <text class="emp-text">本周暂无表现数据</text>
     </view>
   </view>
 

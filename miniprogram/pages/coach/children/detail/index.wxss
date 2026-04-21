@@ -329,6 +329,19 @@
   color: #ff6b6b;
 }
 
+.emp-grips {
+  width: 100%;
+  margin-top: 20rpx;  /* 可选，增加上边距 */
+}
+
+.emp-txt {
+  width: 220rpx;
+  display: block;
+  margin: 0 auto;
+  font-size: 27rpx;
+  color: #999;
+}
+
 
 /* 编辑学时按钮 - 完整美化版 */
 .edit-hours-btn {

@@ -299,7 +299,97 @@ Page({
     }).get().then(res => {
       if(res.data.length > 0) {
         // 更新操作：使用合并方式，不清除未提交的字段
-        return db.collection('performance').doc(res.data[0]._id).update({data});
+        const existingRecord = res.data[0];
+        const updateData = {};
+
+        const isBetterTime = (newVal,oldVal) => {
+          if (!newVal && newVal !== 0) return false; // 新值为空，不更新
+          if (!oldVal && oldVal !== 0) return true;  // 旧值为空，更新
+          return parseFloat(newVal) < parseFloat(oldVal);
+        }
+
+        const isBetterNumber = (newVal,oldVal) => {
+          if(!newVal && newVal !== 0) return false;
+          if(!oldVal && oldVal !== 0) return true;
+          return parseFloat(newVal) > parseFloat(oldVal);
+        }
+
+         // 50米跑 - 时间越短越好
+         if (data.fiftyMeter !== undefined && isBetterTime(data.fiftyMeter, existingRecord.fiftyMeter)) {
+          updateData.fiftyMeter = data.fiftyMeter;
+        }
+
+        // 1000米跑 - 时间越短越好（字符串比较需要转换为秒数）
+        if (data.thousandMeter && existingRecord.thousandMeter) {
+          const newSeconds = this.timeToSeconds(data.thousandMeter);
+          const oldSeconds = this.timeToSeconds(existingRecord.thousandMeter);
+          if (newSeconds < oldSeconds) {
+            updateData.thousandMeter = data.thousandMeter;
+          }
+        } else if (data.thousandMeter && !existingRecord.thousandMeter) {
+          updateData.thousandMeter = data.thousandMeter;
+        }
+
+        // 仰卧起坐 - 次数越多越好
+        if (data.sitUp !== undefined && isBetterNumber(data.sitUp, existingRecord.sitUp)) {
+          updateData.sitUp = data.sitUp;
+        }
+
+         // 跳绳 - 次数越多越好
+         if (data.ropeSkipping !== undefined && isBetterNumber(data.ropeSkipping, existingRecord.ropeSkipping)) {
+          updateData.ropeSkipping = data.ropeSkipping;
+        }
+
+         // 800米跑 - 时间越短越好
+         if (data.eightHundredMeter && existingRecord.eightHundredMeter) {
+          const newSeconds = this.timeToSeconds(data.eightHundredMeter);
+          const oldSeconds = this.timeToSeconds(existingRecord.eightHundredMeter);
+          if (newSeconds < oldSeconds) {
+            updateData.eightHundredMeter = data.eightHundredMeter;
+          }
+        } else if (data.eightHundredMeter && !existingRecord.eightHundredMeter) {
+          updateData.eightHundredMeter = data.eightHundredMeter;
+        }
+
+        // 坐位体前屈 - 数值越大越好
+        if (data.sitAndReach !== undefined && isBetterNumber(data.sitAndReach, existingRecord.sitAndReach)) {
+          updateData.sitAndReach = data.sitAndReach;
+        }
+        
+        // 立定跳远 - 距离越远越好
+        if (data.standingLongJump !== undefined && isBetterNumber(data.standingLongJump, existingRecord.standingLongJump)) {
+          updateData.standingLongJump = data.standingLongJump;
+        }
+        
+        // 肺活量 - 数值越大越好
+        if (data.vitalCapacity !== undefined && isBetterNumber(data.vitalCapacity, existingRecord.vitalCapacity)) {
+          updateData.vitalCapacity = data.vitalCapacity;
+        }
+
+        // 敏捷性 - 通常数值越小越好（反应时间快）
+        if (data.agility !== undefined && isBetterTime(data.agility, existingRecord.agility)) {
+          updateData.agility = data.agility;
+        }
+        
+        // 协调性 - 通常数值越大越好
+        if (data.coordination !== undefined && isBetterNumber(data.coordination, existingRecord.coordination)) {
+          updateData.coordination = data.coordination;
+        }
+
+        // 检查是否有任何更新
+        if (Object.keys(updateData).length === 0) {
+          wx.showToast({
+            title: '所有成绩均未超过历史最佳，无需更新',
+            icon: 'none',
+            duration: 2000
+          });
+          return Promise.reject('no_better_performance');
+        }
+
+         // 添加更新时间
+         updateData.updatedAt = new Date();
+
+        return db.collection('performance').doc(res.data[0]._id).update({data:updateData});
       }else {
         // 新增
         data.createdAt = new Date();
@@ -314,6 +404,16 @@ Page({
       console.error('保存失败',err);
       wx.showToast({title: '保存失败',icon:'none'})
     })
+  },
+
+   // 【新增】辅助函数：将时间字符串（如"03:25"）转换为秒数，用于比较
+   timeToSeconds(timeStr) {
+    if (!timeStr || typeof timeStr !== 'string') return Infinity;
+    const parts = timeStr.split(':');
+    if (parts.length === 2) {
+      return parseInt(parts[0]) * 60 + parseInt(parts[1]);
+    }
+    return Infinity;
   },
 
   /**

@@ -1,6 +1,136 @@
 /* pages/coach/workbench/index.wxss */
 @import "../common.wxss";
 
+/* 骨架屏 */
+.skeleton-page {
+  width: 100%;
+}
+
+.skeleton-banner {
+  width: 92%;
+  height: 320rpx;
+  margin: 20rpx auto;
+  border-radius: 24rpx;
+  background: #f2f3f5;
+}
+
+.skeleton-card {
+  width: 90%;
+  margin: 0 auto 24rpx;
+  padding: 28rpx;
+  background: #fff;
+  border-radius: 24rpx;
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  box-sizing: border-box;
+}
+
+.skeleton-avatar {
+  width: 84rpx;
+  height: 84rpx;
+  border-radius: 50%;
+  background: #f2f3f5;
+  flex-shrink: 0;
+}
+
+.skeleton-card-content {
+  flex: 1;
+}
+
+.skeleton-grid {
+  width: 95%;
+  margin: 0 auto 24rpx;
+  padding: 24rpx;
+  border-radius: 24rpx;
+  background: #fff;
+  display: flex;
+  justify-content: space-around;
+}
+
+.skeleton-grid-item {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 16rpx;
+  background: #f2f3f5;
+}
+
+.skeleton-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.skeleton-list-item {
+  padding: 20rpx;
+  border-radius: 16rpx;
+  background: #f8f9fc;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20rpx;
+}
+
+.skeleton-line {
+  height: 24rpx;
+  border-radius: 12rpx;
+  background: #f2f3f5;
+}
+
+.skeleton-line-title {
+  width: 220rpx;
+}
+
+.skeleton-line-lg {
+  width: 320rpx;
+  margin-bottom: 12rpx;
+}
+
+.skeleton-line-md {
+  width: 220rpx;
+}
+
+.skeleton-line-sm {
+  width: 140rpx;
+}
+
+.skeleton-pill {
+  width: 72rpx;
+  height: 40rpx;
+  border-radius: 20rpx;
+  background: #f2f3f5;
+}
+
+.skeleton-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 80%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0.6),
+    rgba(255, 255, 255, 0)
+  );
+  animation: skeleton-shimmer 1.3s infinite;
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    left: -150%;
+  }
+  100% {
+    left: 150%;
+  }
+}
+
 /* 欢迎语 */
 .welcome {
   width: 90%;

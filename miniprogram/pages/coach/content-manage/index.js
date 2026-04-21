@@ -129,7 +129,7 @@ Page({
               wx.showToast({title:'删除成功',icon:"success"});
               this.loadBanners();
             }).catch(err => {
-              console.error('删除失败', err);
+              console.error('删除失败，你没有权限删除该轮播图', err);
             wx.showToast({ title: '删除失败', icon: 'none' });
             })
           }

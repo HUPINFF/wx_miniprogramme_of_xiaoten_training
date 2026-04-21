@@ -82,23 +82,37 @@ Page({
     });
   },
 
-   // 处理预约数据
+   // 处理预约数据，，修改1：处理预约数据 - 自动拒绝过期预约
    processAppointments(appointments) {
     const pendingList = [];
     const approvedList = [];
     const rejectedList = [];
+    const now = new Date(); //当前时间
 
     appointments.forEach(item => {
-      switch (item.status) {
-        case 'pending':
+      // 如果是待处理状态，需要检查是否过期
+      if (item.status === 'pending') {
+        // 检查预约是否已过期
+        const isExpired = this.checkAppointmentExpired(item, now);
+        
+        if (isExpired) {
+          // 【新增】过期预约自动标记为已拒绝
+          console.log(`预约 ${item._id} 已过期，自动拒绝`);
+          this.autoRejectExpiredAppointment(item);
+          // 添加到已拒绝列表
+          rejectedList.push({
+            ...item,
+            status: 'rejected',
+            remark: '预约已过期，自动拒绝'
+          });
+        } else {
+          // 未过期，保留在待处理列表
           pendingList.push(item);
-          break;
-        case 'approved':
-          approvedList.push(item);
-          break;
-        case 'rejected':
-          rejectedList.push(item);
-          break;  
+        }
+      } else if (item.status === 'approved') {
+        approvedList.push(item);
+      } else if (item.status === 'rejected') {
+        rejectedList.push(item);
       }
     });
     this.setData({
@@ -108,6 +122,97 @@ Page({
       pendingCount: pendingList.length
     });
    },
+
+  // 【新增】检查预约是否已过期
+  checkAppointmentExpired(appointment, now = new Date()) {
+    if (!appointment.date || !appointment.startTime) {
+      console.warn('预约缺少日期或时间信息', appointment);
+      return false;
+    }
+
+    // 解析预约日期和时间
+    const [year, month, day] = appointment.date.split('-');
+    const [hour, minute] = appointment.startTime.split(':');
+    
+     // 创建预约的开始时间对象
+     const appointmentDateTime = new Date(year, month - 1, day, hour, minute);
+
+     // 提前过期（预约开始前30分钟未处理，自动拒绝）
+      const thresholdTime = new Date(appointmentDateTime.getTime() - 30 * 60 * 1000);
+      if (thresholdTime < now) {
+         return true;
+     }
+    
+    return false;
+  },
+
+  // 【新增】自动拒绝过期预约（更新数据库）
+  async autoRejectExpiredAppointment(appointment) {
+    const db = wx.cloud.database();
+
+    try {
+      // 更新数据库中的预约状态
+      await db.collection('appointments').doc(appointment._id).update({
+        data:{
+          status: 'rejected',
+          remark: '预约已过期，自动拒绝',
+          autoRejected: true,  // 标记为自动拒绝
+          rejectedAt: new Date(),
+          updatedAt: new Date()
+        }
+      });
+      console.log(`自动拒绝过期预约成功: ${appointment._id}`);
+      // 发送通知给家长，告知预约已过期
+      await this.sendExpiredNotification(appointment);
+    } catch(err){
+      console.error('自动拒绝过期预约失败:', err);
+    }
+  },
+
+  // 【可选】发送过期通知给家长
+  async sendExpiredNotification(appointment) {
+    const db = wx.cloud.database();
+
+    try {
+      // 查询孩子的信息，获取家长的openid
+      const childRes = await db.collection('children').doc(appointment.childId).get();
+      const parentOpenId = childRes.data.parentOpenId;
+
+      if(!parentOpenId) {
+        console.error('未找到家长的openid');
+        return;
+      }
+
+      // 使用审批结果模板ID
+      const templateId = '9Be4ZZebgGrs1qW0ZH_oz7Ua9jOUjXWtbddQo5uLKRA';
+      // 构建预约时间
+      const appointmentTime = `${appointment.date} ${appointment.startTime}`;
+
+      // 模板数据
+      const templateData = {
+        time2: { value: appointmentTime },
+        phrase4: { value: '已过期' }
+      };
+
+      // 发送订阅消息
+      const result = await wx.cloud.callFunction({
+        name:'sendSubscribe',
+        data:{
+          openid: parentOpenId,
+          templateId: templateId,
+          page: '',
+          data: templateData
+        }
+      });
+      
+      if(result.result.success) {
+        console.log('过期通知发送成功');
+      }
+    } catch(err) {
+      console.log('发送过期通知失败:', err);
+    }
+  },
+
 
     // 切换Tab
   switchTab(e) {
@@ -121,6 +226,17 @@ Page({
     const appointment = this.data.pendingList.find(item => item._id === id);
 
     if(!appointment) return;
+
+    // 【新增】在同意前再次检查是否过期
+    if (this.checkAppointmentExpired(appointment)) {
+      wx.showToast({
+        title: '预约已过期，无法同意',
+        icon: 'none',
+        duration: 2000
+      });
+      this.loadAppointments(); // 刷新列表
+      return;
+    }
 
     wx.showModal({
       title: '确认同意',
@@ -143,6 +259,7 @@ Page({
     db.collection('appointments').doc(id).update({
       data:{
         status:'approved',
+        approvedAt: new Date(),
         updatedAt: new Date()
       }
     }).then( async () => {
@@ -170,6 +287,17 @@ Page({
 
     if(!appointment) return;
 
+    // 【新增】在拒绝前检查是否过期
+    if (this.checkAppointmentExpired(appointment)) {
+      wx.showToast({
+        title: '预约已过期，刷新后查看',
+        icon: 'none',
+        duration: 2000
+      });
+      this.loadAppointments(); // 刷新列表
+      return;
+    }
+
     wx.showModal({
       title:'确认拒绝',
       content:`确定拒绝${appointment.childName}的预约吗？`,
@@ -180,6 +308,7 @@ Page({
             data:{
               status: 'rejected',
               remark: '教练拒绝',
+              rejectedAt: new Date(),
               updatedAt: new Date()
             }
           }).then(() => {

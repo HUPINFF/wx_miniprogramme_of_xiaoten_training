@@ -15,9 +15,9 @@ Page({
     loading: true
   },
 
-  onLoad() {
+   async onLoad() {
     this.setTodayDate();
-    this.loadCoachInfo();
+    await this.loadCoachInfo();
     this.loadTodayTrainings();
     this.loadTodoCount();
     this.loadHomeData();  // 新增：加载首页公共数据
@@ -31,26 +31,25 @@ Page({
   },
 
   loadCoachInfo() {
-    const openid = wx.getStorageSync('openid')
-    const db = wx.cloud.database();
-    db.collection('users').where({
-      _openid:openid,
-      role:'coach'
-    }).get().then(res => {
-      if(res.data.length > 0) {
-        const coachInfo = res.data[0];
-        console.log('从数据库获取的教练信息:', JSON.stringify(res.data[0]));
-        console.log('------------',coachInfo);
-        this.setData({coachInfo})
-      }else {
-        wx.showToast({ title: '未找到教练信息', icon: 'none' });
-      }
-    }).catch(err => {
-      console.error('获取教练信息失败', err);
-      wx.showToast({ title: '加载失败', icon: 'none' });
-    })
-    // const coachInfo = wx.getStorageSync('coachInfo') || {};
-    // this.setData({ coachInfo });
+    return new Promise((resolve, reject) => {  // ← 返回 Promise
+      const openid = wx.getStorageSync('openid')
+      const db = wx.cloud.database();
+      db.collection('users').where({
+        _openid: openid,
+        role: 'coach'
+      }).get().then(res => {
+        if(res.data.length > 0) {
+          const coachInfo = res.data[0];
+          this.setData({coachInfo}, () => {
+            resolve();  // ← 数据设置完成后 resolve
+          });
+        } else {
+          reject('未找到教练信息');
+        }
+      }).catch(err => {
+        reject(err);
+      });
+    });
   },
 
      // 组件更新时触发
@@ -60,8 +59,17 @@ Page({
   },
 
   loadTodayTrainings() {
+    
     const db = wx.cloud.database();
     const today = this.getTodayDateString();
+
+    const queryCondition = {
+      date: today,
+      coachId: this.data.coachInfo._id  // 如果是 undefined
+    };
+    
+    console.log('查询条件:', JSON.stringify(queryCondition));
+    // 输出：{"date":"2026-04-19"}  ← coachId 消失了！
     
     db.collection('trainings').where({
       date: today,
@@ -75,7 +83,8 @@ Page({
     // 统计待办事项数量
     const db = wx.cloud.database();
     const _ = db.command;
-    const coachId = this.data.coachInfo._ids;
+    const coachId = this.data.coachInfo._id;
+    
 
     if(!coachId) return;
 
@@ -190,6 +199,7 @@ getSundayDate(date) {
       this.setData({loading:false});
     }).catch(err => {
       console.error("加载首页数据失败", err);
+      this.setData({ loading: false });
     })
   },
 
@@ -300,4 +310,8 @@ onPullDownRefresh() {
       url: '/pages/coach/content-manage/index'
     });
   },
+
+  onShow() {
+    this.loadTodayTrainings() 
+  }
 });

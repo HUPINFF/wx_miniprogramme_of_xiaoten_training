@@ -17,7 +17,7 @@
 
       <view class="card-info">
         <text class="card-label">咨询热线</text>
-        <text class="card-value">400-888-666</text>
+        <text class="card-value">19212218300</text>
       </view>
       <view class="card-arrow">></view>
     </view>
@@ -27,7 +27,7 @@
       <view class="card-icon wechat-icon">💬</view>
       <view class="card-info">
         <text class="card-label">官方微信</text>
-        <text class="card-value">sports_training</text>
+        <text class="card-value">The120307</text>
       </view>
       <view class="card-arrow">></view>
     </view>

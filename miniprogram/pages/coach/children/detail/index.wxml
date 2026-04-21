@@ -59,62 +59,67 @@
       </view>
 
       <view class="performance-grid">
-        <view class="performance-item">
+        <view class="performance-item" wx:if="{{latestPerformance.fiftyMeter !==NAN}}">
           <text class="label">50米跑</text>
           <text class="value">{{latestPerformance.fiftyMeter || '暂无'}}{{latestPerformance.fiftyMeter ? '秒' : ''}}</text>
         </view>
 
-        <view class="performance-item">
+        <view class="performance-item" wx:if="{{latestPerformance.thousandMeter !== NAN}}">
           <text class="label">1000米跑</text>
           <text class="value">{{latestPerformance.thousandMeter || '暂无'}}</text>
         </view>
 
         <!-- 800米跑 - 始终显示 -->
-        <view class="performance-item">
+        <view class="performance-item" wx:if="{{latestPerformance.eightHundredMeter !==NAN}}">
           <text class="label">800米跑</text>
           <text class="value">{{latestPerformance.eightHundredMeter || '暂无'}}</text>
         </view>
 
         <!-- 仰卧起坐 - 始终显示 -->
-        <view class="performance-item">
+        <view class="performance-item" wx:if="{{latestPerformance.sitUp !==NAN}}">
           <text class="label">仰卧起坐</text>
           <text class="value">{{latestPerformance.sitUp || '暂无'}}{{latestPerformance.sitUp ? '个/分' : ''}}</text>
         </view>
 
         <!-- 跳绳 - 始终显示 -->
-        <view class="performance-item">
+        <view class="performance-item" wx:if="{{latestPerformance.ropeSkipping !==NAN}}">
           <text class="label">跳绳</text>
           <text class="value">{{latestPerformance.ropeSkipping || '暂无'}}{{latestPerformance.ropeSkipping ? '个/分' : ''}}</text>
         </view>
 
           <!-- 坐位体前屈 - 始终显示 -->
-          <view class="performance-item">
+          <view class="performance-item" wx:if="{{latestPerformance.sitAndReach !==NAN}}">
           <text class="label">坐位体前屈</text>
           <text class="value">{{latestPerformance.sitAndReach || '暂无'}}{{latestPerformance.sitAndReach ? '厘米' : ''}}</text>
         </view>
 
         <!-- 立定跳远 - 始终显示 -->
-        <view class="performance-item">
+        <view class="performance-item" wx:if="{{latestPerformance.standingLongJump !==NAN}}">
           <text class="label">立定跳远</text>
           <text class="value">{{latestPerformance.standingLongJump || '暂无'}}{{latestPerformance.standingLongJump ? '厘米' : ''}}</text>
         </view>
 
          <!-- 肺活量测试 - 始终显示 -->
-         <view class="performance-item">
+         <view class="performance-item" wx:if="{{latestPerformance.vitalCapacity!==NAN}}">
           <text class="label">肺活量</text>
           <text class="value">{{latestPerformance.vitalCapacity || '暂无'}}{{latestPerformance.vitalCapacity ? '毫升' : ''}}</text>
         </view>
 
-        <view class="performance-item">
+        <view class="performance-item" wx:if="{{latestPerformance.coordination !==NAN}}">
           <text class="label">协调性</text>
           <text class="value">{{latestPerformance.coordination}}分</text>
         </view>
 
-        <view class="performance-item">
+        <view class="performance-item" wx:if="{{latestPerformance.agility!==NAN}}">
           <text class="label">敏捷性</text>
           <text class="value">{{latestPerformance.agility}}分</text>
         </view> 
       </view>
+
+      <view class="emp-grips">
+          <text class="emp-txt">暂无最新表现数据</text>
+      </view>
+      
      </view>
 
      <!-- 表现历史 -->
