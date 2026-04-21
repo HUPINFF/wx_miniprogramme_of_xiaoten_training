@@ -2,19 +2,63 @@
 <!-- <text>pages/coach/workbench/index.wxml</text> -->
 <view class="container">
   <nav-bar title="工作台" showBack="{{false}}"></nav-bar>
-  
+  <view wx:if="{{loading}}" class="skeleton-page">
+    <view class="skeleton-banner skeleton-shimmer"></view>
 
-  <!-- 顶部轮播图 -->
-  <view class="banner-wrapper">
-    <swiper class="banner" indicator-dots autoplay interval="3000" circular>
-      <swiper-item wx:for="{{banners}}" wx:key="index">
-        <image src="{{item.image}}" mode="aspectFill" class="banner-image"/>
-        <view class="banner-text" wx:if="{{item.text}}">
-          <text>{{item.text}}</text>
+    <view class="skeleton-card">
+      <view class="skeleton-avatar skeleton-shimmer"></view>
+      <view class="skeleton-card-content">
+        <view class="skeleton-line skeleton-line-lg skeleton-shimmer"></view>
+        <view class="skeleton-line skeleton-line-sm skeleton-shimmer"></view>
+      </view>
+    </view>
+
+    <view class="skeleton-card">
+      <view class="skeleton-line skeleton-line-lg skeleton-shimmer"></view>
+      <view class="skeleton-line skeleton-line-md skeleton-shimmer"></view>
+    </view>
+
+    <view class="skeleton-grid">
+      <view class="skeleton-grid-item skeleton-shimmer" wx:for="{{[1,2,3,4,5]}}" wx:key="*this"></view>
+    </view>
+
+    <view class="section">
+      <view class="section-header">
+        <view class="skeleton-line skeleton-line-title skeleton-shimmer"></view>
+      </view>
+      <view class="skeleton-list">
+        <view class="skeleton-list-item" wx:for="{{[1,2,3]}}" wx:key="*this">
+          <view class="skeleton-line skeleton-line-sm skeleton-shimmer"></view>
+          <view class="skeleton-line skeleton-line-md skeleton-shimmer"></view>
         </view>
-      </swiper-item>
-    </swiper>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-header">
+        <view class="skeleton-line skeleton-line-title skeleton-shimmer"></view>
+      </view>
+      <view class="skeleton-list">
+        <view class="skeleton-list-item" wx:for="{{[1,2]}}" wx:key="*this">
+          <view class="skeleton-line skeleton-line-md skeleton-shimmer"></view>
+          <view class="skeleton-pill skeleton-shimmer"></view>
+        </view>
+      </view>
+    </view>
   </view>
+
+  <view wx:else>
+    <!-- 顶部轮播图 -->
+    <view class="banner-wrapper">
+      <swiper class="banner" indicator-dots autoplay interval="3000" circular>
+        <swiper-item wx:for="{{banners}}" wx:key="index">
+          <image src="{{item.image}}" mode="aspectFill" class="banner-image"/>
+          <view class="banner-text" wx:if="{{item.text}}">
+            <text>{{item.text}}</text>
+          </view>
+        </swiper-item>
+      </swiper>
+    </view>
 
  <!-- 使用教练卡片组件 -->
 <coach-card 
@@ -136,5 +180,6 @@
     </scroll-view>
   </view>
 
+  </view>
 </view>
 

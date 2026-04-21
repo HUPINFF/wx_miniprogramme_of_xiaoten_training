@@ -17,10 +17,30 @@ Page({
 
    async onLoad() {
     this.setTodayDate();
-    await this.loadCoachInfo();
-    this.loadTodayTrainings();
-    this.loadTodoCount();
-    this.loadHomeData();  // 新增：加载首页公共数据
+    // 此方法
+    await this.refreshData();
+    // await this.loadCoachInfo();
+    // this.loadTodayTrainings();
+    // this.loadTodoCount();
+    // this.loadHomeData();  // 新增：加载首页公共数据
+  },
+
+  async refreshData() {
+    try {
+      // 1) 串行：先拿 coachInfo（后续依赖它）
+      await this.loadCoachInfo();
+       // 2) 并行：无先后依赖的请求一起发
+      await Promise.all([
+        this.loadTodayTrainings(),
+        this.loadTodoCount(),
+        this.loadHomeData()
+      ])
+    } catch(err) {
+      wx.showToast({ title: '刷新失败', icon: 'none' });
+      console.error(err);
+    } finally {
+      this.setData({ loading: false });
+    }
   },
 
   setTodayDate() {
