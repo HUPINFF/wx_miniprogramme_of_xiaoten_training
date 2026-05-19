@@ -1,0 +1,36 @@
+<!--pages/coach/upload-videos/index.wxml-->
+<view class="container">
+  <nav-bar title="上传视频" showBack="{{true}}"></nav-bar>
+
+  <view class="content">
+    <view class="tips">
+      <text class="tips-text">💡 最多上传5个视频，建议时长不超过2分钟</text>
+    </view>
+
+    <view class="video-grid">
+      <view class="video-item" wx:for="{{videoUrls}}" wx:key="index">
+        <video 
+          src="{{item.src}}" 
+          mode="aspectFill"
+          poster=""
+          controls
+          loop
+        ></video>
+        <view class="delete-btn" bind:tap="deleteVideo" data-index="{{index}}"></view>
+        <view class="video-duration" wx:if="{{item.duration}}">
+          <text>{{Math.floor(item.duration / 60)}}:{{String(item.duration % 60).padStart(2, '0')}}</text>
+        </view>
+      </view>
+
+      <view class="add-btn" bind:tap="chooseVideos" wx:if="{{videoUrls.length < 5}}">
+        <text class="add-text">添加视频</text>
+      </view>
+    </view>
+
+    <view class="bottom-area">
+      <view class="save-btn {{uploading ? 'disabled' : ''}}" bind:tap="uploadAndSave">
+        <text>{{uploading ? '上传中...' : '保存视频'}}</text>
+      </view>
+    </view>
+  </view>
+</view>

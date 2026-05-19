@@ -1,0 +1,101 @@
+<!--pages/coach/post-class/index.wxml-->
+<view class="container">
+  <nav-bar title="课后记录" showBack="{{true}}"></nav-bar>
+
+  <view class="content">
+    <!-- 课程信息卡片 -->
+    <view class="course-card">
+      <view class="course-header">
+        <text class="course-name">{{childInfo.name}}</text>
+        <text class="course-status">已完成</text>
+      </view>
+      <view class="course-info">
+        <view class="info-item">
+          <text class="label">课程名称</text>
+          <text class="value">{{training.name || '训练课程'}}</text>
+        </view>
+        <view class="info-item">
+          <text class="label">训练类型</text>
+          <text class="value">{{training.type || '综合训练'}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 课后记录选项 -->
+    <view class="section-title">请选择要记录的内容</view>
+
+    <view class="option-list">
+      <view class="option-item" bind:tap="gotoPerformance">
+        <view class="option-icon">
+          <text class="iconfont icon-luruchengji"></text>
+        </view>
+        <view class="option-info">
+          <text class="option-name">录入成绩</text>
+          <text class="option-desc">记录本次训练的运动成绩</text>
+        </view>
+        <view class="option-arrow">
+          <text class="iconfont icon-xiangyou"></text>
+        </view>
+      </view>
+
+      <view class="option-item" bind:tap="gotoFeedback">
+        <view class="option-icon">
+          <text class="iconfont icon-tianxiefankui"></text>
+        </view>
+        <view class="option-info">
+          <text class="option-name">写反馈</text>
+          <text class="option-desc">记录本次训练的表现和建议</text>
+        </view>
+        <view class="option-arrow">
+          <text class="iconfont icon-xiangyou"></text>
+        </view>
+      </view>
+
+      <view class="option-item" bind:tap="gotoUploadPhotos">
+        <view class="option-icon">
+          <text class="iconfont icon-tupian"></text>
+        </view>
+        <view class="option-info">
+          <text class="option-name">上传照片</text>
+          <text class="option-desc">上传本次训练的照片</text>
+        </view>
+        <view class="option-arrow">
+          <text class="iconfont icon-xiangyou"></text>
+        </view>
+      </view>
+
+      <view class="option-item" bind:tap="gotoUploadVideos">
+        <view class="option-icon">
+          <text class="iconfont icon-shipin"></text>
+        </view>
+        <view class="option-info">
+          <text class="option-name">上传视频</text>
+          <text class="option-desc">上传本次训练的视频</text>
+        </view>
+        <view class="option-arrow">
+          <text class="iconfont icon-xiangyou"></text>
+        </view>
+      </view>
+
+      <view class="option-item" bind:tap="gotoAssessment">
+        <view class="option-icon">
+          <text class="iconfont icon-tiziceping"></text>
+        </view>
+        <view class="option-info">
+          <text class="option-name">体质测评</text>
+          <text class="option-desc">录入学员的体质测试成绩</text>
+        </view>
+        <view class="option-arrow">
+          <text class="iconfont icon-xiangyou"></text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 完成按钮 -->
+    <view class="bottom-area">
+      <view class="finish-btn" bind:tap="finishRecord">
+        <text>完成记录</text>
+      </view>
+    </view>
+  </view>
+</view>

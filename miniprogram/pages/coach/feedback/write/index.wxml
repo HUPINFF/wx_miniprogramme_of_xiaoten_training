@@ -89,7 +89,7 @@
     <!-- 反馈内容 -->
 
     <view class="form-item">
-      <text class="label">反馈内容</text>
+      <text class="label">反馈内容(周反馈，可以在上次基础上接着添加)</text>
       <textarea 
       value="{{content}}"
       placeholder="请输入反馈内容，例如：本周训练情况、进步点、待提升点、建议等..."

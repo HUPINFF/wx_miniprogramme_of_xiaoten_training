@@ -1,0 +1,190 @@
+/* pages/users/all-growth/index.wxss */
+.container {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f5f7fa 0%, #e8f8f5 100%);
+}
+
+.page-content {
+  padding: 20rpx;
+}
+
+/* 分类筛选 */
+.category-filter {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 30rpx;
+  background: #fff;
+  padding: 16rpx;
+  border-radius: 20rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.filter-item {
+  flex: 1;
+  text-align: center;
+  padding: 16rpx 20rpx;
+  background: #f5f7fa;
+  border-radius: 12rpx;
+  font-size: 26rpx;
+  color: #666;
+}
+
+.filter-item.active {
+  background: linear-gradient(135deg, #07c160 0%, #06a34d 100%);
+  color: #fff;
+  font-weight: 500;
+}
+
+/* 成长案例容器 */
+.growth-container {
+  display: flex;
+  flex-direction: column;
+  gap: 30rpx;
+}
+
+/* 成长案例卡片 */
+.growth-item {
+  background: linear-gradient(180deg, #ffffff 0%, #f8fffe 100%);
+  border-radius: 30rpx;
+  overflow: hidden;
+  box-shadow: 0 8rpx 30rpx rgba(7, 193, 96, 0.1);
+  border: 3rpx solid rgba(7, 193, 96, 0.12);
+  transition: all 0.3s ease;
+}
+
+.growth-item:active {
+  transform: scale(0.98);
+}
+
+/* 封面 */
+.growth-cover {
+  position: relative;
+  width: 100%;
+  height: 350rpx;
+  background: linear-gradient(135deg, #07c160 0%, #06a34d 100%);
+}
+
+.growth-cover-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.growth-no-cover {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.growth-no-cover text {
+  font-size: 120rpx;
+  opacity: 0.6;
+}
+
+/* 徽章 */
+.growth-badge {
+  position: absolute;
+  top: 20rpx;
+  left: 20rpx;
+  background: linear-gradient(135deg, #ff9800 0%, #ff5722 100%);
+  color: #fff;
+  font-size: 24rpx;
+  font-weight: 600;
+  padding: 10rpx 20rpx;
+  border-radius: 25rpx;
+  box-shadow: 0 4rpx 15rpx rgba(255, 152, 0, 0.4);
+}
+
+.growth-badge.fitness {
+  background: linear-gradient(135deg, #07c160 0%, #06a34d 100%);
+  box-shadow: 0 4rpx 15rpx rgba(7, 193, 96, 0.4);
+}
+
+.growth-badge.height {
+  background: linear-gradient(135deg, #ff9800 0%, #ff5722 100%);
+  box-shadow: 0 4rpx 15rpx rgba(255, 152, 0, 0.4);
+}
+
+/* 媒体数量指示器 */
+.growth-media-indicator {
+  position: absolute;
+  bottom: 20rpx;
+  right: 20rpx;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-size: 24rpx;
+  padding: 8rpx 18rpx;
+  border-radius: 20rpx;
+}
+
+/* 详情区域 */
+.growth-details {
+  padding: 30rpx;
+}
+
+.growth-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16rpx;
+}
+
+.growth-title {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #333;
+  flex: 1;
+  line-height: 1.3;
+}
+
+.growth-time {
+  font-size: 24rpx;
+  color: #999;
+  margin-left: 20rpx;
+  white-space: nowrap;
+}
+
+/* 描述 */
+.growth-desc {
+  background: linear-gradient(90deg, rgba(7, 193, 96, 0.06) 0%, rgba(6, 163, 77, 0.06) 100%);
+  border-radius: 16rpx;
+  padding: 20rpx;
+}
+
+.growth-desc text {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.6;
+}
+
+/* 空状态 */
+.empty-growth {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 100rpx 40rpx;
+  background: #fff;
+  border-radius: 30rpx;
+  margin-top: 40rpx;
+}
+
+.empty-icon {
+  font-size: 140rpx;
+  margin-bottom: 30rpx;
+}
+
+.empty-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 16rpx;
+}
+
+.empty-desc {
+  font-size: 28rpx;
+  color: #999;
+  text-align: center;
+  line-height: 1.5;
+}

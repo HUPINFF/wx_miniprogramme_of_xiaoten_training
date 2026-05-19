@@ -178,7 +178,7 @@ Page({
   viewRecordDetail(e) {
     const { id } = e.currentTarget.dataset;
     wx.navigateTo({
-      url: `/pages/users/record-detail/index?id=${id}`
+      url: `/pages/coach/training-detail/index?id=${id}`
     });
   },
   /**

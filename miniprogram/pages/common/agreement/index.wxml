@@ -1,0 +1,81 @@
+<nav-bar title="用户协议" showBack="{{true}}"></nav-bar>
+
+<view class="agreement-container">
+  <view class="agreement-content">
+    <text class="update-date">更新日期：2026年5月3日</text>
+    <!-- <text class="effective-date">生效日期：2025年12月1日</text> -->
+
+    <view class="section">
+      <text class="section-title">一、服务说明</text>
+      <text class="section-text">腾鑫体育（以下简称"本平台"）是一家专注于青少年体育培训的服务平台。本平台通过微信小程序为用户提供体育课程信息展示、课程预约、教练管理、学员成长记录等服务。本平台拥有端鑫体育品牌及相关服务的合法运营权利。用户在使用本平台服务前，请仔细阅读本协议。用户使用本平台服务即视为已阅读并同意本协议全部条款。</text>
+    </view>
+
+    <view class="section">
+      <text class="section-title">二、用户注册与账号管理</text>
+      <text class="section-text">1. 用户在使用本平台服务前需通过微信授权进行注册登录。用户应保证所提供的个人信息真实、准确、完整。</text>
+      <text class="section-text">2. 用户分为"家长端"和"教练端"两种角色。家长用户可为其子女（学员）预约课程、查看训练记录；教练用户可进行课程管理、学员评估等操作。</text>
+      <text class="section-text">3. 用户应妥善保管账号信息，因账号泄露或他人使用造成的损失，由用户自行承担。</text>
+      <text class="section-text">4. 用户不得将账号转让、出借或允许多人共用同一账号。</text>
+    </view>
+
+    <view class="section">
+      <text class="section-title">三、课程预约与退改规则</text>
+      <text class="section-text">1. 用户可通过本平台预约体育培训课程。预约成功后，用户应按时参加课程。</text>
+      <text class="section-text">2. 如需取消或更改预约，用户应提前按照本平台公示的规则进行操作。具体退改规则以课程详情页公示为准。</text>
+      <text class="section-text">3. 如因教练或本平台原因导致课程无法正常进行，本平台将协助用户协调改期或退款事宜。</text>
+      <text class="section-text">4. 用户无故缺席课程（爽约）累计达到一定次数，本平台有权限制其预约功能。</text>
+    </view>
+
+    <view class="section">
+      <text class="section-title">四、用户行为规范</text>
+      <text class="section-text">1. 用户在使用本平台服务过程中，应遵守中华人民共和国相关法律法规，不得利用本平台从事违法违规活动。</text>
+      <text class="section-text">2. 用户不得发布虚假信息、骚扰他人、侵犯他人合法权益（包括但不限于知识产权、肖像权、名誉权等）。</text>
+      <text class="section-text">3. 用户不得干扰本平台正常运营，包括但不限于使用外挂、爬虫等自动化工具。</text>
+      <text class="section-text">4. 教练用户应遵守职业道德，认真履行教学职责，不得有体罚、辱骂学员等不当行为。</text>
+      <text class="section-text">5. 家长用户应配合教练工作，按时接送学员，如实告知学员健康状况。</text>
+    </view>
+
+    <view class="section">
+      <text class="section-title">五、隐私保护</text>
+      <text class="section-text">1. 本平台重视用户隐私保护。我们仅在提供服务所必需的范围内收集和使用用户的个人信息，包括但不限于微信昵称、头像、手机号码等。</text>
+      <text class="section-text">2. 本平台不会将用户个人信息出售或非法提供给第三方，但法律法规要求或政府机关依法要求披露的情形除外。</text>
+      <text class="section-text">3. 本平台采用业界通行的安全技术和措施保护用户信息，防止信息泄露、损毁或丢失。</text>
+      <text class="section-text">4. 用户在训练过程中产生的照片、视频、评估报告等数据，本平台仅用于服务展示和成长记录用途，不另作商业使用。</text>
+    </view>
+
+    <view class="section">
+      <text class="section-title">六、免责声明</text>
+      <text class="section-text">1. 体育训练存在一定的身体活动风险。用户在参与训练前应确保学员身体状况适合参加相关体育活动。如学员有特殊健康状况，家长应提前告知教练。</text>
+      <text class="section-text">2. 因不可抗力（包括但不限于自然灾害、政府行为、疫情等）导致服务中断或课程取消，本平台不承担违约责任，但将尽力协调善后事宜。</text>
+      <text class="section-text">3. 本平台对因通信线路故障、黑客攻击、系统维护等不可控因素造成的服务暂时中断不承担责任。</text>
+      <text class="section-text">4. 本平台上教练发布的课程内容和教学信息由教练自行负责，本平台不对其内容的准确性、完整性承担保证责任。</text>
+    </view>
+
+    <view class="section">
+      <text class="section-title">七、知识产权</text>
+      <text class="section-text">1. 本平台（腾鑫体育）的名称、标识、设计、文字、图片、视频等内容的知识产权归本平台所有。</text>
+      <text class="section-text">2. 未经本平台书面许可，任何单位或个人不得以任何方式使用、复制、修改、传播本平台享有知识产权的任何内容。</text>
+      <text class="section-text">3. 用户在本平台发布的原创内容，视为授权本平台在平台内免费使用和展示。</text>
+    </view>
+
+    <view class="section">
+      <text class="section-title">八、协议的变更与终止</text>
+      <text class="section-text">1. 本平台有权根据法律法规变化或业务发展需要，对本协议条款进行修改。修改后的协议将在本平台公示，并标注更新日期。</text>
+      <text class="section-text">2. 用户如不同意修改后的协议，应停止使用本平台服务。继续使用本平台服务即视为接受修改后的协议。</text>
+      <text class="section-text">3. 用户违反本协议任一条款的，本平台有权暂停或终止向该用户提供服务，且不退还已支付费用。</text>
+    </view>
+
+    <view class="section">
+      <text class="section-title">九、法律适用与争议解决</text>
+      <text class="section-text">1. 本协议的订立、执行、解释及争议解决均适用中华人民共和国法律。</text>
+      <text class="section-text">2. 因本协议引起的或与本协议有关的任何争议，双方应首先通过友好协商解决。协商不成的，任何一方均可向本平台运营方所在地有管辖权的人民法院提起诉讼。</text>
+    </view>
+
+    <view class="section">
+      <text class="section-title">十、联系我们</text>
+      <text class="section-text">如您对本协议有任何疑问、意见或建议，可通过以下方式联系我们：</text>
+      <text class="section-text">微信：The120307</text>
+      <text class="section-text">客服电话：19212218300（工作日 9:00-18:00）</text>
+    </view>
+  </view>
+</view>

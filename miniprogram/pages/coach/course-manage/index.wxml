@@ -1,0 +1,143 @@
+<!--pages/coach/course-manage/index.wxml-->
+<view class="container">
+  <nav-bar title="课程管理"></nav-bar>
+
+  <!-- 添加按钮 -->
+  <view class="add-btn" bind:tap="addCourse">
+    <text class="add-icon">+</text>
+    <text>添加课程</text>
+  </view>
+
+  <!-- 课程列表 -->
+  <view class="course-list">
+    <block wx:for="{{courseList}}" wx:key="_id">
+      <view class="course-item">
+        <view class="course-cover">
+          <image wx:if="{{item.coverImage}}" class="course-cover-img" src="{{item.coverImage}}" mode="aspectFill"></image>
+          <view wx:if="{{!item.coverImage}}" class="course-cover-placeholder">
+            <text class="course-placeholder-text">📚</text>
+          </view>
+        </view>
+        <view class="course-info">
+          <text class="course-title">{{item.courseName || '无课程名'}}</text>
+          <text class="course-desc">{{item.content || '暂无描述'}}</text>
+          <view class="course-meta">
+            <text class="course-sort">排序:{{item.sort}}</text>
+            <text class="course-hours">{{item.trainingHours}}课时</text>
+          </view>
+        </view>
+        <view class="course-actions">
+          <button class="edit-btn" size="mini" bind:tap="editCourse" data-id="{{item._id}}">编辑</button>
+          <button class="delete-btn" size="mini" bind:tap="deleteCourse" data-id="{{item._id}}">删除</button>
+        </view>
+      </view>
+    </block>
+    <view wx:if="{{courseList.length === 0}}" class="empty">暂无课程，点击上方按钮添加</view>
+  </view>
+
+  <!-- 添加/编辑弹窗 -->
+  <view class="modal-mask" wx:if="{{showModal}}" bind:tap="closeModal">
+    <view class="modal-container" catch:tap="stopPropagation">
+      <view class="modal-header">
+        <text class="modal-title">{{modalTitle}}</text>
+        <text class="modal-close" bind:tap="closeModal">✕</text>
+      </view>
+
+      <scroll-view class="modal-body" scroll-y="true">
+        <!-- 课程名称 -->
+        <view class="form-item">
+          <text class="label">课程名称 <text class="required">*</text></text>
+          <input class="input" type="text" placeholder="请输入课程名称" value="{{formData.courseName}}" bindinput="onCourseNameInput"/>
+        </view>
+
+        <!-- 标题图片 -->
+        <view class="form-item">
+          <text class="label">标题图片 <text class="required">*</text></text>
+          <view class="upload-area" bind:tap="chooseCoverImage">
+            <image wx:if="{{formData.coverImage}}" class="upload-image" src="{{formData.coverImage}}" mode="aspectFill"></image>
+            <view wx:if="{{!formData.coverImage}}" class="upload-placeholder">
+              <text class="upload-icon">+</text>
+              <text class="upload-text">点击上传封面图片</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 内容描述 -->
+        <view class="form-item">
+          <text class="label">内容描述</text>
+          <textarea class="textarea" placeholder="请输入内容描述" value="{{formData.content}}" bindinput="onContentInput"></textarea>
+        </view>
+
+        <!-- 核心理念 -->
+        <view class="form-item">
+          <text class="label">核心理念</text>
+          <textarea class="textarea" placeholder="请输入核心理念" value="{{formData.corePhilosophy}}" bindinput="onCorePhilosophyInput"></textarea>
+        </view>
+
+        <!-- 课程总结 -->
+        <view class="form-item">
+          <text class="label">课程总结</text>
+          <textarea class="textarea" placeholder="请输入课程总结" value="{{formData.summary}}" bindinput="onSummaryInput"></textarea>
+        </view>
+
+        <!-- 给家长的建议 -->
+        <view class="form-item">
+          <text class="label">给家长的建议</text>
+          <textarea class="textarea" placeholder="请输入给家长的建议" value="{{formData.parentAdvice}}" bindinput="onParentAdviceInput"></textarea>
+        </view>
+
+        <!-- 给教练的建议 -->
+        <view class="form-item">
+          <text class="label">给教练的建议</text>
+          <textarea class="textarea" placeholder="请输入给教练的建议" value="{{formData.coachAdvice}}" bindinput="onCoachAdviceInput"></textarea>
+        </view>
+
+        <!-- 训练课时 -->
+        <view class="form-item">
+          <text class="label">训练课时 <text class="required">*</text></text>
+          <input class="input" type="number" placeholder="请输入训练课时" value="{{formData.trainingHours}}" bindinput="onTrainingHoursInput"/>
+        </view>
+
+        <!-- 自定义内容 -->
+        <view class="form-item">
+          <text class="label">自定义内容 <text class="hint">(每个图片/视频可添加描述)</text></text>
+          <view class="custom-items-list">
+            <block wx:for="{{formData.customContent}}" wx:key="index">
+              <view class="custom-item-editor">
+                <view class="custom-item-media">
+                  <image wx:if="{{item.mediaType === 'image'}}" class="custom-item-preview" src="{{item.url}}" mode="aspectFill"></image>
+                  <video wx:else class="custom-item-preview" src="{{item.url}}" controls show-center-play-btn object-fit="cover"></video>
+                  <view class="custom-item-remove" bind:tap="removeCustomItem" data-index="{{index}}">×</view>
+                </view>
+                <view class="custom-item-discrip-wrapper">
+                  <textarea class="custom-item-discrip" placeholder="描述..." value="{{item.description}}" bindinput="updateCustomItemDescription" data-index="{{index}}" maxlength="200"></textarea>
+                </view>
+              </view>
+            </block>
+            <view class="custom-item-add-options">
+              <view class="custom-item-add" bind:tap="addCustomItem" data-type="image">
+                <text class="custom-item-add-icon">📷</text>
+                <text class="custom-item-add-text">添加图片</text>
+              </view>
+              <view class="custom-item-add" bind:tap="addCustomItem" data-type="video">
+                <text class="custom-item-add-icon">🎬</text>
+                <text class="custom-item-add-text">添加视频</text>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 排序 -->
+        <view class="form-item">
+          <text class="label">排序 <text class="hint">(数字越小越靠前)</text></text>
+          <input class="input" type="number" placeholder="请输入排序数字" value="{{formData.sort}}" bindinput="onSortInput"/>
+        </view>
+      </scroll-view>
+
+      <view class="modal-footer">
+        <button class="cancel-btn" bind:tap="closeModal">取消</button>
+        <button class="confirm-btn" bind:tap="confirmSubmit">确定</button>
+      </view>
+    </view>
+  </view>
+</view>

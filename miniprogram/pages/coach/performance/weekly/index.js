@@ -7,31 +7,35 @@ Page({
   data: {
     children:[],
     selectedChild:{},
+    selectedStage: 'primary',  // 默认小学阶段
     weekDate:'',
     month:'',
-    weekRange: '',        // 周范围显示（如"3月23日-3月29日"）
-    weekStart: '',        // 周开始日期（用于查询）
-    weekEnd: '',          // 周结束日期
-    
-    // 【修改】所有训练项目（全部可选）
+    weekRange: '',
+    weekStart: '',
+    weekEnd: '',
+
     form: {
-      fiftyMeter: '',           // 50米跑（数字）
-      thousandMeter: '',        // 1000米跑（字符串）
-      sitUp: '',                // 【新增】仰卧起坐（个/分钟）
-      ropeSkipping: '',         // 【新增】跳绳（个/分钟）
-      eightHundredMeter: '',    // 【新增】800米跑（字符串，与1000米跑一致）
-      sitAndReach: '',          // 【新增】坐位体前屈（厘米）
-      standingLongJump: '',     // 【新增】立定跳远（厘米）
-      vitalCapacity: '',        // 【新增】肺活量测试（毫升）
-      agility: 70,              // 【保留】敏捷性，默认70
-      coordination: 70          // 【保留】协调性，默认70
-    }
+      fiftyMeter: '',
+      thousandMeter: '',
+      eightHundredMeter: '',
+      sitUp: '',
+      ropeSkipping: '',
+      sitAndReach: '',
+      standingLongJump: '',
+      vitalCapacity: '',
+      pushUp: '',       // 俯卧撑
+      pullUp: '',       // 引体向上
+      agility: 70,
+      coordination: 70
+    },
+    loading:true
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
+    this.setData({loading:true});
     this.loadChildren();
     this.loadDefaultWeekRange();
   },
@@ -55,18 +59,19 @@ Page({
       weekStart: weekRangeInfo.weekStart,
       weekEnd: weekRangeInfo.weekEnd
     });
+
+    this.setData({loading:false});
   },
 
-  // 获取周的日期范围
   getWeekRange(date) {
     const monday = this.getMondayDate(date);
     const sunday = this.getSundayDate(date);
-    
+
     const year = date.getFullYear();
     const weekStart = `${year}-${String(monday.month).padStart(2, '0')}-${String(monday.day).padStart(2, '0')}`;
     const weekEnd = `${year}-${String(sunday.month).padStart(2, '0')}-${String(sunday.day).padStart(2, '0')}`;
     const weekRange = `${monday.month}月${monday.day}日-${sunday.month}月${sunday.day}日`;
-    
+
     return { weekRange, weekStart, weekEnd };
   },
 
@@ -80,7 +85,6 @@ Page({
     }
   },
 
-  // 获取周日日期
   getSundayDate(date) {
     const sunday = new Date(date);
     const day = sunday.getDay() || 7;
@@ -95,13 +99,18 @@ Page({
     const index = e.detail.value;
     const selectedChild = this.data.children[index];
     this.setData({
-      selectedChild: selectedChild
+      selectedChild: selectedChild,
+      selectedStage: 'primary'  // 每次选择学员时重置为小学阶段
     });
-    // 加载该孩子上周的数据作为参考
     this.loadPreviousData(selectedChild._id);
   },
 
-  // 【修改】loadPreviousData 方法：支持加载所有项目的历史数据
+  // 阶段选择
+  onStageSelect(e) {
+    const stage = e.currentTarget.dataset.stage;
+    this.setData({ selectedStage: stage });
+  },
+
   loadPreviousData(childId) {
     const db = wx.cloud.database();
     db.collection('performance').where({
@@ -109,24 +118,24 @@ Page({
     }).orderBy('weekStart','desc').limit(1).get().then(res => {
       if(res.data.length > 0) {
         const prev = res.data[0];
-        
-        // 【修改】加载所有项目的历史数据
+
         const form = {
           fiftyMeter: prev.fiftyMeter || '',
           thousandMeter: prev.thousandMeter || '',
-          sitUp: prev.sitUp || '',                    // 【新增】
-          ropeSkipping: prev.ropeSkipping || '',      // 【新增】
-          eightHundredMeter: prev.eightHundredMeter || '', // 【新增】字符串类型
-          sitAndReach: prev.sitAndReach || '',        // 【新增】
-          standingLongJump: prev.standingLongJump || '', // 【新增】
-          vitalCapacity: prev.vitalCapacity || '',     // 【新增】
-          agility: prev.agility !== undefined ? prev.agility : 70,     // 【保留】
-          coordination: prev.coordination !== undefined ? prev.coordination : 70  // 【保留】
+          eightHundredMeter: prev.eightHundredMeter || '',
+          sitUp: prev.sitUp || '',
+          ropeSkipping: prev.ropeSkipping || '',
+          sitAndReach: prev.sitAndReach || '',
+          standingLongJump: prev.standingLongJump || '',
+          vitalCapacity: prev.vitalCapacity || '',
+          pushUp: prev.pushUp || '',
+          pullUp: prev.pullUp || '',
+          agility: prev.agility !== undefined ? prev.agility : 70,
+          coordination: prev.coordination !== undefined ? prev.coordination : 70
         };
-        
+
         this.setData({ form });
       } else {
-        // 没有历史数据时，重置表单
         this.resetForm();
       }
     }).catch(err => {
@@ -134,19 +143,20 @@ Page({
       this.resetForm();
     });
   },
-  
-  // 【新增】resetForm 方法：重置所有表单字段
+
   resetForm() {
     this.setData({
       form: {
         fiftyMeter: '',
         thousandMeter: '',
+        eightHundredMeter: '',
         sitUp: '',
         ropeSkipping: '',
-        eightHundredMeter: '',
         sitAndReach: '',
         standingLongJump: '',
         vitalCapacity: '',
+        pushUp: '',
+        pullUp: '',
         agility: 70,
         coordination: 70
       }
@@ -164,7 +174,7 @@ Page({
     });
   },
 
-  // 【原有】输入处理方法
+  // 输入处理方法
   onFiftyInput(e) {
     this.setData({'form.fiftyMeter': e.detail.value})
   },
@@ -173,32 +183,38 @@ Page({
     this.setData({'form.thousandMeter': e.detail.value})
   },
 
-  // 【新增】以下6个方法：新增项目的输入处理
+  onEightHundredInput(e) {
+    this.setData({'form.eightHundredMeter': e.detail.value})
+  },
+
   onSitUpInput(e) {
     this.setData({'form.sitUp': e.detail.value})
   },
-  
+
   onRopeSkippingInput(e) {
     this.setData({'form.ropeSkipping': e.detail.value})
   },
-  
-  onEightHundredInput(e) {
-    this.setData({'form.eightHundredMeter': e.detail.value})  // 【注意】字符串类型，直接保存
-  },
-  
+
   onSitAndReachInput(e) {
     this.setData({'form.sitAndReach': e.detail.value})
   },
-  
+
   onStandingLongJumpInput(e) {
     this.setData({'form.standingLongJump': e.detail.value})
   },
-  
+
   onVitalCapacityInput(e) {
     this.setData({'form.vitalCapacity': e.detail.value})
   },
 
-  // 【保留】敏捷性和协调性滑块事件
+  onPushUpInput(e) {
+    this.setData({'form.pushUp': e.detail.value})
+  },
+
+  onPullUpInput(e) {
+    this.setData({'form.pullUp': e.detail.value})
+  },
+
   onAgilityChange(e) {
     this.setData({'form.agility': e.detail.value})
   },
@@ -207,13 +223,20 @@ Page({
     this.setData({'form.coordination': e.detail.value})
   },
 
-  // 【修改】onSubmit 方法：移除必填校验，只保存有值的字段
   onSubmit() {
     if(!this.data.selectedChild._id) {
       wx.showToast({
         title: '请选择学员',
         icon:'none'
       })
+      return;
+    }
+
+    if(!this.data.selectedStage) {
+      wx.showToast({
+        title: '请选择阶段',
+        icon: 'none'
+      });
       return;
     }
 
@@ -226,11 +249,12 @@ Page({
     }
 
     const db = wx.cloud.database();
-    
-    // 构建数据对象，只包含有值的字段
+
     const data = {
       childId: this.data.selectedChild._id,
-      childName: this.data.selectedChild.name, 
+      childName: this.data.selectedChild.name,
+      gender: this.data.selectedChild.gender,
+      stage: this.data.selectedStage,
       weekDate: this.data.weekDate,
       weekRange: this.data.weekRange,
       weekStart: this.data.weekStart,
@@ -238,56 +262,66 @@ Page({
       month: '',
       updatedAt: new Date()
     };
-    
-    // 【修改】只添加有值的项目
+
     const formData = this.data.form;
-    
-    // 50米跑（数字）
+    const stage = this.data.selectedStage;
+    const gender = this.data.selectedChild.gender;
+
+    // 50米跑（所有阶段都有）
     if (formData.fiftyMeter && formData.fiftyMeter.trim() !== '') {
       data.fiftyMeter = parseFloat(formData.fiftyMeter);
     }
-    
-    // 1000米跑（字符串）
-    if (formData.thousandMeter && formData.thousandMeter.trim() !== '') {
-      data.thousandMeter = formData.thousandMeter;
+
+    // 小学项目
+    if (stage === 'primary') {
+      if (formData.vitalCapacity && formData.vitalCapacity.trim() !== '') {
+        data.vitalCapacity = parseInt(formData.vitalCapacity);
+      }
+      if (formData.ropeSkipping && formData.ropeSkipping.trim() !== '') {
+        data.ropeSkipping = parseInt(formData.ropeSkipping);
+      }
+      if (formData.sitAndReach && formData.sitAndReach.trim() !== '') {
+        data.sitAndReach = parseFloat(formData.sitAndReach);
+      }
+      if (formData.sitUp && formData.sitUp.trim() !== '') {
+        data.sitUp = parseInt(formData.sitUp);
+      }
+      if (formData.pushUp && formData.pushUp.trim() !== '') {
+        data.pushUp = parseInt(formData.pushUp);
+      }
     }
-    
-    // 仰卧起坐（数字）
-    if (formData.sitUp && formData.sitUp.trim() !== '') {
-      data.sitUp = parseInt(formData.sitUp);
+
+    // 初中项目
+    if (stage === 'middle') {
+      if (gender === 'male') {
+        // 男生：1000米、引体向上、立定跳远
+        if (formData.thousandMeter && formData.thousandMeter.trim() !== '') {
+          data.thousandMeter = formData.thousandMeter;
+        }
+        if (formData.pullUp && formData.pullUp.trim() !== '') {
+          data.pullUp = parseInt(formData.pullUp);
+        }
+        if (formData.standingLongJump && formData.standingLongJump.trim() !== '') {
+          data.standingLongJump = parseInt(formData.standingLongJump);
+        }
+      } else if (gender === 'female') {
+        // 女生：800米、仰卧起坐、立定跳远
+        if (formData.eightHundredMeter && formData.eightHundredMeter.trim() !== '') {
+          data.eightHundredMeter = formData.eightHundredMeter;
+        }
+        if (formData.sitUp && formData.sitUp.trim() !== '') {
+          data.sitUp = parseInt(formData.sitUp);
+        }
+        if (formData.standingLongJump && formData.standingLongJump.trim() !== '') {
+          data.standingLongJump = parseInt(formData.standingLongJump);
+        }
+      }
     }
-    
-    // 跳绳（数字）
-    if (formData.ropeSkipping && formData.ropeSkipping.trim() !== '') {
-      data.ropeSkipping = parseInt(formData.ropeSkipping);
-    }
-    
-    // 【修改】800米跑（字符串，与1000米跑一致）
-    if (formData.eightHundredMeter && formData.eightHundredMeter.trim() !== '') {
-      data.eightHundredMeter = formData.eightHundredMeter;
-    }
-    
-    // 坐位体前屈（数字）
-    if (formData.sitAndReach && formData.sitAndReach.trim() !== '') {
-      data.sitAndReach = parseFloat(formData.sitAndReach);
-    }
-    
-    // 立定跳远（数字）
-    if (formData.standingLongJump && formData.standingLongJump.trim() !== '') {
-      data.standingLongJump = parseInt(formData.standingLongJump);
-    }
-    
-    // 肺活量测试（数字）
-    if (formData.vitalCapacity && formData.vitalCapacity.trim() !== '') {
-      data.vitalCapacity = parseInt(formData.vitalCapacity);
-    }
-    
-    // 【保留】敏捷性（数字，始终保存）
+
+    // 敏捷性和协调性（始终保存）
     if (formData.agility !== undefined && formData.agility !== null) {
       data.agility = formData.agility;
     }
-    
-    // 【保留】协调性（数字，始终保存）
     if (formData.coordination !== undefined && formData.coordination !== null) {
       data.coordination = formData.coordination;
     }
@@ -298,28 +332,27 @@ Page({
       weekStart: data.weekStart
     }).get().then(res => {
       if(res.data.length > 0) {
-        // 更新操作：使用合并方式，不清除未提交的字段
         const existingRecord = res.data[0];
         const updateData = {};
 
-        const isBetterTime = (newVal,oldVal) => {
-          if (!newVal && newVal !== 0) return false; // 新值为空，不更新
-          if (!oldVal && oldVal !== 0) return true;  // 旧值为空，更新
+        const isBetterTime = (newVal, oldVal) => {
+          if (!newVal && newVal !== 0) return false;
+          if (!oldVal && oldVal !== 0) return true;
           return parseFloat(newVal) < parseFloat(oldVal);
         }
 
-        const isBetterNumber = (newVal,oldVal) => {
+        const isBetterNumber = (newVal, oldVal) => {
           if(!newVal && newVal !== 0) return false;
           if(!oldVal && oldVal !== 0) return true;
           return parseFloat(newVal) > parseFloat(oldVal);
         }
 
-         // 50米跑 - 时间越短越好
-         if (data.fiftyMeter !== undefined && isBetterTime(data.fiftyMeter, existingRecord.fiftyMeter)) {
+        // 50米跑 - 时间越短越好
+        if (data.fiftyMeter !== undefined && isBetterTime(data.fiftyMeter, existingRecord.fiftyMeter)) {
           updateData.fiftyMeter = data.fiftyMeter;
         }
 
-        // 1000米跑 - 时间越短越好（字符串比较需要转换为秒数）
+        // 1000米跑
         if (data.thousandMeter && existingRecord.thousandMeter) {
           const newSeconds = this.timeToSeconds(data.thousandMeter);
           const oldSeconds = this.timeToSeconds(existingRecord.thousandMeter);
@@ -330,18 +363,8 @@ Page({
           updateData.thousandMeter = data.thousandMeter;
         }
 
-        // 仰卧起坐 - 次数越多越好
-        if (data.sitUp !== undefined && isBetterNumber(data.sitUp, existingRecord.sitUp)) {
-          updateData.sitUp = data.sitUp;
-        }
-
-         // 跳绳 - 次数越多越好
-         if (data.ropeSkipping !== undefined && isBetterNumber(data.ropeSkipping, existingRecord.ropeSkipping)) {
-          updateData.ropeSkipping = data.ropeSkipping;
-        }
-
-         // 800米跑 - 时间越短越好
-         if (data.eightHundredMeter && existingRecord.eightHundredMeter) {
+        // 800米跑
+        if (data.eightHundredMeter && existingRecord.eightHundredMeter) {
           const newSeconds = this.timeToSeconds(data.eightHundredMeter);
           const oldSeconds = this.timeToSeconds(existingRecord.eightHundredMeter);
           if (newSeconds < oldSeconds) {
@@ -351,32 +374,51 @@ Page({
           updateData.eightHundredMeter = data.eightHundredMeter;
         }
 
-        // 坐位体前屈 - 数值越大越好
+        // 仰卧起坐
+        if (data.sitUp !== undefined && isBetterNumber(data.sitUp, existingRecord.sitUp)) {
+          updateData.sitUp = data.sitUp;
+        }
+
+        // 跳绳
+        if (data.ropeSkipping !== undefined && isBetterNumber(data.ropeSkipping, existingRecord.ropeSkipping)) {
+          updateData.ropeSkipping = data.ropeSkipping;
+        }
+
+        // 坐位体前屈
         if (data.sitAndReach !== undefined && isBetterNumber(data.sitAndReach, existingRecord.sitAndReach)) {
           updateData.sitAndReach = data.sitAndReach;
         }
-        
-        // 立定跳远 - 距离越远越好
+
+        // 立定跳远
         if (data.standingLongJump !== undefined && isBetterNumber(data.standingLongJump, existingRecord.standingLongJump)) {
           updateData.standingLongJump = data.standingLongJump;
         }
-        
-        // 肺活量 - 数值越大越好
+
+        // 肺活量
         if (data.vitalCapacity !== undefined && isBetterNumber(data.vitalCapacity, existingRecord.vitalCapacity)) {
           updateData.vitalCapacity = data.vitalCapacity;
         }
 
-        // 敏捷性 - 通常数值越小越好（反应时间快）
+        // 俯卧撑
+        if (data.pushUp !== undefined && isBetterNumber(data.pushUp, existingRecord.pushUp)) {
+          updateData.pushUp = data.pushUp;
+        }
+
+        // 引体向上
+        if (data.pullUp !== undefined && isBetterNumber(data.pullUp, existingRecord.pullUp)) {
+          updateData.pullUp = data.pullUp;
+        }
+
+        // 敏捷性
         if (data.agility !== undefined && isBetterTime(data.agility, existingRecord.agility)) {
           updateData.agility = data.agility;
         }
-        
-        // 协调性 - 通常数值越大越好
+
+        // 协调性
         if (data.coordination !== undefined && isBetterNumber(data.coordination, existingRecord.coordination)) {
           updateData.coordination = data.coordination;
         }
 
-        // 检查是否有任何更新
         if (Object.keys(updateData).length === 0) {
           wx.showToast({
             title: '所有成绩均未超过历史最佳，无需更新',
@@ -386,12 +428,9 @@ Page({
           return Promise.reject('no_better_performance');
         }
 
-         // 添加更新时间
-         updateData.updatedAt = new Date();
-
+        updateData.updatedAt = new Date();
         return db.collection('performance').doc(res.data[0]._id).update({data:updateData});
-      }else {
-        // 新增
+      } else {
         data.createdAt = new Date();
         return db.collection('performance').add({data});
       }
@@ -406,62 +445,12 @@ Page({
     })
   },
 
-   // 【新增】辅助函数：将时间字符串（如"03:25"）转换为秒数，用于比较
-   timeToSeconds(timeStr) {
+  timeToSeconds(timeStr) {
     if (!timeStr || typeof timeStr !== 'string') return Infinity;
     const parts = timeStr.split(':');
     if (parts.length === 2) {
       return parseInt(parts[0]) * 60 + parseInt(parts[1]);
     }
     return Infinity;
-  },
-
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload() {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh() {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom() {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage() {
-
   }
 })

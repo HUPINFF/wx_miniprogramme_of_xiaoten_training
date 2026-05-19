@@ -1,0 +1,64 @@
+<!--pages/coach/in-class/index.wxml-->
+<view class="container">
+  <nav-bar title="{{training.status === 'in_class' ? '上课中' : '课程详情'}}" showBack="{{true}}"></nav-bar>
+  
+  <view class="content">
+    <!-- 课程信息卡片 -->
+    <view class="course-card">
+      <view class="course-header">
+        <text class="course-name">{{training.name}}</text>
+        <text class="course-status {{training.status}}">{{training.status === 'pending' ? '待上课中' : ''}}{{training.status === 'in_class' ? '上课中' : ''}}{{training.status === 'finished' ? '已下课' : ''}}</text>
+      </view>
+      <view class="course-info">
+        <view class="info-item">
+          <text class="label">学员</text>
+          <text class="value">{{training.childName}}</text>
+        </view>
+        <view class="info-item">
+          <text class="label">训练类型</text>
+          <text class="value">{{training.type}}</text>
+        </view>
+        <view class="info-item">
+          <text class="label">剩余课时</text>
+          <text class="value highlight">{{childInfo.remainingHours || 0}} 课时</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 训练内容 -->
+    <view class="section">
+      <view class="section-title">训练重点</view>
+      <view class="section-content">{{training.focus}}</view>
+    </view>
+
+    <view class="section">
+      <view class="section-title">训练难点</view>
+      <view class="section-content">{{training.difficulty}}</view>
+    </view>
+
+    <!-- 下课按钮 -->
+    <view class="bottom-area">
+      <view class="finish-btn" bind:tap="onFinishClass">
+        <text>下课</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 确认扣除课时弹窗 -->
+  <view class="modal-overlay" wx:if="{{showConfirmModal}}" bind:tap="closeModal">
+    <view class="modal-content" catch:tap>
+      <view class="modal-header">
+        <text>确认下课</text>
+      </view>
+      <view class="modal-body">
+        <view class="deduct-info">
+          <text class="deduct-label">确认下课？</text>
+        </view>
+      </view>
+      <view class="modal-footer">
+        <view class="btn-cancel" bind:tap="closeModal">取消</view>
+        <view class="btn-confirm" bind:tap="confirmDeductHours">下课</view>
+      </view>
+    </view>
+  </view>
+</view>

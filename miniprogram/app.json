@@ -1,8 +1,10 @@
 {
   "pages": [
     "pages/common/login/index",
+    "pages/common/agreement/index",
     "pages/common/order-detail/index",
     "pages/coach/workbench/index",
+    "pages/coach/training-detail/index",
     "pages/coach/schedule/index",
     "pages/coach/children/list/index",
     "pages/coach/children/detail/index",
@@ -17,6 +19,18 @@
     "pages/coach/content-manage/index",
     "pages/coach/assessment/edit/index",
     "pages/coach/assessment/history/index",
+    "pages/coach/in-class/index",
+    "pages/coach/post-class/index",
+    "pages/coach/upload-photos/index",
+    "pages/coach/upload-videos/index",
+    "pages/coach/album/index",
+    "pages/coach/change-coach-requests/index",
+    "pages/coach/comment-detail/index",
+    "pages/coach/all-comments/index",
+    "pages/coach/all-growth/index",
+    "pages/coach/growth-detail/index",
+    "pages/coach/course-manage/index",
+    "pages/coach/course-detail/index",
     "pages/users/home/index",
     "pages/users/children/index",
     "pages/users/orders/index",
@@ -36,7 +50,16 @@
     "pages/users/news/index",
     "pages/users/news-detail/index",
     "pages/users/moments/index",
-    "pages/users/moment-detail/index"
+    "pages/users/moment-detail/index",
+    "pages/users/hours-detail/index",
+    "pages/users/growth/index",
+    "pages/users/book-coach/index",
+    "pages/users/coach-detail/index",
+    "pages/users/all-coaches/index",
+    "pages/users/all-growth/index",
+    "pages/users/growth-detail/index",
+    "pages/users/all-courses/index",
+    "pages/users/course-detail/index"
   ],
   "permission": {
     "scope.userLocation": {
@@ -53,7 +76,7 @@
   },
   "tabBar": {
     "color": "#999",
-    "selectedColor": "#07c160",
+    "selectedColor": "#4a90d9",
     "backgroundColor": "#fff",
     "list": [
       {
@@ -61,6 +84,12 @@
         "text": "首页",
         "iconPath": "images_1/home.png",
         "selectedIconPath": "images_1/home_active.png"
+      },
+      {
+        "pagePath": "pages/users/growth/index",
+        "text": "蜕变",
+        "iconPath": "images_1/growth.png",
+        "selectedIconPath": "images_1/growth_active.png"
       },
       {
         "pagePath": "pages/users/orders/index",
@@ -76,7 +105,6 @@
       }
     ]
   },
-  
   "sitemapLocation": "sitemap.json",
   "style": "v2",
   "lazyCodeLoading": "requiredComponents"

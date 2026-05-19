@@ -1,11 +1,16 @@
 <view class="container">
-  <nav-bar title="我的" showBack="{{false}}"></nav-bar>
+  <view class="gradient-bg"></view>
+
+  <view class="header-area">
+    <text class="header-title"> 我的</text>
+    <text class="header-subtitle">配置我的信息</text>
+  </view>
 
   <!-- 用户信息卡片 -->
   <view class="user-card">
     <image class="user-avatar" src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"></image>
     <view class="user-info">
-      <text class="user-name">{{userInfo.nickName || '家长'}}</text>
+      <text class="user-name">{{userInfo.name || userInfo.nickName || '家长'}}</text>
       <!-- <text class="user-phone">{{userInfo.phone || '未绑定手机号'}}</text> -->
     </view>
     <view class="edit-btn" bind:tap="editProfile">
@@ -38,11 +43,15 @@
           <text class="birthday-value">{{childInfo.birthday}}</text>
         </view>
         <!-- 孩子ID信息 -->
-      <view class="child-id" wx:if="{{childInfo._id}}">
-        <!-- <text class="id-label">孩子ID：</text> -->
-        <text class="id-value">孩子ID: {{childInfo._id}}</text>
-
-      </view>
+        <view class="child-id" wx:if="{{childInfo._id}}">
+          <text class="id-value">孩子ID: {{childInfo._id}}</text>
+        </view>
+        <!-- 课时明细按钮 -->
+        <view class="hours-btn" bind:tap="goToHoursDetail">
+          <text class="hours-icon">📊</text>
+          <text class="hours-text">课时明细</text>
+          <text class="hours-arrow">></text>
+        </view>
       </view>
     </block>
 
@@ -65,6 +74,13 @@
       <text class="coach-name">{{coachInfo.name}} 教练</text>
       <text class="coach-desc">个人简介：{{coachInfo.bio || '暂无简介'}}</text>
     </view>
+  </view>
+
+  <!-- 【新增】所有教练入口 -->
+  <view class="all-coaches-btn" bind:tap="goToAllCoaches">
+    <text class="coaches-btn-icon">👥</text>
+    <text class="coaches-btn-text">所有教练</text>
+    <text class="coaches-btn-arrow">></text>
   </view>
 
 

@@ -1,0 +1,120 @@
+<view class="container">
+  <nav-bar title="课程详情" showBack="{{true}}"></nav-bar>
+
+  <view class="page-content" wx:if="{{courseDetail}}">
+    <!-- 封面区域 -->
+    <view class="cover-section">
+      <image wx:if="{{courseDetail.coverImage}}" class="cover-image" src="{{courseDetail.coverImage}}" mode="aspectFill"></image>
+      <view wx:if="{{!courseDetail.coverImage}}" class="cover-placeholder">
+        <text>📚</text>
+      </view>
+      <view class="cover-overlay">
+        <text class="course-name">{{courseDetail.courseName}}</text>
+      </view>
+      <view class="course-hours-badge">
+        <text>📅 {{courseDetail.trainingHours}}课时</text>
+      </view>
+    </view>
+
+    <!-- 课程信息 -->
+    <view class="info-card">
+      <view class="info-row" wx:if="{{courseDetail.content}}">
+        <view class="info-label">
+          <text class="label-icon">📝</text>
+          <text class="label-text">内容描述</text>
+        </view>
+        <view class="info-content">
+          <text>{{courseDetail.content}}</text>
+        </view>
+      </view>
+
+      <view class="info-row" wx:if="{{courseDetail.corePhilosophy}}">
+        <view class="info-label">
+          <text class="label-icon">💡</text>
+          <text class="label-text">核心理念</text>
+        </view>
+        <view class="info-content">
+          <text>{{courseDetail.corePhilosophy}}</text>
+        </view>
+      </view>
+
+      <view class="info-row" wx:if="{{courseDetail.summary}}">
+        <view class="info-label">
+          <text class="label-icon">📋</text>
+          <text class="label-text">课程总结</text>
+        </view>
+        <view class="info-content">
+          <text>{{courseDetail.summary}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 建议区域 -->
+    <view class="advice-section" wx:if="{{courseDetail.parentAdvice || courseDetail.coachAdvice}}">
+      <view class="advice-card parent" wx:if="{{courseDetail.parentAdvice}}">
+        <view class="advice-header">
+          <text class="advice-icon">👨‍👩‍👧</text>
+          <text class="advice-title">给家长的建议</text>
+        </view>
+        <view class="advice-content">
+          <text>{{courseDetail.parentAdvice}}</text>
+        </view>
+      </view>
+
+      <view class="advice-card coach" wx:if="{{courseDetail.coachAdvice}}">
+        <view class="advice-header">
+          <text class="advice-icon">👨‍🏫</text>
+          <text class="advice-title">给教练的建议</text>
+        </view>
+        <view class="advice-content">
+          <text>{{courseDetail.coachAdvice}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 自定义内容 -->
+    <view class="custom-section" wx:if="{{courseDetail.customContent && courseDetail.customContent.length > 0}}">
+      <view class="section-title">
+        <text class="title-icon">📸</text>
+        <text>课程内容</text>
+        <text class="content-count">({{courseDetail.customContent.length}})</text>
+      </view>
+
+      <view class="custom-list">
+        <view class="custom-item" wx:for="{{courseDetail.customContent}}" wx:key="index">
+          <view class="custom-media">
+            <image wx:if="{{item.mediaType === 'image'}}" class="media-image" src="{{item.url}}" mode="aspectFill" bind:tap="previewImage" data-url="{{item.url}}"></image>
+            <video wx:else class="media-video" src="{{item.url}}" controls show-center-play-btn object-fit="cover" bind:tap="playVideo" data-url="{{item.url}}"></video>
+            <view class="media-badge" wx:if="{{item.mediaType === 'video'}}">
+              <text class="badge-icon">▶</text>
+            </view>
+          </view>
+          <view class="custom-desc" wx:if="{{item.description}}">
+            <text>{{item.description}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{!courseDetail.content && !courseDetail.corePhilosophy && !courseDetail.summary && !courseDetail.parentAdvice && !courseDetail.coachAdvice && (!courseDetail.customContent || courseDetail.customContent.length === 0)}}">
+      <view class="empty-icon">📚</view>
+      <text class="empty-title">暂无课程详情</text>
+      <text class="empty-subtitle">该课程尚未添加详细内容</text>
+    </view>
+  </view>
+
+  <!-- 底部联系按钮 -->
+  <view class="bottom-button" bind:tap="goToContactCoach">
+    <text class="button-icon">💬</text>
+    <text class="button-text">感兴趣，请联系我们</text>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-cover" wx:if="{{loading}}">
+    <view class="loading-card">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载中...</text>
+    </view>
+  </view>
+</view>

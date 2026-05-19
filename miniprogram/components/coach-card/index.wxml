@@ -16,6 +16,16 @@
       <text class="edit-icon" bind:tap="startEdit" wx:if="{{editable}}">点击编辑</text>
     </view>
     <view class="coach-bio">{{coachInfo.bio || '暂无简介'}}</view>
+    <view class="coach-contact" wx:if="{{coachInfo.phone || coachInfo.wechat}}">
+      <view class="contact-item" wx:if="{{coachInfo.phone}}">
+        <text class="contact-icon">📱</text>
+        <text>{{coachInfo.phone}}</text>
+      </view>
+      <view class="contact-item" wx:if="{{coachInfo.wechat}}">
+        <text class="contact-icon">💬</text>
+        <text>{{coachInfo.wechat}}</text>
+      </view>
+    </view>
   </view>
 </view>
 
@@ -34,6 +44,24 @@
         value="{{editName}}" 
         bindinput="onNameInput"
         maxlength="20"
+      />
+    </view>
+    <view class="edit-field">
+      <input 
+        class="edit-phone" 
+        placeholder="请输入电话" 
+        value="{{editPhone}}" 
+        bindinput="onPhoneInput"
+        maxlength="20"
+      />
+    </view>
+    <view class="edit-field">
+      <input 
+        class="edit-wechat" 
+        placeholder="请输入微信号" 
+        value="{{editWechat}}" 
+        bindinput="onWechatInput"
+        maxlength="30"
       />
     </view>
     <view class="edit-field">

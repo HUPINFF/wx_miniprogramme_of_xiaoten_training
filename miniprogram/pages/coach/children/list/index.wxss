@@ -12,7 +12,7 @@
   align-items: center;
   justify-content: center;
   gap: 12rpx;
-  background: linear-gradient(135deg, #07c160 0%, #06a34d 100%);
+  background: linear-gradient(135deg, #81c784 0%, #66bb6a 100%);
   margin: 20rpx auto;
   padding: 24rpx;
   border-radius: 48rpx;
@@ -275,4 +275,89 @@
 .confirm-btn[disabled] {
   background: #ccc;
   opacity: 0.6;
+}
+
+
+.skeleton-list {
+  width: 95%;
+  padding: 0 20rpx;
+}
+.skeleton-item {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+}
+.skeleton-avatar {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  background: #f2f3f5;
+  margin-right: 24rpx;
+}
+.skeleton-info {
+  flex: 1;
+}
+.skeleton-line {
+  height: 24rpx;
+  border-radius: 12rpx;
+  background: #f2f3f5;
+  margin-bottom: 14rpx;
+}
+.skeleton-line-name {
+  width: 220rpx;
+  height: 30rpx;
+}
+.skeleton-line-meta {
+  width: 300rpx;
+  margin-bottom: 0;
+}
+.skeleton-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.skeleton-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 80%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0.6),
+    rgba(255, 255, 255, 0)
+  );
+  animation: skeleton-shimmer 1.3s infinite;
+}
+@keyframes skeleton-shimmer {
+  0% { left: -150%; }
+  100% { left: 150%; }
+}
+
+/* 更换教练按钮 */
+.change-coach-btn {
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  background: linear-gradient(135deg, #81c784 0%, #66bb6a 100%);
+  margin: 20rpx auto 40rpx;
+  padding: 24rpx;
+  border-radius: 48rpx;
+  color: #fff;
+  box-shadow: 0 4rpx 12rpx rgba(129, 199, 132, 0.3);
+}
+
+.change-coach-icon {
+  font-size: 36rpx;
+}
+
+.change-coach-text {
+  font-size: 32rpx;
+  font-weight: 500;
 }

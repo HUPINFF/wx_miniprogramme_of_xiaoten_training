@@ -1,0 +1,145 @@
+page {
+  background-color: #f5f5f5;
+}
+
+.container {
+  min-height: 100vh;
+  padding-bottom: 40rpx;
+}
+
+.request-list {
+  padding: 30rpx;
+}
+
+.request-card {
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 30rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
+}
+
+.request-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24rpx;
+}
+
+.child-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.child-name {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #1a1a2e;
+  margin-bottom: 8rpx;
+}
+
+.request-time {
+  font-size: 24rpx;
+  color: #8a8aa3;
+}
+
+.status-badge {
+  padding: 8rpx 20rpx;
+  border-radius: 12rpx;
+  font-size: 24rpx;
+}
+
+.status-badge.status-pending {
+  background: #fff3e0;
+  color: #ff9800;
+}
+
+.status-badge.status-approval {
+  background: #e8f5e9;
+  color: #07c160;
+}
+
+.status-badge.status-rejected {
+  background: #ffebee;
+  color: #f44336;
+}
+
+.request-body {
+  padding: 20rpx 0;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+
+.info-row:last-child {
+  margin-bottom: 0;
+}
+
+.label {
+  font-size: 26rpx;
+  color: #8a8aa3;
+  flex-shrink: 0;
+}
+
+.value {
+  font-size: 26rpx;
+  color: #4a4a68;
+}
+
+.request-actions {
+  display: flex;
+  gap: 24rpx;
+  margin-top: 24rpx;
+  padding-top: 24rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.action-btn {
+  flex: 1;
+  padding: 20rpx;
+  border-radius: 16rpx;
+  text-align: center;
+}
+
+.action-btn.approve {
+  background: linear-gradient(135deg, #07c160 0%, #05a350 100%);
+}
+
+.action-btn.approve text {
+  color: #ffffff;
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.action-btn.reject {
+  background: #f5f5f5;
+  border: 2rpx solid #e0e0e0;
+}
+
+.action-btn.reject text {
+  color: #666666;
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 200rpx 0;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 30rpx;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #8a8aa3;
+}

@@ -1,0 +1,228 @@
+/* pages/coach/in-class/index.wxss */
+@import "../common.wxss";
+
+.container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.content {
+  padding: 24rpx;
+}
+
+/* 课程卡片 */
+.course-card {
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+}
+
+.course-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.course-name {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.course-time {
+  font-size: 28rpx;
+  color: #07c160;
+  font-weight: 500;
+}
+
+.course-status {
+  font-size: 26rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+}
+
+.course-status.pending {
+  color: #999;
+  background: #f0f0f0;
+}
+
+.course-status.in_class {
+  color: #4a90d9;
+  background: #e8f0f8;
+}
+
+.course-status.finished {
+  color: #07c160;
+  background: #e8f8f0;
+}
+
+.course-info {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16rpx 0;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.info-item .label {
+  font-size: 28rpx;
+  color: #999;
+}
+
+.info-item .value {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.info-item .value.highlight {
+  color: #07c160;
+}
+
+/* 训练内容区域 */
+.section {
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 24rpx;
+  margin-bottom: 24rpx;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 16rpx;
+}
+
+.section-content {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.6;
+}
+
+/* 底部区域 */
+.bottom-area {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 24rpx;
+  background: #fff;
+  border-top: 2rpx solid #f0f0f0;
+}
+
+.finish-btn {
+  width: 100%;
+  height: 96rpx;
+  background: linear-gradient(135deg, #07c160 0%, #06a34d 100%);
+  border-radius: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.finish-btn text {
+  font-size: 34rpx;
+  color: #fff;
+  font-weight: 600;
+}
+
+/* 弹窗遮罩 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  width: 600rpx;
+  background: #fff;
+  border-radius: 24rpx;
+  overflow: hidden;
+}
+
+.modal-header {
+  padding: 32rpx;
+  text-align: center;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+
+.modal-header text {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.modal-body {
+  padding: 32rpx;
+  text-align: center;
+}
+
+.deduct-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8rpx;
+  margin-bottom: 20rpx;
+}
+
+.deduct-label {
+  font-size: 30rpx;
+  color: #666;
+}
+
+.deduct-value {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #e53935;
+}
+
+.remaining-info {
+  font-size: 28rpx;
+  color: #999;
+}
+
+.modal-footer {
+  display: flex;
+  border-top: 2rpx solid #f0f0f0;
+}
+
+.btn-cancel,
+.btn-confirm {
+  flex: 1;
+  height: 96rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  font-weight: 500;
+}
+
+.btn-cancel {
+  color: #666;
+  border-right: 2rpx solid #f0f0f0;
+}
+
+.btn-confirm {
+  color: #fff;
+  background-color: #e53935;
+}

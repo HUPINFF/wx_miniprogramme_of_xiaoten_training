@@ -1,0 +1,98 @@
+<!--pages/users/hours-detail/index.wxml-->
+<view class="container">
+  <nav-bar title="课时明细" showBack="{{true}}"></nav-bar>
+
+  <!-- 孩子名称 -->
+  <view class="child-header">
+    <text class="child-name">{{childInfo.name || childName}}</text>
+    <text class="child-hint">课时明细</text>
+  </view>
+
+  <!-- 日期选择栏 -->
+  <view class="date-bar">
+    <view class="tabs">
+      <view 
+        class="tab {{currentTab === 'month' ? 'active' : ''}}" 
+        bind:tap="switchTab" 
+        data-tab="month"
+      >
+        <text>月度</text>
+      </view>
+      <view 
+        class="tab {{currentTab === 'year' ? 'active' : ''}}" 
+        bind:tap="switchTab" 
+        data-tab="year"
+      >
+        <text>年度</text>
+      </view>
+    </view>
+    <picker 
+      mode="date" 
+      fields="{{currentTab === 'month' ? 'month' : 'year'}}"
+      value="{{pickerValue}}"
+      bindchange="onPickerChange"
+      class="date-select"
+    >
+      <view>
+        <text>{{currentYear}}年{{currentTab === 'month' ? currentMonth + '月' : ''}}</text>
+        <text class="arrow">▼</text>
+      </view>
+    </picker>
+  </view>
+
+  <!-- 汇总卡片 -->
+  <view class="summary-card">
+    <view class="summary-header">
+      <text class="summary-month">{{currentTab === 'month' ? currentMonth + '月' : currentYear + '年'}}</text>
+      <text class="summary-count">共{{records.length}}笔</text>
+    </view>
+    <view class="summary-content">
+      <view class="summary-item income">
+        <text class="summary-label">收入</text>
+        <text class="summary-value">+{{summary.income}}</text>
+      </view>
+      <view class="summary-item expense">
+        <text class="summary-label">支出</text>
+        <text class="summary-value">-{{summary.expense}}</text>
+      </view>
+    </view>
+    <view class="summary-balance">
+      <text class="balance-label">剩余课时</text>
+      <text class="balance-value">{{summary.remainingHours}}</text>
+    </view>
+  </view>
+
+  <!-- 流水记录列表 -->
+  <view class="records-list">
+    <block wx:for="{{groupedRecords}}" wx:key="date">
+      <!-- 日期分隔栏 -->
+      <view class="date-divider">
+        <text class="date-text">{{item.formattedDate}}</text>
+        <text class="date-weekday">{{item.weekday}}</text>
+        <view class="date-summary">
+          <text class="date-income">收入 {{item.dayIncome.toFixed(2)}}</text>
+          <text class="date-expense">支出 {{item.dayExpense.toFixed(2)}}</text>
+        </view>
+      </view>
+
+      <!-- 当日记录 -->
+      <view class="record-item" wx:for="{{item.records}}" wx:key="_id" wx:for-item="record">
+        <view class="record-icon">{{record.icon || '📝'}}</view>
+        <view class="record-info">
+          <text class="record-type">{{record.typeName || '其他'}}</text>
+          <text class="record-desc">{{record.description || '课时变动'}}</text>
+          <text class="record-time">{{record.formattedTime}}</text>
+        </view>
+        <view class="record-amount {{record.type === 'income' || record.type === 'recharge' ? 'income' : 'expense'}}">
+          <text>{{record.type === 'income' || record.type === 'recharge' ? '+' : '-'}}{{record.amount.toFixed(2)}}</text>
+        </view>
+      </view>
+    </block>
+
+    <!-- 空状态 -->
+    <view wx:if="{{groupedRecords.length === 0}}" class="empty-state">
+      <text class="empty-icon">📋</text>
+      <text class="empty-text">暂无课时记录</text>
+    </view>
+  </view>
+</view>

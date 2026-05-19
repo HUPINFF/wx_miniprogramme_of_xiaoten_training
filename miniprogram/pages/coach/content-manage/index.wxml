@@ -7,13 +7,17 @@
     <view class="tab-item {{currentTab === 'banner' ? 'active' : ''}}" bind:tap="switchTab" data-tab="banner">
       轮播图
     </view>
-    
+
     <view class="tab-item {{currentTab === 'news' ? 'active' : ''}}" bind:tap="switchTab" data-tab="news">
       最新动态
     </view>
 
     <view class="tab-item {{currentTab === 'moment' ? 'active' : ''}}" bind:tap="switchTab" data-tab="moment">
       精彩瞬间
+    </view>
+
+    <view class="tab-item {{currentTab === 'growth' ? 'active' : ''}}" bind:tap="switchTab" data-tab="growth">
+      成长案例
     </view>
   </view>
 
@@ -84,10 +88,12 @@
     <view class="moment-list">
       <block wx:for="{{momentList}}" wx:key="_id">
         <view class="moment-item">
-          <image class="moment-img" src="{{item.image}}" mode="aspectFill"></image>
+          <image wx:if="{{item.mediaType !== 'video'}}" class="moment-img" src="{{item.image}}" mode="aspectFill"></image>
+          <video wx:else class="moment-video" src="{{item.video}}" controls show-center-play-btn show-play-btn enable-progress-gesture object-fit="cover" autoplay="{{false}}" poster=""></video>
           <view class="moment-info">
             <text class="moment-title">{{item.title}}</text>
             <text class="moment-sort">排序:{{item.sort}}</text>
+            <text wx:if="{{item.mediaType === 'video'}}" class="media-tag">视频</text>
           </view>
 
           <view class="moment-actions">
@@ -100,44 +106,147 @@
     </view>
    </view>
 
+   <!-- ========== 成长案例管理 ========== -->
+   <view class="content-panel" wx:if="{{currentTab === 'growth'}}">
+    <!-- 添加按钮 -->
+    <view class="add-btn" bindtap="addGrowth">
+      <text class="add-icon">+</text>
+      <text>添加成长案例</text>
+    </view>
+
+    <!-- 成长案例列表 -->
+    <view class="growth-list">
+      <block wx:for="{{growthList}}" wx:key="_id">
+        <view class="growth-item">
+          <view class="growth-cover">
+            <image wx:if="{{item.coverImage}}" class="growth-cover-img" src="{{item.coverImage}}" mode="aspectFill"></image>
+            <view wx:if="{{!item.coverImage && item.items && item.items.length > 0}}" class="growth-cover-placeholder">
+              <text class="growth-placeholder-text">暂无封面</text>
+            </view>
+          </view>
+          <view class="growth-info">
+            <text class="growth-title">{{item.title || '无标题'}}</text>
+            <text class="growth-desc">{{item.description || '暂无描述'}}</text>
+            <view class="growth-meta">
+              <text class="growth-sort">排序:{{item.sort}}</text>
+              <text class="growth-count">{{item.itemCount || 0}}个记录</text>
+              <text class="growth-category-tag {{item.category === 'height' ? 'height' : 'fitness'}}">{{item.category === 'height' ? '追高成长' : '体适能成长'}}</text>
+            </view>
+          </view>
+          <view class="growth-actions">
+            <button class="edit-btn" size="mini" bind:tap="editGrowth" data-id="{{item._id}}">编辑</button>
+            <button class="delete-btn" size="mini" bind:tap="deleteGrowth" data-id="{{item._id}}">删除</button>
+          </view>
+        </view>
+      </block>
+      <view wx:if="{{growthList.length === 0}}" class="empty">暂无成长案例，点击上方按钮添加</view>
+    </view>
+   </view>
+
    <!-- 添加/编辑弹窗 -->
    <view class="modal-mask" wx:if="{{showModal}}" bind:tap="closeModal">
-    <view class="modal-container" catch:tap="stopPropagation">
+    <view class="modal-container growth-modal" catch:tap="stopPropagation">
       <view class="modal-header">
         <text class="modal-title">{{modalTitle}}</text>
         <text class="modal-close" bind:tap="closeModal">✕</text>
       </view>
 
       <view class="modal-body">
-        <!-- 图片上传 -->
-        <view class="form-item" wx:if="{{currentTab !== 'news'}}">
-          <text class="label">图片 <text class="required">*</text></text>
-          <view class="upload-area" bind:tap="chooseImage">
-            <image wx:if="{{formData.image}}" class="upload-image" src="{{formData.image}}" mode="aspectFill"></image>
-            <view wx:else class="upload-placeholder">
+        <!-- 媒体类型选择（仅精彩瞬间） -->
+        <view class="form-item" wx:if="{{currentTab === 'moment'}}">
+          <text class="label">媒体类型</text>
+          <view class="media-type-selector">
+            <view class="media-type-item {{formData.mediaType !== 'video' ? 'active' : ''}}" bind:tap="switchMediaType" data-type="image">图片</view>
+            <view class="media-type-item {{formData.mediaType === 'video' ? 'active' : ''}}" bind:tap="switchMediaType" data-type="video">视频</view>
+          </view>
+        </view>
+
+        <!-- 图片/视频上传 -->
+        <view class="form-item" wx:if="{{currentTab === 'banner' || currentTab === 'news' || currentTab === 'moment'}}">
+          <text class="label">{{currentTab === 'moment' && formData.mediaType === 'video' ? '视频' : '图片'}} <text class="required">*</text></text>
+          <view class="upload-area" bind:tap="chooseMedia">
+            <image wx:if="{{formData.image && (currentTab !== 'moment' || formData.mediaType !== 'video')}}" class="upload-image" src="{{formData.image}}" mode="aspectFill"></image>
+            <video wx:if="{{formData.video && currentTab === 'moment' && formData.mediaType === 'video'}}" class="upload-video" src="{{formData.video}}" controls show-center-play-btn show-play-btn enable-progress-gesture object-fit="cover" autoplay="{{false}}" poster=""></video>
+            <view wx:if="{{ (!formData.image && (currentTab !== 'moment' || formData.mediaType !== 'video')) || (!formData.video && currentTab === 'moment' && formData.mediaType === 'video') }}" class="upload-placeholder">
               <text class="upload-icon">+</text>
-              <text class="upload-text">点击上传图片</text>
+              <text class="upload-text">{{currentTab === 'moment' && formData.mediaType === 'video' ? '点击上传视频' : '点击上传图片'}}</text>
             </view>
           </view>
         </view>
 
-        <!-- 标题/文字 -->
-        <view class="form-item">
-          <text class="label">{{currentTab === 'news' ? '标题' : '文字'}} <text class="required">*</text></text>
-          
-          <input class="input" type="text" placeholder="请输入内容" value="{{formData.text}}" bindinput="onTextInput"/>
+        <!-- 成长案例：分类 -->
+        <view class="form-item" wx:if="{{currentTab === 'growth'}}">
+          <text class="label">分类 <text class="required">*</text></text>
+          <view class="category-selector">
+            <view class="category-item {{formData.category === 'fitness' ? 'active' : ''}}" bind:tap="selectCategory" data-category="fitness">
+              <text class="category-icon">💪</text>
+              <text class="category-text">体适能成长</text>
+            </view>
+            <view class="category-item {{formData.category === 'height' ? 'active' : ''}}" bind:tap="selectCategory" data-category="height">
+              <text class="category-icon">📈</text>
+              <text class="category-text">追高成长</text>
+            </view>
+          </view>
         </view>
-        <!-- 排序 -->
-        <view class="form-item">
+
+        <!-- 成长案例：标题 -->
+        <view class="form-item" wx:if="{{currentTab === 'growth'}}">
+          <text class="label">标题 <text class="required">*</text></text>
+          <input class="input" type="text" placeholder="请输入标题" value="{{formData.title}}" bindinput="onTitleInput"/>
+        </view>
+
+        <!-- 成长案例：描述 -->
+        <view class="form-item" wx:if="{{currentTab === 'growth'}}">
+          <text class="label">描述</text>
+          <textarea class="textarea" placeholder="请输入描述内容" value="{{formData.description}}" bindinput="onDescriptionInput"></textarea>
+        </view>
+
+        <!-- 成长案例：媒体列表 -->
+        <view class="form-item" wx:if="{{currentTab === 'growth'}}">
+          <text class="label">记录 <text class="hint">(每个图片/视频可添加描述)</text></text>
+          <view class="growth-items-list">
+            <block wx:for="{{formData.items}}" wx:key="index">
+              <view class="growth-item-editor">
+                <view class="growth-item-media">
+                  <image wx:if="{{item.mediaType === 'image'}}" class="growth-item-preview" src="{{item.url}}" mode="aspectFill"></image>
+                  <video wx:else class="growth-item-preview" src="{{item.url}}" controls show-center-play-btn object-fit="cover"></video>
+                  <view class="growth-item-remove" bind:tap="removeGrowthItem" data-index="{{index}}">×</view>
+                </view>
+                <view class="growth-item-discrip-wrapper">
+                  <textarea class="growth-item-discrip" placeholder="描述..." value="{{item.discrip}}" bindinput="updateItemDiscrip" data-index="{{index}}" maxlength="200"></textarea>
+                </view>
+              </view>
+            </block>
+            <view class="growth-item-add" bind:tap="addGrowthMedia">
+              <text class="growth-item-add-icon">+</text>
+              <text class="growth-item-add-text">添加记录</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 成长案例：排序 -->
+        <view class="form-item" wx:if="{{currentTab === 'growth'}}">
+          <text class="label">排序 <text class="hint">(数字越小越靠前)</text></text>
+          <input class="input" type="number" placeholder="请输入排序数字" value="{{formData.sort}}" bindinput="onSortInput"/>
+        </view>
+
+        <!-- 标题/文字（非成长案例） -->
+        <view class="form-item" wx:if="{{currentTab !== 'growth'}}">
+          <text class="label">{{currentTab === 'news' ? '标题' : currentTab === 'moment' ? '标题' : '文字'}} <text class="required">*</text></text>
+          <input class="input" type="text" placeholder="{{currentTab === 'moment' ? '请输入标题' : '请输入内容'}}" value="{{formData.text}}" bindinput="onTextInput"/>
+        </view>
+
+        <!-- 排序（非成长案例） -->
+        <view class="form-item" wx:if="{{currentTab !== 'growth'}}">
           <text class="label">排序 <text class="hint">(数字越小越靠前)</text></text>
           <input class="input" type="number" placeholder="请输入排序数字" value="{{formData.sort}}" bindinput="onSortInput"/>
         </view>
 
         <!-- 时间(仅动态) -->
-        <view class="form-item">
+        <view class="form-item" wx:if="{{currentTab === 'news'}}">
           <text class="label">时间</text>
           <picker mode="date" value="{{formData.time}}" bindchange="onTimeChange">
-            <view class="picker">{{formData.time  || '请选择日期'}}</view>
+            <view class="picker">{{formData.time || '请选择日期'}}</view>
           </picker>
         </view>
       </view>

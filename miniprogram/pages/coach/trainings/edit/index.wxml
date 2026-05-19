@@ -42,7 +42,7 @@
         <view class="picker">{{duration || '请选择时长'}}</view>
       </picker>
        <!-- 【新增】课时提示 -->
-       <text class="hint" wx:if="{{duration}}">约 {{duration}}，扣减 {{trainingHoursDisplay}} 课时</text>
+       <!-- <text class="hint" wx:if="{{duration}}">约 {{duration}}，扣减 {{trainingHoursDisplay}} 课时</text> -->
     </view>
 
     <!-- 训练类型 -->

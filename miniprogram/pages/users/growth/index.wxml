@@ -1,0 +1,291 @@
+<!-- 渐变背景层（固定定位，覆盖顶部区域） -->
+<view class="gradient-bg"></view>
+
+<!-- 页面内容 -->
+<view class="page-content">
+  
+  <!-- 顶部标题区 -->
+  <view class="header-area">
+    <text class="header-title">📈 成长记录</text>
+    <text class="header-subtitle">记录每一次进步</text>
+  </view>
+
+  <!-- 项目切换 Tab -->
+  <view class="tab-container">
+    <scroll-view class="tab-scroll" scroll-x="true" enhanced show-scrollbar="{{false}}">
+      <view class="tab-list">
+        <view
+          class="tab-item {{selectedSport === item.key ? 'active' : ''}}"
+          wx:for="{{sportsItems}}"
+          wx:key="key"
+          bind:tap="switchSport"
+          data-key="{{item.key}}"
+        >
+          <text class="tab-icon">{{item.icon || '🏃'}}</text>
+          <text class="tab-name">{{item.name}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 时间选择器（渐变背景到此结束） -->
+  <view class="time-tab-wrapper">
+    <view class="time-tab">
+      <view
+        class="time-tab-item {{currentTab === 'week' ? 'active' : ''}}"
+        bind:tap="switchTab"
+        data-tab="week"
+      >
+        <text class="time-icon">📅</text>
+        <text>每周</text>
+      </view>
+      <view class="time-tab-divider"></view>
+      <view
+        class="time-tab-item {{currentTab === 'month' ? 'active' : ''}}"
+        bind:tap="switchTab"
+        data-tab="month"
+      >
+        <text class="time-icon">📆</text>
+        <text>每月</text>
+      </view>
+    </view>
+  </view>
+
+</view>
+
+<!-- 图表区域（在渐变背景之外，白色背景） -->
+<view class="chart-section">
+  <view class="chart-accent"></view>
+  
+  <view class="chart-header">
+    <view class="chart-title-group">
+      <text class="chart-icon">📊</text>
+      <text class="chart-title">{{getSportName(selectedSport)}} 成长曲线</text>
+    </view>
+    <view class="chart-badge" wx:if="{{hasData}}">
+      <text class="badge-text">{{currentTab === 'week' ? '近12周' : '近12月'}}</text>
+    </view>
+  </view>
+
+  <view class="chart-body" wx:if="{{hasData}}">
+    <scroll-view 
+      scroll-x="true" 
+      class="chart-scroll"
+      enhanced
+      show-scrollbar="{{false}}"
+      bounces="{{true}}"
+    >
+      <canvas 
+        canvas-id="lineChart" 
+        class="line-chart" 
+        style="width: {{chartWidth}}px;"
+      ></canvas>
+    </scroll-view>
+    
+    <view class="chart-footer">
+      <view class="swipe-hint">
+        <view class="swipe-line"></view>
+        <text class="swipe-text">左右滑动查看更多</text>
+        <view class="swipe-line"></view>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty-state" wx:else>
+    <view class="empty-illustration">
+      <view class="empty-circle outer"></view>
+      <view class="empty-circle inner"></view>
+      <text class="empty-emoji">📈</text>
+    </view>
+    <text class="empty-title">暂无数据</text>
+    <text class="empty-desc">开始记录你的第一次运动，见证成长轨迹</text>
+    <view class="empty-action" bind:tap="goRecord">
+      <text>去记录</text>
+      <text class="arrow">→</text>
+    </view>
+  </view>
+</view>
+
+<!-- 视频时间轴区域 -->
+<view class="timeline-section">
+  <view class="timeline-header">
+    <view class="timeline-title-group">
+      <text class="timeline-icon">🎬</text>
+      <text class="timeline-title">训练记录</text>
+    </view>
+    <view class="timeline-badge" wx:if="{{timelineData.length > 0}}">
+      <text class="badge-text">{{timelineData.length}}个月</text>
+    </view>
+  </view>
+
+  <view class="timeline-body" wx:if="{{!timelineLoading && timelineData.length > 0}}">
+    <view 
+      class="timeline-item" 
+      wx:for="{{timelineData}}" 
+      wx:key="yearMonth"
+    >
+      <!-- 月份标记 -->
+      <view class="timeline-month">
+        <view class="month-dot"></view>
+        <text class="month-text">{{item.yearMonth}}</text>
+      </view>
+      
+      <!-- 内容区域 -->
+      <view class="timeline-content">
+        <!-- 照片展示 -->
+        <view class="media-group" wx:if="{{item.photos && item.photos.length > 0}}">
+          <view class="media-header">
+            <text class="media-icon">📷</text>
+            <text class="media-count">{{item.photoCount}}张</text>
+          </view>
+          <view class="photo-grid">
+            <view 
+              class="photo-item" 
+              wx:for="{{item.photos}}" 
+              wx:for-item="photo"
+              wx:for-index="photoIndex"
+              wx:key="photoIndex"
+              bind:tap="previewPhoto"
+              data-photos="{{item.photos}}"
+              data-index="{{photoIndex}}"
+            >
+              <image src="{{photo}}" mode="aspectFill" class="photo-img"></image>
+            </view>
+          </view>
+        </view>
+
+        <!-- 视频展示 -->
+        <view class="media-group" wx:if="{{item.videos && item.videos.length > 0}}">
+          <view class="media-header">
+            <text class="media-icon">🎥</text>
+            <text class="media-count">{{item.videoCount}}个</text>
+          </view>
+          <view class="video-grid">
+            <view 
+              class="video-item" 
+              wx:for="{{item.videos}}" 
+              wx:for-item="video"
+              wx:for-index="videoIndex"
+              wx:key="videoIndex"
+              bind:tap="playVideo"
+              data-url="{{video}}"
+            >
+              <video 
+                src="{{video}}" 
+                class="video-media"
+                mode="aspectFill"
+                object-fit="cover"
+                show-center-play-btn="{{true}}"
+                controls="{{false}}"
+              ></video>
+              <view class="video-overlay">
+                <view class="play-btn"></view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="timeline-empty" wx:if="{{!timelineLoading && timelineData.length === 0}}">
+    <view class="empty-illustration">
+      <text class="empty-emoji">📹</text>
+    </view>
+    <text class="empty-title">暂无训练记录</text>
+    <text class="empty-desc">等待教练上传训练视频和照片</text>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="timeline-loading" wx:if="{{timelineLoading}}">
+    <view class="loading-spinner"></view>
+    <text>加载中...</text>
+  </view>
+</view>
+
+<!-- 对比海报区域 -->
+<view class="compare-section">
+  <view class="compare-header">
+    <text class="compare-icon">📊</text>
+    <text class="compare-title">成长对比</text>
+  </view>
+
+  <view class="compare-content">
+    <view class="compare-row">
+      <view class="compare-label">选择项目</view>
+      <view class="compare-select-item full-width">
+        <picker
+          mode="selector"
+          range="{{sportsItems}}"
+          range-key="name"
+          bindchange="selectCompareSport"
+          value="{{compareSportIndex}}"
+        >
+          <view class="select-btn">
+            <text>{{compareSport.name || '选择项目'}}</text>
+            <text class="select-arrow">▼</text>
+          </view>
+        </picker>
+      </view>
+    </view>
+
+    <view class="compare-row">
+      <view class="compare-label">选择对比周</view>
+      <view class="compare-selects">
+        <view class="compare-select-item">
+          <picker
+            mode="selector"
+            range="{{weekOptions}}"
+            range-key="label"
+            bindchange="selectCompareWeek1"
+            value="{{compareWeek1Index}}"
+          >
+            <view class="select-btn">
+              <text>{{compareWeek1.label || '选择周'}}</text>
+              <text class="select-arrow">▼</text>
+            </view>
+          </picker>
+        </view>
+        <text class="compare-vs">VS</text>
+        <view class="compare-select-item">
+          <view class="select-btn disabled">
+            <text>最近1周</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view 
+      class="compare-btn {{canGenerateCompare && compareSport ? 'active' : ''}}"
+      bind:tap="generateComparePoster"
+    >
+      <text>生成对比海报</text>
+    </view>
+  </view>
+
+  <!-- 对比图表 -->
+  <view class="compare-chart" wx:if="{{showCompareChart}}">
+    <view class="compare-chart-inner">
+      <view class="compare-canvas-wrapper">
+        <canvas 
+          canvas-id="compareChart" 
+          class="compare-chart-canvas"
+        ></canvas>
+      </view>
+      
+      <view class="compare-legend">
+        <view class="legend-item">
+          <view class="legend-dot first"></view>
+          <text class="legend-text">{{compareWeeks[0]}}</text>
+        </view>
+        <view class="legend-item">
+          <view class="legend-dot last"></view>
+          <text class="legend-text">最近1周</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<view class="safe-area"></view>

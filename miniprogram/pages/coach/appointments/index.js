@@ -408,7 +408,7 @@ Page({
       console.log('训练记录创建成功:', result._id);
 
       // 【新增】扣减学员学时（1小时 = 1课时）
-      await this.deductChildHours(appointment.childId, trainingHours);
+      // await this.deductChildHours(appointment.childId, trainingHours);
 
       // 更新预约记录，关联训练ID
       await db.collection('appointments').doc(appointment._id).update({

@@ -19,7 +19,7 @@
       <!-- 昵称输入 -->
       <view class="form-item">
         <text class="label">昵称</text>
-        <input class="input" type="nickname" placeholder="请输入昵称" value="{{formData.nickName}}" bindinput="onNicknameInput" />
+        <input class="input" type="nickname" placeholder="请输入昵称" value="{{formData.name}}" bindinput="onNicknameInput" />
         <text class="hint">支持中文、英文、数字</text>
       </view>
     </view>

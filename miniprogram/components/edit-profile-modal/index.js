@@ -13,7 +13,7 @@ Component({
 
   data: {
     formData: {
-      nickName: '',
+      name: '',
       avatarUrl: ''
     },
     submitting: false
@@ -21,10 +21,10 @@ Component({
 
   observers: {
     'userData': function(userData) {
-      if (userData && userData.nickName !== undefined) {
+      if (userData) {
         this.setData({
           formData: {
-            nickName: userData.nickName || '',
+            name: userData.name || userData.nickName || '',
             avatarUrl: userData.avatarUrl || ''
           }
         });
@@ -76,21 +76,21 @@ Component({
 
     // 输入昵称
     onNicknameInput(e) {
-      this.setData({ 'formData.nickName': e.detail.value });
+      this.setData({ 'formData.name': e.detail.value });
     },
 
     // 确认保存
     confirm() {
-      const { nickName, avatarUrl } = this.data.formData;
+      const { name, avatarUrl } = this.data.formData;
       
-      if (!nickName.trim()) {
+      if (!name.trim()) {
         wx.showToast({ title: '请输入昵称', icon: 'none' });
         return;
       }
 
       this.setData({ submitting: true });
       this.triggerEvent('confirm', {
-        nickName: nickName.trim(),
+        name: name.trim(),
         avatarUrl: avatarUrl
       });
     }

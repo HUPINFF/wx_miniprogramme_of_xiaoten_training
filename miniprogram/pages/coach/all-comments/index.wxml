@@ -1,0 +1,32 @@
+<view class="container">
+  <nav-bar title="全部点评" showBack="{{true}}"></nav-bar>
+
+  <view class="comment-list" wx:if="{{comments.length > 0}}">
+    <view class="comment-item" wx:for="{{comments}}" wx:key="_id" bind:tap="viewCommentDetail" data-id="{{item._id}}">
+      <view class="comment-header">
+        <image class="comment-avatar" src="{{item.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"></image>
+        <view class="comment-info">
+          <text class="comment-name">{{item.nickName}}</text>
+          <view class="comment-rating">
+            <text class="star" wx:for="{{5}}" wx:key="*this" wx:for-item="starItem">★</text>
+            <text class="rating-text">{{item.rating}}分</text>
+          </view>
+        </view>
+        <text class="comment-time">{{item.createTime}}</text>
+      </view>
+      <view class="comment-tags" wx:if="{{item.tags && item.tags.length > 0}}">
+        <text class="tag" wx:for="{{item.tags}}" wx:key="*this">{{tagItem}}</text>
+      </view>
+      <text class="comment-content">{{item.content}}</text>
+    </view>
+  </view>
+
+  <view class="empty-state" wx:else>
+    <text class="empty-icon">💬</text>
+    <text class="empty-text">暂无点评</text>
+  </view>
+
+  <view class="loading" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+</view>

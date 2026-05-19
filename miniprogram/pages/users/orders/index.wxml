@@ -1,6 +1,12 @@
 <view class="container">
-  <nav-bar title="预约上课" showBack="{{false}}"></nav-bar>
+  <!-- <nav-bar title="预约上课" showBack="{{false}}"></nav-bar> -->
 
+  <view class="gradient-bg"></view>
+
+  <view class="header-area">
+    <text class="header-title">📈 预约上课</text>
+    <text class="header-subtitle"></text>
+  </view>
 
   <view class="tabs">
     <view class="tab-item {{currentType === 'pending'? 'active':''}}" bind:tap="switchTab" data-tab="pending">
@@ -12,7 +18,7 @@
       已同意
 
     </view>
-    
+
     <view class="tab-item {{currentType === 'rejected' ? 'active':''}}" bind:tap="switchTab" data-tab="rejected">
       已拒绝
     </view>
@@ -24,7 +30,7 @@
 
    <!-- 待确认列表 -->
    <view class="appointment-list" wx:if="{{currentType === 'pending'}}">
-    <block wx:for="{{pendingList}}" wx:key="_id"> 
+    <block wx:for="{{pendingList}}" wx:key="_id">
       <view class="appointment-card">
         <view class="card-header">
           <text class="status pending">待确认</text>
@@ -58,7 +64,7 @@
 
   <!--  已同意列表  -->
   <view class="appointment-list" wx:if="{{currentType==='approved'}}">
-    <block wx:for="{{approvedList}}" wx:key="_id"> 
+    <block wx:for="{{approvedList}}" wx:key="_id">
       <view class="appointment-card approved">
         <view class="card-header">
           <text class="status approved">已同意</text>
@@ -70,7 +76,7 @@
             <text class="label">教练</text>
             <text class="value">{{item.coachName}}</text>
           </view>
-          
+
           <view class="info-row">
             <text class="label">时间</text>
             <text class="value">{{item.startTime}} - {{item.endTime}}</text>
@@ -99,7 +105,7 @@
           <view class="info-row">
             <text class="label">教练</text>
             <text class="value">{{item.coachName}}</text>
-          </view> 
+          </view>
 
           <view class="info-row">
             <text class="label">时间</text>
@@ -146,15 +152,22 @@
             <text class="value">{{item.courseType}}</text>
           </view>
         </view>
-      </view>      
+      </view>
     </block>
     <view wx:if="{{completedList.length === 0}}" class="empty">暂无已完成预约</view>
   </view>
 
   <!--添加预约按钮 -->
-  <view class="add-appointment-btn" bind:tap="goToBookClass">
-    <text class="add-icon">+</text>
-    <text class="add-text">预约上课</text>
+  <view class="btn-group">
+    <view class="add-appointment-btn" bind:tap="goToBookClass">
+      <text class="add-icon">+</text>
+      <text class="add-text">预约上课</text>
+    </view>
+
+    <view class="book-coach-btn" bind:tap="goToAllCoaches">
+      <text class="btn-icon">👨‍🏫</text>
+      <text class="btn-text">联系教练</text>
+    </view>
   </view>
 
 </view>

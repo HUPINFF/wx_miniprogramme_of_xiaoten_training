@@ -1,0 +1,31 @@
+<view class="container">
+  <nav-bar title="全部课程" showBack="{{true}}"></nav-bar>
+
+  <view class="course-list" wx:if="{{courses.length > 0}}">
+    <view class="course-card" wx:for="{{courses}}" wx:key="_id" bind:tap="viewCourseDetail" data-id="{{item._id}}">
+      <view class="course-cover">
+        <image wx:if="{{item.coverImage}}" class="course-cover-img" src="{{item.coverImage}}" mode="aspectFill"></image>
+        <view wx:if="{{!item.coverImage}}" class="course-no-cover">
+          <text>📚</text>
+        </view>
+      </view>
+      <view class="course-info">
+        <text class="course-name">{{item.courseName}}</text>
+        <text class="course-desc" wx:if="{{item.content}}">{{item.content}}</text>
+        <view class="course-meta">
+          <text class="course-hours">📅 {{item.trainingHours}}课时</text>
+        </view>
+      </view>
+      <text class="card-arrow">›</text>
+    </view>
+  </view>
+
+  <view class="empty-state" wx:elif="{{!loading}}">
+    <text class="empty-icon">📚</text>
+    <text class="empty-text">暂无课程</text>
+  </view>
+
+  <view class="loading" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+</view>

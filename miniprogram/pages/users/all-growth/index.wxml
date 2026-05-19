@@ -1,0 +1,53 @@
+<view class="container">
+  <nav-bar title="成长案例" showBack="{{true}}"></nav-bar>
+
+  <view class="page-content">
+    <!-- 分类筛选 -->
+    <view class="category-filter">
+      <view class="filter-item {{filterCategory === 'all' ? 'active' : ''}}" bind:tap="setFilter" data-category="all">
+        <text>全部</text>
+      </view>
+      <view class="filter-item {{filterCategory === 'fitness' ? 'active' : ''}}" bind:tap="setFilter" data-category="fitness">
+        <text>💪 体适能成长</text>
+      </view>
+      <view class="filter-item {{filterCategory === 'height' ? 'active' : ''}}" bind:tap="setFilter" data-category="height">
+        <text>📈 追高成长</text>
+      </view>
+    </view>
+
+    <!-- 成长案例列表 -->
+    <view class="growth-container" wx:if="{{filteredList && filteredList.length > 0}}">
+      <view class="growth-item {{index === 0 ? 'featured' : ''}}" wx:for="{{filteredList}}" wx:key="_id" bind:tap="viewGrowthDetail" data-id="{{item._id}}">
+        <view class="growth-cover">
+          <image wx:if="{{item.coverImage}}" class="growth-cover-img" src="{{item.coverImage}}" mode="aspectFill"></image>
+          <view wx:if="{{!item.coverImage}}" class="growth-no-cover">
+            <text>{{item.category === 'height' ? '📈' : '💪'}}</text>
+          </view>
+          <view class="growth-badge {{item.category === 'height' ? 'height' : 'fitness'}}">
+            <text wx:if="{{item.category === 'height'}}">📈 追高成长</text>
+            <text wx:else>💪 体适能成长</text>
+          </view>
+          <view class="growth-media-indicator">
+            <text>📸 {{item.itemCount || 0}}</text>
+          </view>
+        </view>
+        <view class="growth-details">
+          <view class="growth-header">
+            <text class="growth-title">{{item.title}}</text>
+            <text class="growth-time">{{item.createdAt}}</text>
+          </view>
+          <view class="growth-desc" wx:if="{{item.description}}">
+            <text>{{item.description}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-growth" wx:else>
+      <view class="empty-icon">📋</view>
+      <text class="empty-title">暂无成长案例</text>
+      <text class="empty-desc">记录学员成长每一步，见证每一次进步</text>
+    </view>
+  </view>
+</view>

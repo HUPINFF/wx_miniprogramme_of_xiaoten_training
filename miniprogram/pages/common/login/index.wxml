@@ -29,7 +29,7 @@
     <view class="agreement">
     <checkbox checked="{{agree}}" bindtap ="onAgreeChange" color="#07c160"></checkbox>
     <text>我已同意阅读并同意</text>
-    <navigator url="/pages/common/agreement" open-type="navigate">用户协议</navigator>
+    <navigator url="/pages/common/agreement/index" open-type="navigate" hover-class="navigator-hover">用户协议</navigator>
     </view>
   </view>
    </view>

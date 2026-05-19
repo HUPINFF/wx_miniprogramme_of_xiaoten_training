@@ -1,0 +1,38 @@
+.agreement-container {
+  padding: 30rpx;
+  background: #fff;
+  min-height: 100vh;
+}
+
+.agreement-content {
+  padding-bottom: 60rpx;
+}
+
+.update-date,
+.effective-date {
+  display: block;
+  font-size: 24rpx;
+  color: #999;
+  text-align: center;
+  line-height: 40rpx;
+}
+
+.section {
+  margin-top: 40rpx;
+}
+
+.section-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 16rpx;
+}
+
+.section-text {
+  display: block;
+  font-size: 26rpx;
+  color: #666;
+  line-height: 44rpx;
+  margin-bottom: 8rpx;
+}

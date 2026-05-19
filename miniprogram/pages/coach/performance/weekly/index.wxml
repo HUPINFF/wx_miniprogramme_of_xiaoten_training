@@ -1,12 +1,19 @@
 <!--pages/coach/performance/weekly/index.wxml-->
-<!-- <text>pages/coach/performance/weekly/index.wxml</text> -->
-
 <view class="container">
-
   <nav-bar title='录入成绩'></nav-bar>
-  <view class="form">
+
+  <view wx:if="{{loading}}" class="skeleton-form">
+    <view class="skeleton-list" wx:for="{{[1,2,3,4,5,6,7,8]}}" wx:key="*this">
+      <view class="skeleton-item">
+        <view class="skeleton-label"></view>
+        <view class="skeleton-input"></view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:else class="form">
     <view class="form-item">
-      <text class="label">选择学员</text>
+      <text class="label">选择学员 <text class="warning-text">(注意：一定要选好学员,再填写成绩！顺序不能反)</text></text>
       <picker mode="selector" range="{{children}}" range-key="name" bindchange="onChildChange">
         <view class="picker">{{selectedChild.name || '请选择'}}</view>
       </picker>
@@ -19,63 +26,138 @@
       </picker>
     </view>
 
-    <!-- 【修改】添加提示：所有项目均为可选 -->
+    <!-- 阶段选择 -->
+    <view class="form-item">
+      <text class="label">选择阶段(根据学员的情况选择)</text>
+      <view class="stage-selector">
+        <view 
+          class="stage-btn {{selectedStage === 'primary' ? 'active' : ''}}" 
+          bind:tap="onStageSelect" 
+          data-stage="primary"
+        >
+          <text>小学</text>
+        </view>
+        <view 
+          class="stage-btn {{selectedStage === 'middle' ? 'active' : ''}}" 
+          bind:tap="onStageSelect" 
+          data-stage="middle"
+        >
+          <text>初中</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 性别显示 -->
+    <view class="gender-display" wx:if="{{selectedChild.gender}}">
+      <text class="gender-label">性别：</text>
+      <text class="gender-value">{{selectedChild.gender === 'male' ? '男' : '女'}}</text>
+    </view>
+
+    <!-- 提示 -->
     <view class="tips-tag">
       <text class="tips-text">💡 所有项目均为可选，只填写有数据的项目即可</text>
     </view>
 
-    <view class="form-item">
-      <text class="label">50米跑(秒)</text>
-      <input type="digit" placeholder="例如:8.5"  bindinput="onFiftyInput"/>
+    <!-- ========== 小学项目 ========== -->
+    <view wx:if="{{selectedStage === 'primary'}}" class="stage-items">
+      <!-- 50米跑 -->
+      <view class="form-item">
+        <text class="label">50米跑(秒)</text>
+        <input type="digit" placeholder="例如:8.5" value="{{form.fiftyMeter}}" bindinput="onFiftyInput"/>
+      </view>
+
+      <!-- 肺活量 -->
+      <view class="form-item">
+        <text class="label">肺活量（毫升）</text>
+        <input type="number" placeholder="例如:2500" value="{{form.vitalCapacity}}" bindinput="onVitalCapacityInput"/>
+      </view>
+
+      <!-- 跳绳 -->
+      <view class="form-item">
+        <text class="label">跳绳（个/分钟）</text>
+        <input type="number" placeholder="例如:120" value="{{form.ropeSkipping}}" bindinput="onRopeSkippingInput"/>
+      </view>
+
+      <!-- 坐位体前屈 -->
+      <view class="form-item">
+        <text class="label">坐位体前屈（厘米）</text>
+        <input type="digit" placeholder="例如:12.5" value="{{form.sitAndReach}}" bindinput="onSitAndReachInput"/>
+      </view>
+
+      <!-- 仰卧起坐 -->
+      <view class="form-item">
+        <text class="label">仰卧起坐（个/分钟）</text>
+        <input type="number" placeholder="例如:45" value="{{form.sitUp}}" bindinput="onSitUpInput"/>
+      </view>
+
+      <!-- 俯卧撑 -->
+      <view class="form-item">
+        <text class="label">俯卧撑（个）</text>
+        <input type="number" placeholder="例如:20" value="{{form.pushUp}}" bindinput="onPushUpInput"/>
+      </view>
     </view>
 
-    <view class="form-item">
-      <text class="label">1000米跑(秒)</text>
-      <input type="text" placeholder="例如:3分20秒"  bindinput="onThousandInput"/>
-      <!-- <text class="hint">输入秒数，如320表示5分20秒</text> -->
+    <!-- ========== 初中项目 ========== -->
+    <view wx:if="{{selectedStage === 'middle' && selectedChild.gender === 'male'}}" class="stage-items">
+      <!-- 1000米跑 -->
+      <view class="form-item">
+        <text class="label">1000米跑</text>
+        <input type="text" placeholder="例如:3分20秒" value="{{form.thousandMeter}}" bindinput="onThousandInput"/>
+      </view>
+
+      <!-- 50米跑 -->
+      <view class="form-item">
+        <text class="label">50米跑(秒)</text>
+        <input type="digit" placeholder="例如:8.5" value="{{form.fiftyMeter}}" bindinput="onFiftyInput"/>
+      </view>
+
+      <!-- 立定跳远 -->
+      <view class="form-item">
+        <text class="label">立定跳远（厘米）</text>
+        <input type="number" placeholder="例如:180" value="{{form.standingLongJump}}" bindinput="onStandingLongJumpInput"/>
+      </view>
+
+      <!-- 引体向上 -->
+      <view class="form-item">
+        <text class="label">引体向上（个）</text>
+        <input type="number" placeholder="例如:10" value="{{form.pullUp}}" bindinput="onPullUpInput"/>
+      </view>
     </view>
 
-     <!-- 【新增】仰卧起坐 -->
-     <view class="form-item">
-      <text class="label">仰卧起坐（个/分钟）</text>
-      <input type="number" placeholder="例如：45（可选）" value="{{form.sitUp}}" bindinput="onSitUpInput"/>
+    <!-- ========== 初中女项目 ========== -->
+    <view wx:if="{{selectedStage === 'middle' && selectedChild.gender === 'female'}}" class="stage-items">
+      <!-- 800米跑 -->
+      <view class="form-item">
+        <text class="label">800米跑</text>
+        <input type="text" placeholder="例如:2分50秒" value="{{form.eightHundredMeter}}" bindinput="onEightHundredInput"/>
+      </view>
+
+      <!-- 仰卧起坐 -->
+      <view class="form-item">
+        <text class="label">仰卧起坐（个/分钟）</text>
+        <input type="number" placeholder="例如:45" value="{{form.sitUp}}" bindinput="onSitUpInput"/>
+      </view>
+
+      <!-- 50米跑 -->
+      <view class="form-item">
+        <text class="label">50米跑(秒)</text>
+        <input type="digit" placeholder="例如:8.5" value="{{form.fiftyMeter}}" bindinput="onFiftyInput"/>
+      </view>
+
+      <!-- 立定跳远 -->
+      <view class="form-item">
+        <text class="label">立定跳远（厘米）</text>
+        <input type="number" placeholder="例如:180" value="{{form.standingLongJump}}" bindinput="onStandingLongJumpInput"/>
+      </view>
     </view>
 
-    <!-- 【新增】跳绳 -->
-    <view class="form-item">
-      <text class="label">跳绳（个/分钟）</text>
-      <input type="number" placeholder="例如：120（可选）" value="{{form.ropeSkipping}}" bindinput="onRopeSkippingInput"/>
-    </view>
-
-    <!-- 【新增】800米跑 -->
-    <view class="form-item">
-      <text class="label">800米跑</text>
-      <input type="text" placeholder="例如：2分50秒" value="{{form.eightHundredMeter}}" bindinput="onEightHundredInput"/>
-    </view>
-
-    <!-- 【新增】坐位体前屈 -->
-    <view class="form-item">
-      <text class="label">坐位体前屈（厘米）</text>
-      <input type="digit" placeholder="例如：12.5（可选）" value="{{form.sitAndReach}}" bindinput="onSitAndReachInput"/>
-    </view>
-
-    <!-- 【新增】立定跳远 -->
-    <view class="form-item">
-      <text class="label">立定跳远（厘米）</text>
-      <input type="number" placeholder="例如：180（可选）" value="{{form.standingLongJump}}" bindinput="onStandingLongJumpInput"/>
-    </view>
-
-    <!-- 【新增】肺活量测试 -->
-    <view class="form-item">
-      <text class="label">肺活量测试（毫升）</text>
-      <input type="number" placeholder="例如：2500（可选）" value="{{form.vitalCapacity}}" bindinput="onVitalCapacityInput"/>
-    </view>
-
+    <!-- 敏捷性 -->
     <view class="form-item">
       <text class="label">敏捷性（分）</text>
       <slider min="0" max="100" value="{{form.agility}}" bindchange="onAgilityChange" show-value/>
     </view>
     
+    <!-- 协调性 -->
     <view class="form-item">
       <text class="label">协调性（分）</text>
       <slider min="0" max="100" value="{{form.coordination}}" bindchange="onCoordinationChange" show-value/>

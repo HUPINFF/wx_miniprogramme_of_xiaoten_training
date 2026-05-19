@@ -11,7 +11,7 @@ Page({
     rating:0,
     content:'',
     tagList:['教练专业','讲解细致','氛围很好','进步明显','孩子喜欢','耐心负责','课程有趣','效果显著'],
-    tagCheckedStatus: {} , // 例如: { '教练专业': true, '讲解细致': false }
+    tagCheckedStatus: {} ,
     selectedTags : [],
     isAnonymous:false,
     submitting:false
@@ -27,26 +27,24 @@ Page({
       courseName:name || '训练课程',
       coachName: coach || '教练'
     });
-    // 如果有点评记录，加载点评记录
     if(id) {
       this.loadExistingComment(id);
     }
   },
 
-  // 加载已有点评记录
   loadExistingComment(trainingId) {
     const db = wx.cloud.database();
     db.collection('trainings').doc(trainingId).get().then(res => {
       const training = res.data;
-      if(training.commemt && training.comment.isCommented) {
+      if(training.comment && training.comment.isCommented) {
         const selectedTags = training.comment.tags || [];
         const tagCheckedStatus = {};
         selectedTags.forEach(t => {
           tagCheckedStatus[t] = true;
         });
         this.setData({
-          rating:training.commemt.rating || 0,
-          content:training.commemt.content ||'',
+          rating:training.comment.rating || 0,
+          content:training.comment.content ||'',
           selectedTags:training.comment.tags || [],
           isAnonymous:training.comment.isAnonymous || false
         });
@@ -56,59 +54,40 @@ Page({
     });
   },
 
-  // 设置评分
   setRating(e) {
     const rating = e.currentTarget.dataset.rating;
-    this.setData({rating}); 
-
+    this.setData({rating});
   },
 
-
-   // 输入内容
-   onContentInput(e) {
+  onContentInput(e) {
     this.setData({ content: e.detail.value });
-    const content = e.detail.value;
-  
-  this.setData({ content });
-  
-
   },
 
-  // 切换标签
   toggleTag(e) {
     const tag = e.currentTarget.dataset.tag;
     const selectedTags = [...this.data.selectedTags];
     const index = selectedTags.indexOf(tag);
 
-    
     if (index > -1) {
       selectedTags.splice(index, 1);
     } else {
       selectedTags.push(tag);
     }
-     // 同时更新 tagCheckedStatus
-  const tagCheckedStatus = {};
-  selectedTags.forEach(t => {
-    tagCheckedStatus[t] = true;
-  });
+    const tagCheckedStatus = {};
+    selectedTags.forEach(t => {
+      tagCheckedStatus[t] = true;
+    });
 
-
-    console.log(selectedTags);
     this.setData({ selectedTags:selectedTags,
       tagCheckedStatus: tagCheckedStatus
     });
   },
 
-
-  // 切换匿名
   toggleAnonymous() {
     this.setData({ isAnonymous: !this.data.isAnonymous });
   },
 
-  // 提交点评
   onSubmit() {
-    
-    // 验证
     if(this.data.rating === 0) {
       wx.showToast({ title: '请选择评分', icon: 'none' });
       return;
@@ -122,7 +101,6 @@ Page({
     const db = wx.cloud.database();
     const userInfo = wx.getStorageSync('userInfo');
 
-    // 构建点评数据
     const commentData = {
       content: this.data.content.trim(),
       rating: this.data.rating,
@@ -135,12 +113,36 @@ Page({
       createdAt: new Date()
     }
 
-    // 更新trainings集合
-    db.collection('trainings').doc(this.data.trainingId).update({
-      data: {
-        comment: commentData,
-        updatedAt: new Date()
-      }
+    // 先获取training信息，获取childId
+    db.collection('trainings').doc(this.data.trainingId).get().then(trainingRes => {
+      const training = trainingRes.data;
+      const childId = training.childId || '';
+
+      // 同时保存到comment集合
+      const commentRecord = {
+        trainingId: this.data.trainingId,
+        childId: childId,
+        courseName: this.data.courseName,
+        coachName: this.data.coachName,
+        content: this.data.content.trim(),
+        rating: this.data.rating,
+        tags: this.data.selectedTags,
+        isAnonymous: this.data.isAnonymous,
+        nickName: this.data.isAnonymous ? '匿名用户' : (userInfo.nickName || '家长'),
+        avatarUrl: this.data.isAnonymous ? '' : (userInfo.avatarUrl || ''),
+        createTime: new Date().toLocaleString(),
+        createdAt: new Date()
+      };
+
+      return db.collection('comment').add({ data: commentRecord }).then(() => {
+        // 更新trainings集合
+        return db.collection('trainings').doc(this.data.trainingId).update({
+          data: {
+            comment: commentData,
+            updatedAt: new Date()
+          }
+        });
+      });
     }).then(() => {
       wx.showToast({ title: '点评成功', icon: 'success' });
       setTimeout(() => {
@@ -153,53 +155,5 @@ Page({
     }).finally(() => {
       this.setData({ submitting: false });
     });
-  },
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow() {
-  
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload() {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh() {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom() {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage() {
-
   }
 })

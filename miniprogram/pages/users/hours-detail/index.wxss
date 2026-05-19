@@ -1,0 +1,263 @@
+/* pages/users/hours-detail/index.wxss */
+.container {
+  min-height: 100vh;
+  background-color: #f5f7fa;
+  padding-bottom: 20rpx;
+}
+
+/* 孩子名称 */
+.child-header {
+  background: linear-gradient(135deg, #4a90d9 0%, #357abd 100%);
+  padding: 30rpx;
+  text-align: center;
+}
+
+.child-name {
+  display: block;
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 8rpx;
+}
+
+.child-hint {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* 日期选择栏 */
+.date-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 30rpx;
+  background: #fff;
+  margin-bottom: 20rpx;
+}
+
+.tabs {
+  display: flex;
+  background: #f0f2f5;
+  border-radius: 30rpx;
+  padding: 6rpx;
+}
+
+.tab {
+  padding: 12rpx 32rpx;
+  border-radius: 24rpx;
+  font-size: 26rpx;
+  color: #666;
+  transition: all 0.3s;
+}
+
+.tab.active {
+  background: #4a90d9;
+  color: #fff;
+}
+
+.date-select {
+  display: flex;
+  align-items: center;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.date-select .arrow {
+  font-size: 20rpx;
+  margin-left: 8rpx;
+  color: #999;
+}
+
+/* 汇总卡片 */
+.summary-card {
+  margin: 0 30rpx 20rpx;
+  background: linear-gradient(135deg, #e8f4fd 0%, #f0f8ff 100%);
+  border-radius: 20rpx;
+  padding: 30rpx;
+  box-shadow: 0 4rpx 20rpx rgba(74, 144, 217, 0.1);
+}
+
+.summary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30rpx;
+}
+
+.summary-month {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.summary-count {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.summary-content {
+  display: flex;
+  justify-content: space-around;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid rgba(74, 144, 217, 0.2);
+}
+
+.summary-item {
+  text-align: center;
+}
+
+.summary-label {
+  display: block;
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 10rpx;
+}
+
+.summary-value {
+  font-size: 36rpx;
+  font-weight: bold;
+}
+
+.summary-item.income .summary-value {
+  color: #52c41a;
+}
+
+.summary-item.expense .summary-value {
+  color: #ff4d4f;
+}
+
+.summary-balance {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 20rpx;
+}
+
+.balance-label {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.balance-value {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+/* 流水记录列表 */
+.records-list {
+  padding: 0 30rpx;
+}
+
+/* 日期分隔栏 */
+.date-divider {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+  margin-top: 10rpx;
+}
+
+.date-text {
+  font-size: 26rpx;
+  font-weight: bold;
+  color: #333;
+  margin-right: 12rpx;
+}
+
+.date-weekday {
+  font-size: 24rpx;
+  color: #999;
+  flex: 1;
+}
+
+.date-summary {
+  display: flex;
+  gap: 20rpx;
+}
+
+.date-income, .date-expense {
+  font-size: 22rpx;
+}
+
+.date-income {
+  color: #52c41a;
+}
+
+.date-expense {
+  color: #ff4d4f;
+}
+
+/* 记录项 */
+.record-item {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  padding: 24rpx;
+  border-radius: 16rpx;
+  margin-bottom: 16rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+}
+
+.record-icon {
+  width: 80rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+  margin-right: 20rpx;
+}
+
+.record-info {
+  flex: 1;
+}
+
+.record-type {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 6rpx;
+}
+
+.record-desc {
+  display: block;
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 6rpx;
+}
+
+.record-time {
+  font-size: 22rpx;
+  color: #ccc;
+}
+
+.record-amount {
+  font-size: 30rpx;
+  font-weight: bold;
+}
+
+.record-amount.income {
+  color: #52c41a;
+}
+
+.record-amount.expense {
+  color: #ff4d4f;
+}
+
+/* 空状态 */
+.empty-state {
+  text-align: center;
+  padding: 80rpx 0;
+}
+
+.empty-icon {
+  display: block;
+  font-size: 64rpx;
+  margin-bottom: 20rpx;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #999;
+}

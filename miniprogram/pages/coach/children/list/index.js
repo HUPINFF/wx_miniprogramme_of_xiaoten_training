@@ -21,6 +21,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
+    this.setData({loading:true});
     this.loadCoachInfo();
   },
 
@@ -32,6 +33,7 @@ Page({
     const openid = wx.getStorageSync('openid');
     const db = wx.cloud.database();
     console.log('dd',openid);
+    
     db.collection('users').where({
       _openid:openid,
       role:'coach'
@@ -43,6 +45,7 @@ Page({
         wx.setStorageSync('coachInfo',coachInfo);
         this.loadChildren();
       }else {
+        this.setData({loading:false});
         wx.showToast({title:'未找到教练信息',icon:'none'})
       }
     }).catch(err => {
@@ -56,7 +59,9 @@ Page({
     const db = wx.cloud.database();
     const coachId = this.data.coachInfo._id;
 
+
     if(!coachId) {
+      this.setData({loading:false});
       wx.showToast({title:'请先登录',icon:'none'});
       return;
     }
@@ -67,6 +72,7 @@ Page({
       const children = res.data;
       this.loadLatestPerformance(children);
     }).catch(err => {
+      this.setData({loading:false});
       console.error('加载学员失败',err);
       this.setData({children:[],allChildren:[]})
     })
@@ -87,8 +93,8 @@ Page({
       })
     })
     Promise.all(promises).then(children => {
-      this.setData({children,allChildren:children})
-    });
+      this.setData({children,allChildren:children,loading:false})
+    }).catch(() => this.setData({loading:false}));
   },
 
 
@@ -193,6 +199,12 @@ Page({
       console.error('关联失败', err);
       wx.showToast({ title: '关联失败', icon: 'none' });
       this.setData({ submitting: false });
+    });
+  },
+
+  gotoChangeCoachRequests() {
+    wx.navigateTo({
+      url: '/pages/coach/change-coach-requests/index'
     });
   },
 

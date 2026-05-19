@@ -2,7 +2,7 @@
 
   <nav-bar title='学员详情'></nav-bar>
   <!-- 加载状态 -->
-  <view class="loading" wx:if="{{load}}">
+  <view class="loading" wx:if="{{loading}}">
     <view class="loading-spinner"></view>
     <text>加载中...</text>
   </view>
@@ -10,7 +10,7 @@
   <block wx:else>
     <!-- 学员信息卡片 -->
     <view class="child-header">
-      <image class="avatar-large" src="cloud://hupin255-5gfbw856b1c861ef.6875-hupin255-5gfbw856b1c861ef-1410552194/default_avatar/6756593ba0eb6a537f7060da8ede3ca8.jpeg" mode="aspectFill"></image>
+      <image class="avatar-large" src="{{'cloud://hupin255-5gfbw856b1c861ef.6875-hupin255-5gfbw856b1c861ef-1410552194/default_avatar/6756593ba0eb6a537f7060da8ede3ca8.jpeg'}}" mode="aspectFill" bind:tap="viewAlbum"></image>
       <view class="child-basic">
         <text class="name">{{childInfo.data.name}}</text>
         <text class="info">{{childInfo.data.age}}岁 · {{childInfo.data.gender==='male' ? '男孩':'女孩'}}</text>
@@ -24,7 +24,7 @@
       <view class="edit-hours-btn" bindtap="editHours">
         <text class="edit-icon">✏️编辑学时</text>
       </view>
-      </view> 
+      </view>
     </view>
 
     <!-- 快捷操作按钮 -->
@@ -58,7 +58,7 @@
         <text class="section-date">{{latestPerformance.weekDate}}</text>
       </view>
 
-      <view class="performance-grid">
+      <view class="performance-grid" wx:if="latestPerformance !== null">
         <view class="performance-item" wx:if="{{latestPerformance.fiftyMeter !==NAN}}">
           <text class="label">50米跑</text>
           <text class="value">{{latestPerformance.fiftyMeter || '暂无'}}{{latestPerformance.fiftyMeter ? '秒' : ''}}</text>
@@ -113,13 +113,13 @@
         <view class="performance-item" wx:if="{{latestPerformance.agility!==NAN}}">
           <text class="label">敏捷性</text>
           <text class="value">{{latestPerformance.agility}}分</text>
-        </view> 
+        </view>
       </view>
 
-      <view class="emp-grips">
+      <view class="emp-grips" wx:if="{{latestPerformance === null}}">
           <text class="emp-txt">暂无最新表现数据</text>
       </view>
-      
+
      </view>
 
      <!-- 表现历史 -->
@@ -151,7 +151,7 @@
       </view>
 
       <view class="training-list">
-        <view class="training-item" wx:for="{{trainingList}}" wx:key="_id" bind:tap="editTraining" data-id="{{item._id}}">
+        <view class="training-item" wx:for="{{trainingList}}" wx:key="_id" bind:tap="viewTrainingDetail" data-id="{{item._id}}">
           <view class="training-header">
             <text class="date">{{item.date}}</text>
             <text class="type">{{item.type}}</text>
@@ -191,7 +191,7 @@
 </view>
 
 <!-- 学时编辑弹窗组件 -->
-<edit-hours-modal 
+<edit-hours-modal
   show="{{showHoursModal}}"
   childId="{{childInfo.data._id}}"
   childName="{{childInfo.data.name}}"

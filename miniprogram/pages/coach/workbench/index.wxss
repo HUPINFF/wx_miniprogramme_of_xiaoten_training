@@ -1,25 +1,1023 @@
 /* pages/coach/workbench/index.wxss */
-@import "../common.wxss";
 
-/* 骨架屏 */
+/* ==================== 全局变量 ==================== */
+page {
+  --bg: #f5f7fa;
+  --primary: #07c160;
+  --primary-dark: #05a350;
+  --primary-light: #e8f5e9;
+  --card: #ffffff;
+  --text-main: #1a1a2e;
+  --text-sub: #6b7280;
+  --text-hint: #9ca3af;
+  --border: #f3f4f6;
+  --shadow-1: 0 2rpx 8rpx rgba(0,0,0,0.04);
+  --shadow-2: 0 4rpx 16rpx rgba(0,0,0,0.06);
+  --shadow-3: 0 8rpx 24rpx rgba(0,0,0,0.08);
+  --radius-sm: 16rpx;
+  --radius-md: 24rpx;
+  --radius-lg: 32rpx;
+  --radius-xl: 40rpx;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==================== 页面容器 ==================== */
+.container {
+  min-height: 100vh;
+  background-color: var(--bg);
+  padding-bottom: 40rpx;
+}
+
+/* ==================== 渐变背景 ==================== */
+.gradient-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 420rpx;
+  background: linear-gradient(135deg, #07c160 0%, #00d68f 25%, #34d399 50%, #e8f5e9 80%, rgba(245, 247, 250, 0) 100%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.gradient-bg::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80rpx;
+  background: linear-gradient(180deg, transparent 0%, var(--bg) 100%);
+}
+
+/* ==================== 顶部标题区 ==================== */
+.header-area {
+  padding: 90rpx 40rpx 40rpx;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.header-title {
+  display: block;
+  font-size: 52rpx;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 12rpx;
+  text-shadow: 0 4rpx 12rpx rgba(0,0,0,0.15);
+  letter-spacing: 2rpx;
+}
+
+.header-subtitle {
+  font-size: 28rpx;
+  color: rgba(255,255,255,0.9);
+  font-weight: 400;
+  letter-spacing: 1rpx;
+  background: rgba(255,255,255,0.15);
+  padding: 8rpx 24rpx;
+  border-radius: 20rpx;
+  backdrop-filter: blur(10rpx);
+}
+
+/* ==================== 欢迎语 ==================== */
+.welcome {
+  position: relative;
+  z-index: 1;
+  width: calc(100% - 60rpx);
+  margin: 0 auto 24rpx;
+  background: linear-gradient(135deg, #07c160 0%, #00d68f 60%, #34d399 100%);
+  border-radius: var(--radius-xl);
+  padding: 32rpx;
+  box-shadow: 0 12rpx 32rpx rgba(7, 193, 96, 0.3);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.welcome::before {
+  content: '';
+  position: absolute;
+  width: 200rpx;
+  height: 200rpx;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+  top: -60rpx;
+  right: -40rpx;
+}
+
+.welcome::after {
+  content: '';
+  position: absolute;
+  width: 100rpx;
+  height: 100rpx;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 50%;
+  bottom: -30rpx;
+  left: 40rpx;
+}
+
+.welcome-left {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.greeting {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.5rpx;
+  text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+  display: block;
+}
+
+.date {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.date::before {
+  content: '📅';
+  font-size: 22rpx;
+}
+
+.welcome-right {
+  position: relative;
+  z-index: 1;
+  font-size: 64rpx;
+  filter: drop-shadow(0 4rpx 8rpx rgba(0, 0, 0, 0.15));
+  animation: welcome-float 3s ease-in-out infinite;
+}
+
+@keyframes welcome-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-25rpx); }
+}
+
+/* ==================== 快捷入口 ==================== */
+.quick-actions {
+  position: relative;
+  z-index: 1;
+  width: calc(100% - 60rpx);
+  margin: 0 auto 24rpx;
+  display: flex;
+  justify-content: space-around;
+  background-color: var(--card);
+  border-radius: var(--radius-xl);
+  padding: 28rpx 12rpx;
+  box-shadow: var(--shadow-2);
+  flex-wrap: wrap;
+  gap: 8rpx;
+}
+
+.action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10rpx;
+  padding: 14rpx 12rpx;
+  border-radius: var(--radius-md);
+  transition: var(--transition);
+  min-width: 120rpx;
+}
+
+.action:active {
+  background: var(--primary-light);
+  transform: scale(0.95);
+}
+
+.action text:first-child {
+  font-size: 40rpx;
+  width: 68rpx;
+  height: 68rpx;
+  background: linear-gradient(135deg, var(--primary-light), #f0fdf4);
+  border-radius: 18rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action text:last-child {
+  font-size: 22rpx;
+  color: var(--text-sub);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* ==================== 通用区块 ==================== */
+.section {
+  position: relative;
+  z-index: 1;
+  width: calc(100% - 60rpx);
+  margin: 0 auto 24rpx;
+  background: var(--card);
+  border-radius: var(--radius-xl);
+  padding: 32rpx;
+  box-shadow: var(--shadow-2);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 2rpx solid var(--border);
+}
+
+.section-title {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.section-more {
+  font-size: 26rpx;
+  color: var(--primary);
+  font-weight: 600;
+  padding: 10rpx 20rpx;
+  border-radius: 20rpx;
+  background: var(--primary-light);
+  transition: var(--transition);
+}
+
+.section-more:active {
+  background: var(--primary);
+  color: #fff;
+  transform: scale(0.95);
+}
+
+.title {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.count {
+  font-size: 24rpx;
+  color: var(--primary);
+  font-weight: 600;
+  background: var(--primary-light);
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+}
+
+/* ==================== 今日课程 ==================== */
+.training-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.training-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+  background: linear-gradient(135deg, #fafbfc, #f0fdf4);
+  border-radius: var(--radius-md);
+  border: 2rpx solid var(--border);
+  transition: var(--transition);
+}
+
+.training-item:active {
+  border-color: var(--primary);
+  background: var(--primary-light);
+}
+
+.time {
+  width: 120rpx;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+  padding: 0 16rpx;
+}
+
+.info .name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.info .child {
+  font-size: 24rpx;
+  color: var(--text-sub);
+}
+
+.start-btn {
+  flex-shrink: 0;
+  min-width: 120rpx;
+  height: 60rpx;
+  background-color: #07c160;
+  border-radius: 30rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20rpx;
+  transition: var(--transition);
+}
+
+.start-btn text {
+  font-size: 24rpx;
+  color: #fff;
+  font-weight: 600;
+}
+
+.start-btn:active {
+  transform: scale(0.95);
+  opacity: 0.9;
+}
+
+/* ==================== 待办事项 ==================== */
+.todo-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.todo-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx;
+  background: linear-gradient(135deg, #fafbfc, #f8f9fa);
+  border-radius: var(--radius-md);
+  border: 2rpx solid var(--border);
+  font-size: 28rpx;
+  color: var(--text-main);
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+.todo-item:active {
+  border-color: var(--primary);
+  background: var(--primary-light);
+}
+
+.badge {
+  background: linear-gradient(135deg, #ff6b6b, #ff5252);
+  color: #fff;
+  min-width: 44rpx;
+  height: 44rpx;
+  line-height: 44rpx;
+  padding: 0 16rpx;
+  border-radius: 22rpx;
+  font-size: 24rpx;
+  font-weight: 700;
+  text-align: center;
+  box-shadow: 0 4rpx 12rpx rgba(255, 107, 107, 0.3);
+}
+
+/* ==================== 轮播图 ==================== */
+.banner-wrapper {
+  position: relative;
+  z-index: 1;
+  width: calc(100% - 60rpx);
+  margin: 0 auto 24rpx;
+}
+
+.banner {
+  width: 100%;
+  height: 320rpx;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-3);
+}
+
+.banner-image {
+  width: 100%;
+  height: 100%;
+}
+
+.banner-text {
+  position: absolute;
+  bottom: 24rpx;
+  left: 24rpx;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(16rpx);
+  padding: 12rpx 24rpx;
+  border-radius: 24rpx;
+  color: #fff;
+  font-size: 24rpx;
+  font-weight: 500;
+}
+
+/* ==================== 最新动态 ==================== */
+.news-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.news-item {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 20rpx 0;
+  border-bottom: 2rpx solid var(--border);
+  transition: var(--transition);
+}
+
+.news-item:last-child {
+  border-bottom: none;
+}
+
+.news-item:active {
+  background: var(--primary-light);
+  border-radius: var(--radius-sm);
+  padding: 20rpx 12rpx;
+}
+
+.news-dot {
+  width: 10rpx;
+  height: 10rpx;
+  background: linear-gradient(135deg, var(--primary), #34d399);
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 6rpx rgba(7, 193, 96, 0.4);
+}
+
+.news-title {
+  flex: 1;
+  font-size: 28rpx;
+  color: var(--text-main);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.news-time {
+  font-size: 22rpx;
+  color: var(--text-hint);
+  background: var(--bg);
+  padding: 6rpx 12rpx;
+  border-radius: 12rpx;
+}
+
+/* ==================== 精彩瞬间 ==================== */
+.moment-scroll {
+  width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.moment-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.moment-list {
+  display: flex;
+  gap: 16rpx;
+  padding: 8rpx 0 16rpx;
+}
+
+.moment-item {
+  display: inline-flex;
+  flex-direction: column;
+  width: 220rpx;
+  flex-shrink: 0;
+  background: #fff;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-1);
+  border: 2rpx solid var(--border);
+  transition: var(--transition);
+}
+
+.moment-item:active {
+  transform: translateY(-4rpx);
+  box-shadow: var(--shadow-3);
+  border-color: var(--primary);
+}
+
+.moment-image {
+  width: 220rpx;
+  height: 220rpx;
+  background: linear-gradient(135deg, var(--primary-light), #f0fdf4);
+}
+
+.moment-title {
+  font-size: 24rpx;
+  color: var(--text-sub);
+  text-align: center;
+  padding: 12rpx;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+
+/* ==================== 家长点评 ==================== */
+.comment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.comment-item {
+  background: #fafbfc;
+  border-radius: var(--radius-md);
+  padding: 28rpx;
+  border: 2rpx solid var(--border);
+  transition: var(--transition);
+}
+
+.comment-item:active {
+  border-color: var(--primary);
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.comment-avatar {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  margin-right: 16rpx;
+  border: 3rpx solid #fff;
+  box-shadow: var(--shadow-1);
+}
+
+.comment-name {
+  font-size: 28rpx;
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+.comment-rating {
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+  margin-top: 4rpx;
+}
+
+.comment-rating .star {
+  font-size: 22rpx;
+}
+
+.comment-rating .rating-text {
+  font-size: 24rpx;
+  color: #f59e0b;
+  margin-left: 8rpx;
+  font-weight: 700;
+}
+
+.comment-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-bottom: 16rpx;
+}
+
+.comment-tags .tag {
+  font-size: 22rpx;
+  color: var(--primary);
+  background: var(--primary-light);
+  padding: 6rpx 14rpx;
+  border-radius: 10rpx;
+  font-weight: 500;
+}
+
+.comment-content {
+  font-size: 28rpx;
+  color: var(--text-sub);
+  line-height: 1.6;
+  display: block;
+  margin-bottom: 12rpx;
+}
+
+.comment-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.comment-time {
+  font-size: 22rpx;
+  color: var(--text-hint);
+}
+
+.comment-delete {
+  padding: 8rpx 20rpx;
+  background: #ff5722;
+  border-radius: 24rpx;
+  transition: var(--transition);
+}
+
+.comment-delete:active {
+  transform: scale(0.95);
+  opacity: 0.8;
+}
+
+.comment-delete text {
+  font-size: 24rpx;
+  color: #fff;
+}
+
+.empty-comments {
+  text-align: center;
+  padding: 60rpx;
+  color: var(--text-hint);
+  font-size: 28rpx;
+}
+
+/* ==================== 成长案例 ==================== */
+.growth-showcase {
+  width: 100%;
+}
+
+.growth-scroll {
+  width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.growth-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.growth-cards {
+  display: flex;
+  gap: 20rpx;
+  padding: 8rpx 0 16rpx;
+}
+
+.growth-card {
+  display: inline-flex;
+  flex-direction: column;
+  width: 300rpx;
+  flex-shrink: 0;
+  background: var(--card);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-2);
+  border: 2rpx solid var(--border);
+  transition: var(--transition);
+}
+
+.growth-card:active {
+  transform: translateY(-4rpx);
+  box-shadow: var(--shadow-3);
+  border-color: var(--primary);
+}
+
+.growth-cover {
+  position: relative;
+  width: 100%;
+  height: 180rpx;
+  background: linear-gradient(135deg, var(--primary), #34d399);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.growth-cover-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.growth-no-cover {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.growth-no-cover text {
+  font-size: 72rpx;
+}
+
+.growth-badge {
+  position: absolute;
+  top: 12rpx;
+  left: 12rpx;
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--primary);
+  font-size: 20rpx;
+  font-weight: 600;
+  padding: 6rpx 14rpx;
+  border-radius: 16rpx;
+  backdrop-filter: blur(10rpx);
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.1);
+}
+
+.growth-overlay {
+  position: absolute;
+  bottom: 12rpx;
+  right: 12rpx;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 22rpx;
+  padding: 6rpx 14rpx;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  backdrop-filter: blur(8rpx);
+}
+
+.growth-icon {
+  font-size: 22rpx;
+}
+
+.growth-count {
+  font-weight: 600;
+}
+
+.growth-info {
+  padding: 20rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+}
+
+.growth-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: var(--text-main);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.growth-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx;
+}
+
+.growth-tag {
+  font-size: 20rpx;
+  color: var(--primary);
+  background: var(--primary-light);
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+  font-weight: 500;
+}
+
+.growth-progress {
+  background: var(--bg);
+  border-radius: 12rpx;
+  padding: 12rpx;
+}
+
+.progress-text {
+  font-size: 22rpx;
+  color: var(--text-sub);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.empty-growth {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60rpx 20rpx;
+  border-radius: var(--radius-md);
+  border: 2rpx dashed var(--border);
+}
+
+.empty-growth-icon {
+  font-size: 80rpx;
+  margin-bottom: 16rpx;
+  opacity: 0.5;
+}
+
+.empty-growth-text {
+  font-size: 28rpx;
+  color: var(--text-sub);
+  font-weight: 500;
+  margin-bottom: 8rpx;
+}
+
+.empty-growth-hint {
+  font-size: 24rpx;
+  color: var(--text-hint);
+}
+
+/* ==================== 课程管理 ==================== */
+.course-showcase {
+  width: 100%;
+}
+
+.course-scroll {
+  width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.course-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.course-cards {
+  display: flex;
+  gap: 20rpx;
+  padding: 8rpx 0 16rpx;
+}
+
+.course-card {
+  display: inline-flex;
+  flex-direction: column;
+  width: 300rpx;
+  flex-shrink: 0;
+  background: var(--card);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-2);
+  border: 2rpx solid var(--border);
+  transition: var(--transition);
+}
+
+.course-card:active {
+  transform: translateY(-4rpx);
+  box-shadow: var(--shadow-3);
+  border-color: #4a90d9;
+}
+
+.course-cover {
+  position: relative;
+  width: 100%;
+  height: 180rpx;
+  background: linear-gradient(135deg, #4a90d9 0%, #67b26f 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.course-cover-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.course-no-cover {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.course-no-cover text {
+  font-size: 72rpx;
+}
+
+.course-badge {
+  position: absolute;
+  top: 12rpx;
+  left: 12rpx;
+  background: rgba(255, 255, 255, 0.95);
+  color: #4a90d9;
+  font-size: 20rpx;
+  font-weight: 600;
+  padding: 6rpx 14rpx;
+  border-radius: 16rpx;
+}
+
+.course-info {
+  padding: 20rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+}
+
+.course-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: var(--text-main);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.course-meta {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.course-hours {
+  font-size: 24rpx;
+  color: #4a90d9;
+  font-weight: 600;
+  background: rgba(74, 144, 217, 0.08);
+  padding: 6rpx 14rpx;
+  border-radius: 12rpx;
+}
+
+.course-progress {
+  background: var(--bg);
+  border-radius: 12rpx;
+  padding: 12rpx;
+}
+
+.manage-btn {
+  padding: 10rpx 24rpx;
+  background: linear-gradient(135deg, #07c160 0%, #05a350 100%);
+  border-radius: 24rpx;
+  transition: var(--transition);
+}
+
+.manage-btn:active {
+  transform: scale(0.95);
+  opacity: 0.9;
+}
+
+.manage-btn text {
+  color: #fff;
+  font-size: 24rpx;
+  font-weight: 600;
+}
+
+.empty-course {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60rpx 20rpx;
+  border-radius: var(--radius-md);
+  border: 2rpx dashed var(--border);
+}
+
+.empty-course-icon {
+  font-size: 80rpx;
+  margin-bottom: 16rpx;
+  opacity: 0.5;
+}
+
+.empty-course-text {
+  font-size: 28rpx;
+  color: var(--text-sub);
+  font-weight: 500;
+  margin-bottom: 8rpx;
+}
+
+.empty-course-hint {
+  font-size: 24rpx;
+  color: var(--text-hint);
+}
+
+/* ==================== 空状态通用 ==================== */
+.empty {
+  text-align: center;
+  padding: 80rpx 40rpx;
+  color: var(--text-hint);
+  font-size: 28rpx;
+}
+
+/* ==================== 骨架屏 ==================== */
 .skeleton-page {
+  position: relative;
+  z-index: 1;
   width: 100%;
 }
 
 .skeleton-banner {
-  width: 92%;
+  width: calc(100% - 60rpx);
   height: 320rpx;
-  margin: 20rpx auto;
-  border-radius: 24rpx;
+  margin: 0 auto 24rpx;
+  border-radius: var(--radius-lg);
   background: #f2f3f5;
 }
 
 .skeleton-card {
-  width: 90%;
+  width: calc(100% - 60rpx);
   margin: 0 auto 24rpx;
   padding: 28rpx;
   background: #fff;
-  border-radius: 24rpx;
+  border-radius: var(--radius-xl);
   display: flex;
   align-items: center;
   gap: 20rpx;
@@ -39,19 +1037,19 @@
 }
 
 .skeleton-grid {
-  width: 95%;
+  width: calc(100% - 60rpx);
   margin: 0 auto 24rpx;
   padding: 24rpx;
-  border-radius: 24rpx;
+  border-radius: var(--radius-xl);
   background: #fff;
   display: flex;
   justify-content: space-around;
 }
 
 .skeleton-grid-item {
-  width: 96rpx;
-  height: 96rpx;
-  border-radius: 16rpx;
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 20rpx;
   background: #f2f3f5;
 }
 
@@ -123,301 +1121,6 @@
 }
 
 @keyframes skeleton-shimmer {
-  0% {
-    left: -150%;
-  }
-  100% {
-    left: 150%;
-  }
-}
-
-/* 欢迎语 */
-.welcome {
-  width: 90%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 24rpx;
-  padding: 40rpx;
-  margin-bottom: 24rpx;
-  color: #fff;
-}
-
-.coach-card {
-  width: 95%;
-  margin-right: 65rpx;
-}
-
-.greeting {
-  /* width: 95%; */
-  font-size: 40rpx;
-  font-weight: 600;
-  display: block;
-  margin-bottom: 8rpx;
-}
-
-.date {
-  font-size: 28rpx;
-  opacity: 0.9;
-}
-
-/* 今日课程列表 */
-.training-list {
-  display: flex;
-  flex-direction: column;
-  gap: 24rpx;
-}
-
-.training-item {
-  display: flex;
-  align-items: center;
-  padding: 20rpx;
-  background-color: #f8f9fc;
-  border-radius: 16rpx;
-  /* height: 140rpx; */
-}
-
-.time {
-  width: 180rpx;
-  font-size: 28rpx;
-  font-weight: 500;
-  color: #07c160;
-}
-
-.info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 6rpx;
-  /* margin-left:25rpx ; */
-}
-
-.info .name {
-  font-size: 30rpx;
-  font-weight: 500;
-  color: #333;
-}
-
-.info .child {
-  font-size: 26rpx;
-  color: #999;
-}
-
-/* 待办事项 */
-.todo-list {
-  display: flex;
-  flex-direction: column;
-  gap: 20rpx;
-}
-
-.todo-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 24rpx;
-  background-color: #f8f9fc;
-  border-radius: 16rpx;
-  font-size: 30rpx;
-  color: #333;
-}
-
-.badge {
-  background-color: #07c160;
-  color: #fff;
-  padding: 4rpx 16rpx;
-  border-radius: 32rpx;
-  font-size: 26rpx;
-}
-
-/* 快捷入口 */
-.quick-actions {
-  width: 95%;
-  display: flex;
-  justify-content: space-around;
-  background-color: #fff;
-  border-radius: 24rpx;
-  padding: 24rpx;
-  margin-bottom: 24rpx;
-}
-
-.action {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12rpx;
-  padding: 16rpx;
-}
-
-.action text:first-child {
-  font-size: 48rpx;
-}
-
-.action text:last-child {
-  font-size: 26rpx;
-  color: #666;
-}
-
-/* 轮播图外层容器 */
-.banner-wrapper {
-  width: 100%;
-  margin-top: 0;
-  padding: 20rpx 0;
-}
-
-/* 轮播图 */
-.banner {
-  width: 92%;
-  height: 320rpx;
-  margin: 0 auto;
-  border-radius: 24rpx;
-  overflow: hidden;
-  box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.15);
-}
-
-.banner-image {
-  width: 100%;
-  height: 100%;
-}
-
-.banner-text {
-  position: absolute;
-  bottom: 30rpx;
-  left: 30rpx;
-  background-color: rgba(0, 0, 0, 0.5);
-  padding: 8rpx 20rpx;
-  border-radius: 30rpx;
-  color: #fff;
-  font-size: 24rpx;
-}
-
-/* 最新动态 */
-.news-list {
-  display: flex;
-  flex-direction: column;
-  gap: 20rpx;
-}
-
-.news-item {
-  display: flex;
-  align-items: center;
-  gap: 16rpx;
-  padding: 12rpx 0;
-  border-bottom: 2rpx solid #f0f0f0;
-}
-
-.news-item:last-child {
-  border-bottom: none;
-}
-
-.news-dot {
-  width: 12rpx;
-  height: 12rpx;
-  background-color: #07c160;
-  border-radius: 50%;
-}
-
-.news-title {
-  flex: 1;
-  font-size: 28rpx;
-  color: #333;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.news-time {
-  font-size: 24rpx;
-  color: #999;
-}
-
-/* 关于我们 */
-.about-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20rpx;
-}
-
-.about-logo {
-  width: 120rpx;
-  height: 120rpx;
-  border-radius: 24rpx;
-  background-color: #f0f0f0;
-}
-
-.about-text {
-  font-size: 28rpx;
-  color: #666;
-  line-height: 1.6;
-  text-align: center;
-}
-
-/* 精彩瞬间 */
-.moment-scroll {
-  width: 100%;
-  overflow-x: auto;
-  white-space: nowrap;
-}
-
-.moment-list {
-  display: flex;
-  gap: 20rpx;
-  padding: 8rpx 0 20rpx 0;
-}
-
-.moment-item {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  width: 200rpx;
-  flex-shrink: 0;
-}
-
-.moment-image {
-  width: 200rpx;
-  height: 200rpx;
-  border-radius: 16rpx;
-  background-color: #e0e0e0;
-}
-
-.moment-title {
-  font-size: 24rpx;
-  color: #666;
-  text-align: center;
-  margin-top: 12rpx;
-  width: 100%;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-/* 联系我们 */
-.contact-section {
-  background: linear-gradient(135deg, #07c160 0%, #06a34d 100%);
-  border-radius: 24rpx;
-  margin: 0 20rpx 30rpx 20rpx;
-  padding: 30rpx;
-  color: #fff;
-}
-
-.contact-title {
-  font-size: 34rpx;
-  font-weight: 600;
-  margin-bottom: 24rpx;
-  text-align: center;
-}
-
-.contact-info {
-  display: flex;
-  flex-direction: column;
-  gap: 20rpx;
-}
-
-.contact-item {
-  display: flex;
-  align-items: center;
-  gap: 16rpx;
-  font-size: 28rpx;
-}
-
-.contact-icon {
-  font-size: 32rpx;
+  0% { left: -150%; }
+  100% { left: 150%; }
 }

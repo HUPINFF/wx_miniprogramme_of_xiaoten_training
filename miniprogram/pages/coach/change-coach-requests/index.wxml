@@ -1,0 +1,42 @@
+<view class="container">
+  <nav-bar title="更换教练申请" showBack="{{true}}"></nav-bar>
+
+  <view class="request-list" wx:if="{{requests.length > 0}}">
+    <view 
+      class="request-card" 
+      wx:for="{{requests}}" 
+      wx:key="_id"
+    >
+      <view class="request-header">
+        <view class="child-info">
+          <text class="child-name">{{item.name}}</text>
+          <text class="request-time">{{formatTime(item.createdAt)}}</text>
+        </view>
+        <view class="status-badge status-{{item.status}}">
+          <text>{{getStatusText(item.status)}}</text>
+        </view>
+      </view>
+
+      <view class="request-body">
+        <view class="info-row">
+          <text class="label">申请教练：</text>
+          <text class="value">{{item.newCoachName}}</text>
+        </view>
+      </view>
+
+      <view class="request-actions" wx:if="{{item.status === 'pending'}}">
+        <view class="action-btn approve" bind:tap="approveRequest" data-id="{{item._id}}" data-child-id="{{item.childId}}" data-coach-id="{{item.newCoachId}}">
+          <text>同意</text>
+        </view>
+        <view class="action-btn reject" bind:tap="rejectRequest" data-id="{{item._id}}">
+          <text>拒绝</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty-state" wx:else>
+    <text class="empty-icon">📋</text>
+    <text class="empty-text">暂无更换教练申请</text>
+  </view>
+</view>

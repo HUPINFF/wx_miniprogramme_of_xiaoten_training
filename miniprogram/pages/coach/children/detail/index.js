@@ -5,74 +5,67 @@ Page({
    * 页面的初始数据
    */
   data: {
-    childInfo:null,
-    latestPerformance:null,
-    performanceList:[],
-    trainingList:[],
-    feedbackList:[],
-    loading:true,
-    showHoursModal: false,     // 【新增】学时编辑弹窗
+    childInfo: null,
+    latestPerformance: null,
+    performanceList: [],
+    trainingList: [],
+    feedbackList: [],
+    loading: true,
+    showHoursModal: false,
   },
 
-  /**
-   * 生命周期函数--监听页面加载
-   */
   onLoad(options) {
     const { id } = options
-    if(id) {
+    if (id) {
       this.loadChildDetail(id);
     }
   },
 
-  // 加载孩子详情
   loadChildDetail(childId) {
-    this.setData({loading:true});
+    this.setData({ loading: true });
 
     const db = wx.cloud.database();
 
-    // 并行加载所有数据
     Promise.all([
       db.collection('children').doc(childId).get(),
       this.loadPerformanceHistory(childId),
       this.loadTrainingHistory(childId),
       this.loadFeedbackHistory(childId)
-    ]).then(([childRes,performanceData,trainingData,feedbackData]) => {
+    ]).then(([childRes, performanceData, trainingData, feedbackData]) => {
       this.setData({
-        childInfo:childRes,
-        latestPerformance:performanceData.latest,
-        performanceList:performanceData.list,
-        trainingList:trainingData,
-        feedbackList:feedbackData,
-        loading:false
-      })  
+        childInfo: childRes,
+        latestPerformance: performanceData.latest,
+        performanceList: performanceData.list,
+        trainingList: trainingData,
+        feedbackList: feedbackData,
+        loading: false
+      })
     }).catch(err => {
-      console.error('加载孩子详情失败',err);
-      wx.showToast({title:'加载失败',icon:"none"})
-      this.setData({loading:false});
+      console.error('加载孩子详情失败', err);
+      wx.showToast({ title: '加载失败', icon: "none" })
+      this.setData({ loading: false });
     });
   },
 
-  // 【新增】编辑学时
   editHours() {
     this.setData({ showHoursModal: true });
   },
 
-    // 【新增】关闭学时弹窗
   closeHoursModal() {
     this.setData({ showHoursModal: false });
   },
 
-   // 【新增】学时输入变化
-   onHoursInput(e) {
+  onHoursInput(e) {
     this.setData({ tempHours: e.detail.value });
   },
 
-  // 【新增】确认保存学时
   onConfirmHours(e) {
     const { childId, remainingHours } = e.detail;
-    
+    const oldHours = this.data.childInfo.data.remainingHours || 0;
+    const changeAmount = remainingHours - oldHours;
+
     wx.showLoading({ title: '保存中...' });
-    
+
     const db = wx.cloud.database();
     db.collection('children').doc(childId).update({
       data: {
@@ -80,7 +73,14 @@ Page({
         updatedAt: new Date()
       }
     }).then(() => {
-      // 更新本地数据
+      if (changeAmount !== 0) {
+        const type = changeAmount > 0 ? 'income' : 'expense';
+        const amount = Math.abs(changeAmount);
+        const description = changeAmount > 0 ? `充值 ${amount} 课时` : `扣减 ${amount} 课时`;
+        return this.addHoursRecord(childId, type, amount, description);
+      }
+      return Promise.resolve();
+    }).then(() => {
       const updatedChildInfo = this.data.childInfo;
       updatedChildInfo.data.remainingHours = remainingHours;
       this.setData({
@@ -96,157 +96,152 @@ Page({
     });
   },
 
-  // 加载历史表现
+  addHoursRecord(childId, type, amount, description) {
+    const db = wx.cloud.database();
+    return db.collection('hoursRecords').add({
+      data: {
+        childId: childId,
+        type: type,
+        amount: amount,
+        description: description,
+        createdAt: new Date()
+      }
+    }).then(res => {
+      console.log('课时记录添加成功:', res);
+      return res;
+    }).catch(err => {
+      console.error('课时记录添加失败', err);
+      return err;
+    });
+  },
+
   loadPerformanceHistory(childId) {
     const db = wx.cloud.database()
     return db.collection('performance').where({
-      childId:childId
-    }).orderBy('weekDate','desc').get().then(res => {
+      childId: childId
+    }).orderBy('weekDate', 'desc').get().then(res => {
       const list = res.data;
       const latest = list.length > 0 ? list[0] : null
-      return {list,latest};
-    }) 
+      return { list, latest };
+    })
   },
 
-  // 加载训练记录
   loadTrainingHistory(childId) {
     const db = wx.cloud.database();
     return db.collection('trainings').where({
-      childId:childId
-    }).orderBy('date','desc').limit(5).get().then(res => {
+      childId: childId
+    }).orderBy('date', 'desc').limit(5).get().then(res => {
       return res.data;
     });
   },
 
-   // 加载反馈记录
-   loadFeedbackHistory(childId) {
+  loadFeedbackHistory(childId) {
     const db = wx.cloud.database();
     return db.collection('feedbacks').where({
-      childId:childId
-    }).orderBy('date','desc').limit(5).get().then(res => {
+      childId: childId
+    }).orderBy('date', 'desc').limit(5).get().then(res => {
       return res.data;
     })
-   },
+  },
 
-   //录入成绩
-   addPerformance() {
+  addPerformance() {
     wx.navigateTo({
-      url:`/pages/coach/performance/weekly/index?childId=${this.data.childInfo.data._id}`
+      url: `/pages/coach/performance/weekly/index?childId=${this.data.childInfo.data._id}`
     });
-   },
+  },
 
-   //写反馈
-   writeFeedback() {
+  writeFeedback() {
     wx.navigateTo({
-      url:`/pages/coach/feedback/write/index?childId=${this.data.childInfo.data._id}`
+      url: `/pages/coach/feedback/write/index?childId=${this.data.childInfo.data._id}`
     })
-   },
+  },
 
-
-   //添加训练
-   addTraining() {
+  addTraining() {
     wx.navigateTo({
-      url:`/pages/coach/trainings/edit/index?childId=${this.data.childInfo.data._id}`
+      url: `/pages/coach/trainings/edit/index?childId=${this.data.childInfo.data._id}`
     })
-   },
+  },
 
-   // 【新增】跳转到体质测评页面
   goToAssessment() {
     wx.navigateTo({
       url: `/pages/coach/assessment/edit/index?childId=${this.data.childInfo.data._id}&childName=${this.data.childInfo.data.name}`
     });
   },
 
-  //  编辑训练
-    editTraining(e) {
-      const {id} = e.currentTarget.dataset;
-      wx.navigateTo({
-        url: `/pages/coach/trainings/edit/index?id=${id}`
-      });
-    },
+  viewAlbum() {
+    console.log('viewAlbum called');
+    wx.showToast({ title: '跳转到相册', icon: 'none' });
+    wx.navigateTo({
+      url: `/pages/coach/children/album/index?childId=${this.data.childInfo.data._id}&childName=${this.data.childInfo.data.name}`
+    });
+  },
 
-    // 查看全部表现
-    viewAllPerformance() {
-      wx.navigateTo({
-        url: `/pages/coach/performance/list/index?childId=${this.data.childInfo.data._id}&childName=${this.data.childInfo.data.name}`
-      })
-    },
+  viewTrainingDetail(e) {
+    const { id } = e.currentTarget.dataset;
+    wx.navigateTo({
+      url: `/pages/coach/training-detail/index?id=${id}`
+    });
+  },
 
-    // 查看全部训练
+  editTraining(e) {
+    const { id } = e.currentTarget.dataset;
+    wx.navigateTo({
+      url: `/pages/coach/trainings/edit/index?id=${id}`
+    });
+  },
+
+  viewAllPerformance() {
+    wx.navigateTo({
+      url: `/pages/coach/performance/list/index?childId=${this.data.childInfo.data._id}&childName=${this.data.childInfo.data.name}`
+    })
+  },
+
   viewAllTrainings() {
     wx.navigateTo({
-      url:`/pages/coach/trainings/list/index?childId=${this.data.childInfo.data._id}&childName=${this.data.childInfo.data.name}`
+      url: `/pages/coach/trainings/list/index?childId=${this.data.childInfo.data._id}&childName=${this.data.childInfo.data.name}`
     });
   },
 
-  // 查看全部反馈
   viewAllFeedbacks() {
     wx.navigateTo({
-      url:`/pages/coach/feedback/list/index?childId=${this.data.childInfo.data._id}&childName=${this.data.childInfo.data.name}`
+      url: `/pages/coach/feedback/list/index?childId=${this.data.childInfo.data._id}&childName=${this.data.childInfo.data.name}`
     });
   },
 
-  // 查看表现详情
   viewPerformanceDetail(e) {
-    const {id} = e.currentTarget.dataset 
+    const { id } = e.currentTarget.dataset
     wx.navigateTo({
-      url:`/pages/coach/performance/detail/index?id=${id}`
+      url: `/pages/coach/performance/detail/index?id=${id}`
     });
   },
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
+
   onReady() {
-
   },
 
-  /**
-   * 生命周期函数--监听页面显示
-   */
   onShow() {
-
   },
 
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
   onHide() {
-
   },
 
-  /**
-   * 生命周期函数--监听页面卸载
-   */
   onUnload() {
-
   },
 
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
   onPullDownRefresh() {
-    if(this.data.childInfo) {
+    if (this.data.childInfo) {
       this.loadPerformanceData(this.data.childInfo._id).then(() => {
         wx.stopPullDownRefresh();
       });
-    }else{
+    } else {
       this.loadChildData().then(() => {
         wx.stopPullDownRefresh();
       });
     }
   },
 
-  /**
-   * 页面上拉触底事件的处理函数
-   */
   onReachBottom() {
-
   },
 
-  /**
-   * 用户点击右上角分享
-   */
   onShareAppMessage() {
-
   }
 })

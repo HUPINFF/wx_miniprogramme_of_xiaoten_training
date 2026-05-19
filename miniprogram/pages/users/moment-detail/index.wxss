@@ -20,11 +20,32 @@
   background-color: #f0f0f0;
 }
 
+.detail-video {
+  width: 100%;
+  height: 500rpx;
+  background-color: #f0f0f0;
+}
+
+.detail-title-wrapper {
+  padding: 30rpx 30rpx 20rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.video-tag {
+  font-size: 24rpx;
+  color: #07c160;
+  background: #e8f5e9;
+  padding: 6rpx 16rpx;
+  border-radius: 8rpx;
+  width: fit-content;
+}
+
 .detail-title {
   font-size: 36rpx;
   font-weight: 600;
   color: #333;
-  padding: 30rpx 30rpx 20rpx;
   line-height: 1.4;
 }
 

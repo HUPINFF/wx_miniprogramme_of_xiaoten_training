@@ -48,7 +48,7 @@ Page({
       // 查询所有预约
       return db.collection('appointments').where({
         childId:db.command.in(childIds)
-      }).orderBy('date','desc').orderBy('startTime','asc').get(); 
+      }).orderBy('date','desc').orderBy('startTime','asc').get();
     }).then(res => {
       if(res && res.data) {
         this.processAppointments(res.data);
@@ -78,7 +78,7 @@ Page({
           break
         case 'completed':
           completedList.push(item);
-          break;  
+          break;
       }
     });
     this.setData({
@@ -124,15 +124,23 @@ Page({
           });
         }
       }
-    }) 
+    })
   },
 
   // 跳转到预约上课页面
   goToBookClass() {
-  wx.navigateTo({
-    url: "/pages/users/book-class/index"
-  });
-},
+    wx.navigateTo({
+      url: "/pages/users/book-class/index"
+    });
+  },
+
+  // 跳转到预约教练页面
+  goToAllCoaches() {
+    wx.navigateTo({
+      url: "/pages/users/book-coach/index"
+    });
+  },
+
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

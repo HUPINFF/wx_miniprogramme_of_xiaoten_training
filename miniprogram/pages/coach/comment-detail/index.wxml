@@ -1,0 +1,100 @@
+<view class="container">
+  <nav-bar title="点评详情" showBack="{{true}}"></nav-bar>
+
+  <view class="content" wx:if="{{comment}}">
+    <!-- 点评信息 -->
+    <view class="section comment-section">
+      <view class="section-title">💬 家长点评</view>
+      
+      <view class="comment-header">
+        <image class="avatar" src="{{comment.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"></image>
+        <view class="info">
+          <text class="name">{{comment.nickName}}</text>
+          <view class="rating">
+            <text class="star" wx:for="{{5}}" wx:key="*this">★</text>
+            <text class="rating-text">{{comment.rating}}分</text>
+          </view>
+        </view>
+        <text class="time">{{comment.createTime}}</text>
+      </view>
+
+      <view class="tags" wx:if="{{comment.tags && comment.tags.length > 0}}">
+        <text class="tag" wx:for="{{comment.tags}}" wx:key="*this">{{item}}</text>
+      </view>
+
+      <view class="comment-content">
+        <text>{{comment.content}}</text>
+      </view>
+    </view>
+
+    <!-- 训练信息 -->
+    <view class="section training-section" wx:if="{{training}}">
+      <view class="section-title">📋 训练详情</view>
+      
+      <view class="training-info">
+        <view class="info-row">
+          <text class="label">课程名称</text>
+          <text class="value">{{training.name}}</text>
+        </view>
+        <view class="info-row">
+          <text class="label">学员姓名</text>
+          <text class="value">{{training.childName}}</text>
+        </view>
+        <view class="info-row">
+          <text class="label">上课时间</text>
+          <text class="value">{{training.date}} {{training.startTime}}</text>
+        </view>
+        <view class="info-row" wx:if="{{training.coachName}}">
+          <text class="label">授课教练</text>
+          <text class="value">{{training.coachName}}</text>
+        </view>
+      </view>
+
+      <!-- 教练反馈 -->
+      <view class="feedback" wx:if="{{training.feedback}}">
+        <view class="feedback-title">📝 教练反馈</view>
+        <text class="feedback-content">{{training.feedback}}</text>
+      </view>
+
+      <!-- 训练照片 -->
+      <view class="media-section" wx:if="{{photos.length > 0}}">
+        <view class="media-title">📸 训练照片</view>
+        <view class="media-grid">
+          <view class="media-item" wx:for="{{photos}}" wx:key="*this" bind:tap="previewImage" data-url="{{item}}">
+            <image src="{{item}}" mode="aspectFill"></image>
+          </view>
+        </view>
+      </view>
+
+      <!-- 训练视频 -->
+      <view class="media-section" wx:if="{{videos.length > 0}}">
+        <view class="media-title">🎬 训练视频</view>
+        <view class="video-list">
+          <view class="video-item" wx:for="{{videos}}" wx:key="*this">
+            <video 
+              src="{{item}}" 
+              mode="aspectFill" 
+              show-center-play-btn
+              poster=""
+            ></video>
+          </view>
+        </view>
+      </view>
+
+      <!-- 无媒体提示 -->
+      <view class="no-media" wx:if="{{photos.length === 0 && videos.length === 0}}">
+        <text>暂无训练照片或视频</text>
+      </view>
+    </view>
+
+    <!-- 无训练信息 -->
+    <view class="no-training" wx:else>
+      <text>暂无训练详情</text>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+</view>

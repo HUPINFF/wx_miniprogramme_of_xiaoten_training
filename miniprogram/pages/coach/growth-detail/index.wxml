@@ -1,0 +1,93 @@
+<!--pages/coach/growth-detail/index.wxml-->
+<view class="container">
+  <nav-bar title="成长记录" showBack="{{true}}"></nav-bar>
+
+  <view class="page-content" wx:if="{{growthDetail}}">
+    <!-- 头部卡片 -->
+    <view class="header-card">
+      <view class="header-main">
+        <view class="avatar-ring">
+          <text class="avatar-icon">{{growthDetail.category === 'height' ? '📈' : '💪'}}</text>
+        </view>
+        <view class="header-info">
+          <view class="title-row">
+            <text class="main-title">{{growthDetail.title}}</text>
+            <text class="category-badge {{growthDetail.category === 'height' ? 'height' : 'fitness'}}">{{growthDetail.category === 'height' ? '追高成长' : '体适能成长'}}</text>
+          </view>
+          <text class="sub-title">{{growthDetail.createdAt}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 描述区域 -->
+    <view class="desc-card" wx:if="{{growthDetail.description}}">
+      <view class="card-label">
+        <view class="label-dot blue"></view>
+        <text class="label-text">成长记录</text>
+      </view>
+      <view class="desc-body">
+        <text>{{growthDetail.description}}</text>
+      </view>
+    </view>
+
+    <!-- 成长轨迹 -->
+    <view class="timeline-card" wx:if="{{growthDetail.items && growthDetail.items.length > 0}}">
+      <view class="card-label">
+        <view class="label-dot green"></view>
+        <text class="label-text">成长轨迹</text>
+        <text class="item-count">{{growthDetail.items.length}} 条记录</text>
+      </view>
+
+      <view class="timeline-body">
+        <view class="timeline-track">
+          <view class="track-line"></view>
+        </view>
+
+        <view class="timeline-list">
+          <view class="timeline-item {{index === 0 ? 'first' : ''}} {{index === growthDetail.items.length - 1 ? 'last' : ''}}" wx:for="{{growthDetail.items}}" wx:key="index">
+            <view class="item-indicator">
+              <view class="indicator-dot">
+                <view class="dot-inner"></view>
+              </view>
+            </view>
+
+            <view class="item-card">
+              <view class="card-media">
+                <image wx:if="{{item.mediaType === 'image'}}" class="media-image" src="{{item.url}}" mode="aspectFill" bind:tap="previewImage" data-url="{{item.url}}"></image>
+                <video wx:else class="media-video" src="{{item.url}}" controls show-center-play-btn object-fit="cover" bind:tap="playVideo" data-url="{{item.url}}"></video>
+                <view class="media-badge" wx:if="{{item.mediaType === 'video'}}">
+                  <text class="badge-icon">▶</text>
+                </view>
+              </view>
+
+              <view class="card-content" wx:if="{{item.discrip}}">
+                <text class="content-text">{{item.discrip}}</text>
+              </view>
+
+              <view class="card-footer">
+                <text class="item-index">第 {{index + 1}} 项</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 空记录状态 -->
+    <view class="empty-state" wx:if="{{!growthDetail.items || growthDetail.items.length === 0}}">
+      <view class="empty-illustration">
+        <text class="empty-icon">📋</text>
+      </view>
+      <text class="empty-title">暂无成长记录</text>
+      <text class="empty-subtitle">记录孩子的每一个精彩瞬间</text>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-cover" wx:if="{{loading}}">
+    <view class="loading-card">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载中...</text>
+    </view>
+  </view>
+</view>

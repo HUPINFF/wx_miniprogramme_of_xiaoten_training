@@ -1,138 +1,282 @@
 /* components/coach-card/index.wxss */
+
+/* ==================== 教练卡片容器 ==================== */
 .coach-card {
-  width: 90%;
+  position: relative;
+  z-index: 1;
+  width: calc(100% - 60rpx);
   display: flex;
   align-items: center;
   gap: 24rpx;
-  background: linear-gradient(135deg, #07C160 0%, #059669 100%);
-  border-radius: 24rpx;
+  background: #ffffff;
+  border-radius: 32rpx;
   padding: 32rpx;
-  margin: 24rpx 0;
-  box-shadow: 0 8rpx 20rpx rgba(7, 193, 96, 0.3);
-  /* margin-bottom:0 ; */
+  margin: 0 auto 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+  border: 2rpx solid #f3f4f6;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* 左侧装饰色条 */
+.coach-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 20%;
+  width: 6rpx;
+  height: 60%;
+  background: linear-gradient(180deg, #07c160, #34d399);
+  border-radius: 0 4rpx 4rpx 0;
+}
+
+/* 右上角装饰圆 */
+.coach-card::after {
+  content: '';
+  position: absolute;
+  top: -32rpx;
+  right: -32rpx;
+  width: 128rpx;
+  height: 128rpx;
+  background: linear-gradient(135deg, rgba(7, 193, 96, 0.04), rgba(7, 193, 96, 0.08));
+  border-radius: 50%;
+}
+
+/* 编辑模式 */
 .coach-card.editing {
-  background: #FFFFFF;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  border-color: #07c160;
+  box-shadow: 0 8rpx 24rpx rgba(7, 193, 96, 0.12);
 }
 
+.coach-card.editing::before {
+  background: linear-gradient(180deg, #07c160, #34d399);
+}
+
+/* ==================== 头像区域 ==================== */
 .coach-avatar {
   position: relative;
   flex-shrink: 0;
+  z-index: 1;
 }
 
 .coach-avatar image {
   width: 120rpx;
   height: 120rpx;
-  border-radius: 60rpx;
-  border: 3rpx solid #FFFFFF;
-}
-
-.coach-card.editing .coach-avatar image {
-  border: 3rpx solid #07C160;
+  border-radius: 50%;
+  border: 4rpx solid #ffffff;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
+  background: #f0f0f0;
 }
 
 .coach-avatar .edit-tag {
   position: absolute;
   bottom: 0;
   right: 0;
-  background-color: #FFFFFF;
+  background: #ffffff;
   border-radius: 24rpx;
-  padding: 4rpx 8rpx;
+  padding: 6rpx 14rpx;
   font-size: 20rpx;
-  color: #07C160;
+  color: #07c160;
+  font-weight: 600;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.08);
+  border: 2rpx solid #e8f5e9;
 }
 
+/* ==================== 信息区域 ==================== */
 .coach-detail {
   flex: 1;
+  position: relative;
+  z-index: 1;
 }
 
+/* 教练名称行 */
 .coach-name {
   display: flex;
   align-items: baseline;
-  gap: 16rpx;
+  gap: 12rpx;
   margin-bottom: 12rpx;
   flex-wrap: wrap;
 }
 
 .coach-name text:first-child {
   font-size: 36rpx;
-  font-weight: 600;
-  color: #FFFFFF;
+  font-weight: 700;
+  color: #1a1a2e;
+  letter-spacing: 0.5rpx;
 }
 
 .coach-name .edit-icon {
   font-size: 24rpx;
-  color: rgba(255, 255, 255, 0.8);
+  color: #07c160;
+  padding: 4rpx 12rpx;
+  background: #e8f5e9;
+  border-radius: 16rpx;
+  font-weight: 500;
 }
 
+/* 教练简介 */
 .coach-bio {
   font-size: 26rpx;
-  color: rgba(255, 255, 255, 0.9);
-  line-height: 1.4;
+  color: #6b7280;
+  line-height: 1.6;
   word-break: break-all;
+  display: flex;
+  align-items: flex-start;
+  gap: 6rpx;
+  margin-bottom: 12rpx;
 }
 
-/* 编辑模式样式 */
+.coach-bio::before {
+  content: '💬';
+  font-size: 22rpx;
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+
+/* 教练联系方式 */
+.coach-contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  margin-top: 8rpx;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 24rpx;
+  color: #4a90d9;
+  background: #f0f8ff;
+  padding: 8rpx 16rpx;
+  border-radius: 16rpx;
+}
+
+.contact-icon {
+  font-size: 22rpx;
+}
+
+/* ==================== 编辑模式样式 ==================== */
 .coach-card.editing .coach-name text:first-child {
-  color: #1A1A1A;
+  color: #1a1a1a;
+  font-weight: 700;
 }
 
 .coach-card.editing .coach-bio {
   color: #666666;
 }
 
+/* 编辑字段 */
 .edit-field {
   margin-bottom: 16rpx;
 }
 
 .edit-name {
-  background-color: #F5F7FA;
-  border-radius: 16rpx;
+  background-color: #f5f7fa;
+  border-radius: 20rpx;
   padding: 20rpx 24rpx;
   font-size: 32rpx;
   font-weight: 600;
-  color: #1A1A1A;
+  color: #1a1a2e;
+  border: 2rpx solid #f3f4f6;
+  transition: all 0.3s ease;
+}
+
+.edit-name:focus {
+  border-color: #07c160;
+  background: #f0fdf4;
+}
+
+.edit-phone,
+.edit-wechat {
+  background-color: #f5f7fa;
+  border-radius: 20rpx;
+  padding: 20rpx 24rpx;
+  font-size: 28rpx;
+  color: #1a1a2e;
+  border: 2rpx solid #f3f4f6;
+  transition: all 0.3s ease;
+}
+
+.edit-phone:focus,
+.edit-wechat:focus {
+  border-color: #4a90d9;
+  background: #f0f8ff;
 }
 
 .edit-bio {
-  background-color: #F5F7FA;
-  border-radius: 16rpx;
+  background-color: #f5f7fa;
+  border-radius: 20rpx;
   padding: 20rpx 24rpx;
   font-size: 26rpx;
   color: #666666;
   width: 90%;
   min-height: 80rpx;
+  border: 2rpx solid #f3f4f6;
+  transition: all 0.3s ease;
+}
+
+.edit-bio:focus {
+  border-color: #07c160;
+  background: #f0fdf4;
 }
 
 .char-count {
   display: block;
   text-align: right;
   font-size: 22rpx;
-  color: #999999;
+  color: #9ca3af;
   margin-top: 8rpx;
+  padding-right: 8rpx;
 }
 
+/* ==================== 编辑操作按钮 ==================== */
 .edit-actions {
   display: flex;
   justify-content: flex-end;
   gap: 16rpx;
-  margin-top: 16rpx;
+  margin-top: 20rpx;
 }
 
 .cancel-btn {
-  background-color: #F5F7FA;
-  color: #666666;
+  background-color: #f5f7fa;
+  color: #6b7280;
   border-radius: 40rpx;
   font-size: 26rpx;
-  padding: 12rpx 32rpx;
+  font-weight: 600;
+  padding: 14rpx 36rpx;
+  border: 2rpx solid #f3f4f6;
+  transition: all 0.3s ease;
+  line-height: 1;
+}
+
+.cancel-btn::after {
+  border: none;
+}
+
+.cancel-btn:active {
+  background: #e5e7eb;
+  transform: scale(0.96);
 }
 
 .save-btn {
-  background-color: #07C160;
-  color: #FFFFFF;
+  background: linear-gradient(135deg, #07c160 0%, #05a350 100%);
+  color: #ffffff;
   border-radius: 40rpx;
   font-size: 26rpx;
-  padding: 12rpx 32rpx;
+  font-weight: 600;
+  padding: 14rpx 36rpx;
+  box-shadow: 0 4rpx 12rpx rgba(7, 193, 96, 0.25);
+  transition: all 0.3s ease;
+  line-height: 1;
+}
+
+.save-btn::after {
+  border: none;
+}
+
+.save-btn:active {
+  transform: scale(0.96);
+  box-shadow: 0 2rpx 8rpx rgba(7, 193, 96, 0.2);
 }

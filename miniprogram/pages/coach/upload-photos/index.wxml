@@ -1,0 +1,34 @@
+<!--pages/coach/upload-photos/index.wxml-->
+<view class="container">
+  <nav-bar title="上传照片" showBack="{{true}}"></nav-bar>
+
+  <view class="content">
+    <!-- 提示信息 -->
+    <view class="tips">
+      <text class="tips-text">💡 最多上传9张照片，将保存在本次训练的记录中</text>
+    </view>
+
+    <!-- 照片列表 -->
+    <view class="photo-grid">
+      <view class="photo-item" wx:for="{{photoUrls}}" wx:key="index">
+        <image src="{{item}}" mode="aspectFill" bind:tap="previewPhoto" data-index="{{index}}"></image>
+        <view class="delete-btn" bind:tap="deletePhoto" data-index="{{index}}">
+          <text class="iconfont icon-guanbi"></text>
+        </view>
+      </view>
+
+      <!-- 添加按钮 -->
+      <view class="add-btn" bind:tap="choosePhotos" wx:if="{{photoUrls.length < 9}}">
+        <text class="iconfont icon-jia"></text>
+        <text class="add-text">添加照片</text>
+      </view>
+    </view>
+
+    <!-- 完成按钮 -->
+    <view class="bottom-area">
+      <view class="save-btn {{uploading ? 'disabled' : ''}}" bind:tap="uploadAndSave">
+        <text>{{uploading ? '上传中...' : '保存照片'}}</text>
+      </view>
+    </view>
+  </view>
+</view>

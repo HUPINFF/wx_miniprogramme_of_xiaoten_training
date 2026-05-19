@@ -7,7 +7,9 @@ Component({
       value: {
         name: '',
         bio: '',
-        avatarUrl: ''
+        avatarUrl: '',
+        phone: '',
+        wechat: ''
       }
     },
     // 是否可编辑
@@ -20,6 +22,8 @@ Component({
   data: {
     isEditing: false,      // 是否编辑模式
     editName: '',
+    editPhone: '',
+    editWechat: '',
     editBio: '',
     editAvatarUrl: '',
     loading: false
@@ -33,6 +37,8 @@ Component({
       this.setData({
         isEditing: true,
         editName: this.properties.coachInfo.name || '',
+        editPhone: this.properties.coachInfo.phone || '',
+        editWechat: this.properties.coachInfo.wechat || '',
         editBio: this.properties.coachInfo.bio || '',
         editAvatarUrl: this.properties.coachInfo.avatarUrl || ''
       });
@@ -46,6 +52,16 @@ Component({
     // 输入姓名
     onNameInput(e) {
       this.setData({ editName: e.detail.value });
+    },
+
+    // 输入电话
+    onPhoneInput(e) {
+      this.setData({ editPhone: e.detail.value });
+    },
+
+    // 输入微信
+    onWechatInput(e) {
+      this.setData({ editWechat: e.detail.value });
     },
 
     // 输入简介
@@ -90,7 +106,7 @@ Component({
 
     // 保存编辑
     async saveEdit() {
-      const { editName, editBio, editAvatarUrl } = this.data;
+      const { editName, editPhone, editWechat, editBio, editAvatarUrl } = this.data;
       
       if (!editName.trim()) {
         wx.showToast({ title: '请填写姓名', icon: 'none' });
@@ -105,6 +121,8 @@ Component({
 
       const updateData = {
         name: editName.trim(),
+        phone: editPhone.trim(),
+        wechat: editWechat.trim(),
         bio: editBio.trim(),
         updatedAt: new Date()
       };

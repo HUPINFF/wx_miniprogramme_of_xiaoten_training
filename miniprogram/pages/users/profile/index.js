@@ -80,7 +80,7 @@ Page({
     this.setData({
       showEditProfileModal: true,
       editProfileData: {
-        nickName: this.data.userInfo.nickName || '',
+        name: this.data.userInfo.name || this.data.userInfo.nickName || '',
         avatarUrl: this.data.userInfo.avatarUrl || ''
       }
     })
@@ -93,12 +93,12 @@ Page({
 
   // 确认保存资料
   onConfirmEditProfile(e) {
-    const { nickName,avatarUrl } = e.detail;
+    const { name, avatarUrl } = e.detail;
     const openid = wx.getStorageSync('openid');
     const db = wx.cloud.database();
 
     // 更新本地缓存
-    const userInfo = { ...this.data.userInfo, nickName, avatarUrl };
+    const userInfo = { ...this.data.userInfo, name, avatarUrl };
     wx.setStorageSync('userInfo', userInfo);
     this.setData({ userInfo, showEditProfileModal: false });
 
@@ -109,7 +109,7 @@ Page({
       if (res.data.length > 0) {
         db.collection('users').doc(res.data[0]._id).update({
           data: {
-            nickName: nickName,
+            name: name,
             avatarUrl: avatarUrl,
             updatedAt: new Date()
           }
@@ -159,6 +159,18 @@ Page({
           });
         }
       }
+    });
+  },
+
+  // 跳转到课时明细页面
+  goToHoursDetail() {
+    const { childInfo } = this.data;
+    if (!childInfo || !childInfo._id) {
+      wx.showToast({ title: '孩子信息有误', icon: 'none' });
+      return;
+    }
+    wx.navigateTo({
+      url: `/pages/users/hours-detail/index?childId=${childInfo._id}&childName=${childInfo.name}`
     });
   },
 
@@ -260,6 +272,13 @@ Page({
     });
   },
 
+  // 所有教练
+  goToAllCoaches() {
+    wx.navigateTo({
+      url: '/pages/users/all-coaches/index'
+    });
+  },
+
   // 退出登录
   logout() {
     wx.showModal({
@@ -279,9 +298,9 @@ Page({
     });
   },
 
-  onHide() {},
-  onUnload() {},
-  onPullDownRefresh() {},
-  onReachBottom() {},
-  onShareAppMessage() {}
+  onHide() { },
+  onUnload() { },
+  onPullDownRefresh() { },
+  onReachBottom() { },
+  onShareAppMessage() { }
 })

@@ -1,11 +1,15 @@
 <view class="container">
   <nav-bar title="精彩瞬间"></nav-bar>
   <view class="detail-card" wx:if="{{momentDetail}}">
-    <!-- 图片 -->
-    <image class="detail-image" src="{{momentDetail.image}}" mode="aspectFill" bindtap="previewImage"></image>
+    <!-- 图片/视频 -->
+    <image wx:if="{{momentDetail.mediaType !== 'video'}}" class="detail-image" src="{{momentDetail.image}}" mode="aspectFill" bindtap="previewImage"></image>
+    <video wx:else class="detail-video" src="{{momentDetail.video}}" controls show-center-play-btn show-play-btn enable-progress-gesture object-fit="contain" autoplay="{{false}}" poster=""></video>
 
     <!-- 标题 -->
-    <view class="detail-title">{{momentDetail.title}}</view>
+    <view class="detail-title-wrapper">
+      <text wx:if="{{momentDetail.mediaType === 'video'}}" class="video-tag">视频</text>
+      <text class="detail-title">{{momentDetail.title}}</text>
+    </view>
 
     <!-- 描述（如果有） -->
     <view class="detail-desc" wx:if="{{momentDetail.description}}">

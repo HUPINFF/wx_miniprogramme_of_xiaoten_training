@@ -157,7 +157,7 @@
 
     <view class="training-list">
       <block wx:for="{{weekTrainings}}" wx:key="id">
-        <view class="training-item" catch:tap="viewTrainingDetail" data-id="{{item.id}}">
+        <view class="training-item" catch:tap="viewTrainingDetail" data-id="{{item._id}}">
           <!-- 训练头部 -->
           <view class="training-header">
             <view class="training-day">

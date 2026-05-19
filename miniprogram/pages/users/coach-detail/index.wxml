@@ -1,0 +1,72 @@
+<view class="container">
+  <nav-bar title="教练详情" showBack="{{true}}"></nav-bar>
+
+  <view class="coach-profile" wx:if="{{coach}}">
+    <view class="profile-header">
+      <image class="avatar" src="{{coach.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"></image>
+      <view class="info">
+        <text class="name">{{coach.name}}</text>
+        <text class="role">教练</text>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-title">联系方式</view>
+      <view class="contact-list">
+        <view class="contact-item" wx:if="{{coach.phone}}" bind:tap="callCoach">
+          <view class="contact-icon">📞</view>
+          <view class="contact-info">
+            <text class="contact-label">手机号码</text>
+            <text class="contact-value">{{coach.phone}}</text>
+          </view>
+          <text class="contact-arrow">›</text>
+        </view>
+        <view class="contact-item" wx:if="{{coach.wechat}}" bind:tap="copyWechat">
+          <view class="contact-icon">💬</view>
+          <view class="contact-info">
+            <text class="contact-label">微信号</text>
+            <text class="contact-value">{{coach.wechat}}</text>
+          </view>
+          <text class="contact-arrow">›</text>
+        </view>
+        <view class="contact-item" wx:if="{{coach.email}}">
+          <view class="contact-icon">📧</view>
+          <view class="contact-info">
+            <text class="contact-label">邮箱</text>
+            <text class="contact-value">{{coach.email}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="section" wx:if="{{coach.bio}}">
+      <view class="section-title">个人简介</view>
+      <view class="bio-content">
+        <text>{{coach.bio}}</text>
+      </view>
+    </view>
+
+    <view class="section" wx:if="{{coach.tags && coach.tags.length > 0}}">
+      <view class="section-title">擅长领域</view>
+      <view class="tags">
+        <text class="tag" wx:for="{{coach.tags}}" wx:key="*this">{{tagItem}}</text>
+      </view>
+    </view>
+
+    <view class="section" wx:if="{{coach.experience}}">
+      <view class="section-title">教学经验</view>
+      <view class="experience-content">
+        <text>{{coach.experience}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="loading" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+
+  <view class="empty-state" wx:if="{{!coach && !loading}}">
+    <text class="empty-icon">👨‍🏫</text>
+    <text class="empty-text">教练信息不存在</text>
+  </view>
+</view>

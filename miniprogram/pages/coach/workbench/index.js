@@ -12,30 +12,30 @@ Page({
     banners: [],
     newsList: [],
     moments: [],
+    comments: [],
+    growthList: [],
+    courseList: [],
     loading: true
   },
 
-   async onLoad() {
+  async onLoad() {
     this.setTodayDate();
-    // 此方法
     await this.refreshData();
-    // await this.loadCoachInfo();
-    // this.loadTodayTrainings();
-    // this.loadTodoCount();
-    // this.loadHomeData();  // 新增：加载首页公共数据
+    await this.loadCoachInfo();
+    this.loadTodayTrainings();
+    this.loadTodoCount();
+    this.loadHomeData();
   },
 
   async refreshData() {
     try {
-      // 1) 串行：先拿 coachInfo（后续依赖它）
       await this.loadCoachInfo();
-       // 2) 并行：无先后依赖的请求一起发
       await Promise.all([
         this.loadTodayTrainings(),
         this.loadTodoCount(),
         this.loadHomeData()
       ])
-    } catch(err) {
+    } catch (err) {
       wx.showToast({ title: '刷新失败', icon: 'none' });
       console.error(err);
     } finally {
@@ -51,17 +51,17 @@ Page({
   },
 
   loadCoachInfo() {
-    return new Promise((resolve, reject) => {  // ← 返回 Promise
+    return new Promise((resolve, reject) => {
       const openid = wx.getStorageSync('openid')
       const db = wx.cloud.database();
       db.collection('users').where({
         _openid: openid,
         role: 'coach'
       }).get().then(res => {
-        if(res.data.length > 0) {
+        if (res.data.length > 0) {
           const coachInfo = res.data[0];
-          this.setData({coachInfo}, () => {
-            resolve();  // ← 数据设置完成后 resolve
+          this.setData({ coachInfo }, () => {
+            resolve();
           });
         } else {
           reject('未找到教练信息');
@@ -72,54 +72,75 @@ Page({
     });
   },
 
-     // 组件更新时触发
   onCoachUpdate(e) {
     const { coachInfo } = e.detail;
     this.setData({ coachInfo });
   },
 
   loadTodayTrainings() {
-    
     const db = wx.cloud.database();
     const today = this.getTodayDateString();
+    const now = new Date();
 
-    const queryCondition = {
-      date: today,
-      coachId: this.data.coachInfo._id  // 如果是 undefined
-    };
-    
-    console.log('查询条件:', JSON.stringify(queryCondition));
-    // 输出：{"date":"2026-04-19"}  ← coachId 消失了！
-    
     db.collection('trainings').where({
       date: today,
       coachId: this.data.coachInfo._id
-    }).get().then(res => {
-      this.setData({ todayTrainings: res.data });
+    }).get().then(async res => {
+      // 获取学员信息来补充显示
+      const childIdSet = new Set(res.data.map(t => t.childId));
+      const childIds = Array.from(childIdSet);
+
+      let childInfoMap = {};
+      if (childIds.length > 0) {
+        const _ = db.command;
+        const childRes = await db.collection('children').where({
+          _id: _.in(childIds)
+        }).get();
+        childInfoMap = childRes.data.reduce((map, child) => {
+          map[child._id] = child;
+          return map;
+        }, {});
+      }
+
+      // 处理训练数据
+      const trainings = res.data.map(training => {
+        const childInfo = childInfoMap[training.childId] || {};
+
+        // 计算是否可以开始上课
+        let canStart = true;
+        if (training.startTime) {
+          const [hour, minute] = training.startTime.split(':').map(Number);
+          const startDateTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute);
+          canStart = now >= startDateTime;
+        }
+
+        return {
+          ...training,
+          childName: childInfo.name || '未知学员',
+          canStart: canStart
+        };
+      });
+
+      this.setData({ todayTrainings: trainings });
     });
   },
 
   loadTodoCount() {
-    // 统计待办事项数量
     const db = wx.cloud.database();
     const _ = db.command;
     const coachId = this.data.coachInfo._id;
-    
+    if (!coachId) return;
 
-    if(!coachId) return;
-
-    // 获取当前周的起止日期
     const now = new Date();
     const weekRange = this.getCurrentWeekRange(now);
 
-    // 1. 获取该教练负责的所有孩子
     db.collection('children').where({
-      coachId:coachId
+      coachId: coachId
     }).get().then(res => {
       const children = res.data;
       const childIds = children.map(child => child._id);
 
-      if(childIds.length === 0) {
+      if (childIds.length === 0) {
         this.setData({
           'todo.weeklyPerformance': 0,
           'todo.feedback': 0
@@ -127,180 +148,266 @@ Page({
         return;
       }
 
-      //  // 2. 查询本周已录入表现的孩子
-
       return db.collection('performance').where({
-        childId:_.in(childIds),
-        weekRange:weekRange.start
+        childId: _.in(childIds),
+        weekRange: weekRange.start
       }).get().then(perfRes => {
         const hasPerformanceChildIds = perfRes.data.map(item => item.childId);
 
-        // 3. 查询本周已写反馈的孩子
         return db.collection('feedbacks').where({
           childId: _.in(childIds),
           weekStart: weekRange.start
         }).get().then(feedbackRes => {
           const hasFeedbackChildIds = feedbackRes.data.map(item => item.childId);
 
-            // 4. 计算未录入表现的孩子数
-        const noPerformanceCount = childIds.filter(id => !hasPerformanceChildIds.includes(id)).length;
+          const noPerformanceCount = childIds.filter(id => !hasPerformanceChildIds.includes(id)).length;
+          const noFeedbackCount = childIds.filter(id => !hasFeedbackChildIds.includes(id)).length;
 
-        // 5. 计算未写反馈的孩子数
-        const noFeedbackCount = childIds.filter(id => !hasFeedbackChildIds.includes(id)).length;
-
-        this.setData({
-          'todo.weeklyPerformance': noPerformanceCount,
-          'todo.feedback': noFeedbackCount
-        });
+          this.setData({
+            'todo.weeklyPerformance': noPerformanceCount,
+            'todo.feedback': noFeedbackCount
+          });
         })
       })
     }).catch(err => {
       console.error('统计待办事项失败', err);
     });
-    
-    // 统计本周未录入表现的孩子数
-    // 统计未写反馈
-    // 统计未上传照片的训练记录
-    // 这里简化处理，实际需要复杂查询
   },
 
-  
-// 获取当前周的起止日期
-getCurrentWeekRange(date) {
-  const monday = this.getMondayDate(date);
-  const sunday = this.getSundayDate(date);
-  
-  const year = date.getFullYear();
-  const weekStart = `${year}-${String(monday.month).padStart(2, '0')}-${String(monday.day).padStart(2, '0')}`;
-  const weekEnd = `${year}-${String(sunday.month).padStart(2, '0')}-${String(sunday.day).padStart(2, '0')}`;
-  
-  return { start: weekStart, end: weekEnd };
-},
+  getCurrentWeekRange(date) {
+    const monday = this.getMondayDate(date);
+    const sunday = this.getSundayDate(date);
+    const year = date.getFullYear();
+    const weekStart = `${year}-${String(monday.month).padStart(2, '0')}-${String(monday.day).padStart(2, '0')}`;
+    const weekEnd = `${year}-${String(sunday.month).padStart(2, '0')}-${String(sunday.day).padStart(2, '0')}`;
+    return { start: weekStart, end: weekEnd };
+  },
 
-// 获取周一日期
-getMondayDate(date) {
-  const monday = new Date(date);
-  const day = monday.getDay() || 7;
-  monday.setDate(monday.getDate() - day + 1);
-  return {
-    month: monday.getMonth() + 1,
-    day: monday.getDate()
-  };
-},
+  getMondayDate(date) {
+    const monday = new Date(date);
+    const day = monday.getDay() || 7;
+    monday.setDate(monday.getDate() - day + 1);
+    return {
+      month: monday.getMonth() + 1,
+      day: monday.getDate()
+    };
+  },
 
-
-// 获取周日日期
-getSundayDate(date) {
-  const sunday = new Date(date);
-  const day = sunday.getDay() || 7;
-  sunday.setDate(sunday.getDate() + (7 - day));
-  return {
-    month: sunday.getMonth() + 1,
-    day: sunday.getDate()
-  };
-},
+  getSundayDate(date) {
+    const sunday = new Date(date);
+    const day = sunday.getDay() || 7;
+    sunday.setDate(sunday.getDate() + (7 - day));
+    return {
+      month: sunday.getMonth() + 1,
+      day: sunday.getDate()
+    };
+  },
 
   getTodayDateString() {
     const now = new Date();
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
   },
 
-
-  // 新增：加载首页公共数据
-
   loadHomeData() {
-    this.setData({loading:true});
-
+    this.setData({ loading: true });
     Promise.all([
       this.loadBanners(),
       this.loadNews(),
       this.loadMoments(),
+      this.loadComments(),
+      this.loadGrowth(),
+      this.loadCourses(),
     ]).then(() => {
-      this.setData({loading:false});
+      this.setData({ loading: false });
     }).catch(err => {
       console.error("加载首页数据失败", err);
       this.setData({ loading: false });
     })
   },
 
-  // 新增：加载轮播图
   loadBanners() {
     const db = wx.cloud.database();
-    return db.collection('banners').where({
-      status: true
-    }).orderBy('sort', 'asc').get().then(res => {
+    return db.collection('banners').where({ status: true }).orderBy('sort', 'asc').get().then(res => {
       this.setData({ banners: res.data });
     }).catch(err => {
       console.error("加载轮播图失败", err);
     });
   },
 
-   // 新增：加载最新动态
-   loadNews() {
+  loadNews() {
     const db = wx.cloud.database();
-    return db.collection('news').where({
-      status: true
-    }).orderBy('sort', 'asc').orderBy('time', 'desc').limit(5).get().then(res => {
+    return db.collection('news').where({ status: true }).orderBy('sort', 'asc').orderBy('time', 'desc').limit(5).get().then(res => {
       this.setData({ newsList: res.data });
     }).catch(err => {
       console.error("加载最新动态失败", err);
     });
   },
 
-  // 新增：加载精彩瞬间
   loadMoments() {
     const db = wx.cloud.database();
-    return db.collection("moments").where({
-      status: true
-    }).orderBy('sort', 'asc').limit(10).get().then(res => {
+    return db.collection("moments").where({ status: true }).orderBy('sort', 'asc').limit(10).get().then(res => {
       this.setData({ moments: res.data });
     }).catch(err => {
       console.error("加载精彩瞬间失败", err);
     });
   },
 
-  
-  // ========== 下拉刷新 ==========
-onPullDownRefresh() {
-  console.log('下拉刷新');
-  
-  // 先刷新教练信息
-  this.loadCoachInfo();
-  
-  // 延迟一下，等待 coachInfo 更新后再刷新其他数据
-  setTimeout(() => {
-    Promise.all([
-      this.loadTodayTrainings(),
-      this.loadHomeData()
-    ]).then(() => {
-      wx.stopPullDownRefresh();
-      wx.showToast({ title: '刷新成功', icon: 'success', duration: 1000 });
-    }).catch(err => {
-      console.error('刷新失败', err);
-      wx.stopPullDownRefresh();
-      wx.showToast({ title: '刷新失败', icon: 'none' });
-    });
-  }, 500);
-},
+  loadComments() {
+    const db = wx.cloud.database();
+    return db.collection('comment')
+      .orderBy('createdAt', 'desc')
+      .limit(5)
+      .get()
+      .then(res => {
+        console.log('Comments loaded:', res.data);
+        this.setData({ comments: res.data });
+      })
+      .catch(err => {
+        console.error("加载点评失败", err);
+      });
+  },
 
-  // 新增：查看更多动态
+  loadGrowth() {
+    const db = wx.cloud.database();
+    return db.collection('growth_exp')
+      .where({ status: true })
+      .orderBy('sort', 'asc')
+      .limit(10)
+      .get()
+      .then(res => {
+        console.log('成长案例 loaded:', res.data);
+        const growthList = res.data.map(item => {
+          let itemCount = 0;
+          let coverImage = '';
+          if (item.items && item.items.length > 0) {
+            itemCount = item.items.length;
+            coverImage = item.items[0].url;
+          }
+          return {
+            ...item,
+            itemCount,
+            coverImage
+          };
+        });
+        this.setData({ growthList });
+      })
+      .catch(err => {
+        console.error("加载成长案例失败", err);
+      });
+  },
+
+  loadCourses() {
+    const db = wx.cloud.database();
+    return db.collection('course')
+      .where({ status: true })
+      .orderBy('sort', 'asc')
+      .limit(10)
+      .get()
+      .then(res => {
+        console.log('课程列表 loaded:', res.data);
+        this.setData({ courseList: res.data });
+      })
+      .catch(err => {
+        console.error("加载课程失败", err);
+      });
+  },
+
+  gotoCourseManage() {
+    wx.navigateTo({ url: '/pages/coach/course-manage/index' });
+  },
+
+  viewCourseDetail(e) {
+    const courseId = e.currentTarget.dataset.id;
+    if (courseId) {
+      wx.navigateTo({ url: `/pages/coach/course-detail/index?id=${courseId}` });
+    }
+  },
+
+  deleteComment(e) {
+    const { id, trainingId } = e.currentTarget.dataset;
+    wx.showModal({
+      title: '删除点评',
+      content: '确定要删除这条点评吗？',
+      success: (res) => {
+        if (res.confirm) {
+          wx.showLoading({ title: '删除中...' });
+          const db = wx.cloud.database();
+          db.collection('comment').doc(id).remove()
+            .then(() => {
+              if (trainingId) {
+                return db.collection('trainings').doc(trainingId).update({
+                  data: { comment: { isCommented: false } }
+                });
+              }
+            })
+            .then(() => {
+              wx.hideLoading();
+              wx.showToast({ title: '已删除', icon: 'success' });
+              this.loadComments();
+            })
+            .catch(err => {
+              wx.hideLoading();
+              console.error('删除点评失败', err);
+              wx.showToast({ title: '删除失败', icon: 'none' });
+            });
+        }
+      }
+    });
+  },
+
+  viewAllComments() {
+    wx.navigateTo({ url: '/pages/coach/all-comments/index' });
+  },
+
+  viewCommentDetail(e) {
+    const commentId = e.currentTarget.dataset.id;
+    if (commentId) {
+      wx.navigateTo({ url: `/pages/coach/comment-detail/index?id=${commentId}` });
+    }
+  },
+
+  viewAllGrowth() {
+    wx.navigateTo({ url: '/pages/coach/all-growth/index' });
+  },
+
+  viewGrowthDetail(e) {
+    const growthId = e.currentTarget.dataset.id;
+    if (growthId) {
+      wx.navigateTo({ url: `/pages/coach/growth-detail/index?id=${growthId}` });
+    }
+  },
+
+  onPullDownRefresh() {
+    console.log('下拉刷新');
+    this.loadCoachInfo();
+    setTimeout(() => {
+      Promise.all([
+        this.loadTodayTrainings(),
+        this.loadHomeData()
+      ]).then(() => {
+        wx.stopPullDownRefresh();
+        wx.showToast({ title: '刷新成功', icon: 'success', duration: 1000 });
+      }).catch(err => {
+        console.error('刷新失败', err);
+        wx.stopPullDownRefresh();
+        wx.showToast({ title: '刷新失败', icon: 'none' });
+      });
+    }, 500);
+  },
+
   viewAllNews() {
     wx.navigateTo({ url: "/pages/users/news/index" });
   },
 
-  // 新增：查看动态详情
   viewNews(e) {
     const { id } = e.currentTarget.dataset;
     wx.navigateTo({ url: `/pages/users/news-detail/index?id=${id}` });
   },
 
-
-  // 新增：查看更多精彩瞬间
   viewMoreMoments() {
     wx.navigateTo({ url: "/pages/users/moments/index" });
   },
 
-  // 新增：查看精彩瞬间详情
   viewMoment(e) {
     const { id } = e.currentTarget.dataset;
     wx.navigateTo({ url: `/pages/users/moment-detail/index?id=${id}` });
@@ -318,20 +425,72 @@ onPullDownRefresh() {
     wx.navigateTo({ url: '/pages/coach/feedback/write/index' });
   },
 
-
-
   gotoAppointments() {
     wx.navigateTo({ url: '/pages/coach/appointments/index' });
   },
 
-  // 跳转到内容管理页面
   gotoContentManage() {
-    wx.navigateTo({
-      url: '/pages/coach/content-manage/index'
+    wx.navigateTo({ url: '/pages/coach/content-manage/index' });
+  },
+
+  goToTrainingDetail(e) {
+    const { id } = e.currentTarget.dataset;
+    if (id) {
+      wx.navigateTo({ url: `/pages/coach/training-detail/index?id=${id}` });
+    }
+  },
+
+  goToClass(e) {
+    const { id } = e.currentTarget.dataset;
+    console.log('进入上课，训练ID:', id);
+
+    if (!id) {
+      wx.showToast({ title: '数据错误', icon: 'none' });
+      return;
+    }
+
+    // 从已加载的训练数据中查找
+    const training = this.data.todayTrainings.find(t => t._id === id);
+    if (!training) {
+      wx.showToast({ title: '未找到训练', icon: 'none' });
+      return;
+    }
+
+    // 检查是否可以开始上课
+    if (!training.canStart && (training.status === 'pending' || !training.status)) {
+      wx.showToast({ title: '未到上课时间', icon: 'none' });
+      return;
+    }
+
+    // 如果已经上课中，直接跳转
+    if (training.status === 'in_class') {
+      wx.navigateTo({ url: `/pages/coach/in-class/index?trainingId=${id}` });
+      return;
+    }
+
+    // 如果已经结束，不能再上课
+    if (training.status === 'finished') {
+      wx.showToast({ title: '课程已结束', icon: 'none' });
+      return;
+    }
+
+    // 开始上课 - 先更新状态再跳转
+    const db = wx.cloud.database();
+    db.collection('trainings').doc(id).update({
+      data: {
+        status: 'in_class',
+        inClassTime: new Date()
+      }
+    }).then(() => {
+      wx.navigateTo({ url: `/pages/coach/in-class/index?trainingId=${id}` });
+      this.loadTodayTrainings();
+    }).catch(err => {
+      console.error('开始上课失败', err);
+      wx.showToast({ title: '操作失败', icon: 'none' });
     });
   },
 
   onShow() {
-    this.loadTodayTrainings() 
+    this.loadTodayTrainings()
   }
 });

@@ -139,11 +139,9 @@ Page({
 
   // 查看训练详情
   viewTrainingDetail(e) {
-    // console.log(e);
     const {id} = e.currentTarget.dataset;
-    // console.log(id);
     wx.navigateTo({
-      url:`/pages/coach/trainings/detail/index?id=${id}`
+      url:`/pages/coach/training-detail/index?id=${id}`
     })
   },
 

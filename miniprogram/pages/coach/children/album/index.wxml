@@ -1,0 +1,60 @@
+<!--pages/coach/children/album/index.wxml-->
+<view class="container">
+  <nav-bar title="{{childName}}的相册" showBack="{{true}}"></nav-bar>
+
+  <!-- 月份选择 -->
+  <view class="month-tabs">
+    <scroll-view scroll-x="true" class="month-scroll">
+      <view class="month-list">
+        <view 
+          class="month-item {{selectedYearMonth === item ? 'active' : ''}}" 
+          wx:for="{{yearMonthList}}" 
+          wx:key="index"
+          bind:tap="selectMonth"
+          data-month="{{item}}"
+        >
+          <text>{{item}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 相册内容 -->
+  <view class="album-content" wx:if="{{!loading}}">
+    <!-- 照片区域 -->
+    <view class="section" wx:if="{{currentData.photos && currentData.photos.length > 0}}">
+      <view class="section-header">
+        <text class="section-title">📷 照片 ({{currentData.photoCount}}张)</text>
+      </view>
+      <view class="photo-grid">
+        <view class="photo-item" wx:for="{{currentData.photos}}" wx:key="index">
+          <image src="{{item}}" mode="aspectFill" bind:tap="previewPhoto" data-index="{{index}}"></image>
+        </view>
+      </view>
+    </view>
+
+    <!-- 视频区域 -->
+    <view class="section" wx:if="{{currentData.videos && currentData.videos.length > 0}}">
+      <view class="section-header">
+        <text class="section-title">🎬 视频 ({{currentData.videoCount}}个)</text>
+      </view>
+      <view class="video-grid">
+        <view class="video-item" wx:for="{{currentData.videos}}" wx:key="index">
+          <video src="{{item}}" mode="aspectFill" controls></video>
+        </view>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{(!currentData.photos || currentData.photos.length === 0) && (!currentData.videos || currentData.videos.length === 0)}}">
+      <text class="empty-icon">📭</text>
+      <text class="empty-text">该月暂无照片和视频</text>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-state" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text>加载中...</text>
+  </view>
+</view>

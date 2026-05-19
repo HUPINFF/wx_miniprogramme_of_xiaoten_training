@@ -1107,7 +1107,7 @@ loadCurrentAssessment(childId) {
   viewTrainingDetail(e) {
     const { id } = e.currentTarget.dataset;
     wx.navigateTo({
-      url: `/pages/users/training-detail/index?trainingId=${id}`
+      url: `/pages/coach/training-detail/index?id=${id}`
     });
   },
 

@@ -1,0 +1,92 @@
+<view class="page {{viewMode}}" style="--sbh: {{statusBarHeight}}px;">
+
+  <!-- ===== 顶部导航栏 ===== -->
+  <view class="top-nav" style="padding-top: {{statusBarHeight}}px;">
+    <view class="nav-inner">
+      <view class="nav-left" bindtap="goBack">
+        <text class="nav-back-icon">‹</text>
+      </view>
+      <text class="nav-title">教练</text>
+      <view class="nav-right">
+        <text class="nav-action-icon">🔍</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- ===== 操作筛选栏 ===== -->
+  <view class="filter-bar">
+    <view class="filter-group-left">
+      <text class="result-count">共 {{filteredCoaches.length}} 位教练</text>
+    </view>
+    <view class="filter-group-right">
+      <view class="view-toggle">
+        <view class="toggle-item {{viewMode === 'list' ? 'active' : ''}}" bindtap="switchView" data-mode="list">
+          <text class="toggle-label">单排</text>
+        </view>
+        <view class="toggle-item {{viewMode === 'grid' ? 'active' : ''}}" bindtap="switchView" data-mode="grid">
+          <text class="toggle-label">双排</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ===== 内容区域 ===== -->
+  <scroll-view class="content-scroll" scroll-y enhanced show-scrollbar="{{false}}">
+
+    <!-- 加载状态 -->
+    <view class="loading-state" wx:if="{{loading}}">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载教练信息...</text>
+    </view>
+
+    <!-- 教练网格 -->
+    <view class="coach-container" wx:elif="{{filteredCoaches.length > 0}}">
+      <view
+        class="coach-card"
+        wx:for="{{filteredCoaches}}"
+        wx:key="_id"
+        data-id="{{item._id}}"
+        bindtap="viewCoachDetail"
+        style="animation-delay: {{index * 0.06}}s"
+      >
+        <!-- 教练头像区 -->
+        <view class="card-avatar-wrap">
+          <image
+            class="card-avatar"
+            src="{{item.avatarUrl || avatarPlaceholder}}"
+            mode="aspectFill"
+          ></image>
+          <view class="avatar-overlay"></view>
+          <view class="rank-badge">{{item.rank || 'PT2'}}</view>
+        </view>
+
+        <!-- 卡片信息区 -->
+        <view class="card-body">
+          <!-- 姓名 -->
+          <view class="card-header">
+            <text class="card-name">{{item.name}}</text>
+          </view>
+          <text class="card-bio" wx:if="{{item.bio}}">{{item.bio}}</text>
+        </view>
+
+        <!-- CTA 底部 -->
+        <view class="card-cta">
+          <button class="book-btn" bindtap="bookCoach" data-id="{{item._id}}" hover-class="btn-press">预约</button>
+        </view>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:else>
+      <view class="empty-icon-wrap">
+        <text class="empty-emoji">🏋️</text>
+      </view>
+      <text class="empty-title">暂无教练信息</text>
+      <text class="empty-desc">请稍后再来查看</text>
+    </view>
+
+    <!-- 底部占位 -->
+    <view class="bottom-spacer"></view>
+  </scroll-view>
+
+</view>

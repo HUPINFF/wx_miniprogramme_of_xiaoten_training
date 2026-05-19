@@ -3,13 +3,22 @@
 <view class="container">
   <nav-bar title="学员管理" showBack="{{true}}"></nav-bar>
 
-
 <!-- <view>显示</view> -->
 <view class="header">
   <input placeholder="搜索学员" bindinput="onSearch"/>
 </view>
 
-<view class="child-list">
+<view wx:if="{{loading}}" class="skeleton-list">
+    <view class="skeleton-item" wx:for="{{[1,2,3,4]}}" wx:key="*this">
+      <view class="skeleton-avatar skeleton-shrimmer"></view>
+      <view class="skeleton-info">
+        <view class="skeleton-line skeleton-line-name skeleton-shrimmer"></view>
+        <view class="skeleton-line skeleton0line-mata skeleton-shrimmer"></view>
+      </view>
+    </view>
+  </view>
+
+<view wx:else class="child-list">
   <view class="child-item" wx:for="{{children}}" wx:key="_id" bind:tap="viewDetail" data-id="{{item._id}}">
     <image class="avatar" src="cloud://hupin255-5gfbw856b1c861ef.6875-hupin255-5gfbw856b1c861ef-1410552194/default_avatar/6756593ba0eb6a537f7060da8ede3ca8.jpeg" mode="aspectFill"></image>
 
@@ -30,6 +39,12 @@
 <view class="add-btn" bind:tap="addChild">
     <text class="add-icon">+</text>
     <text class="add-text">关联学员</text>
+  </view>
+
+  <!-- 更换教练入口 -->
+  <view class="change-coach-btn" bind:tap="gotoChangeCoachRequests">
+    <text class="change-coach-icon">🔄</text>
+    <text class="change-coach-text">更换教练申请</text>
   </view>
 
 <!-- 关联学员弹窗 -->

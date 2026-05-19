@@ -1,0 +1,94 @@
+<nav-bar title="训练详情"></nav-bar>
+<view class="container">
+  <view class="header">
+    <view class="course-name">{{training.name}}</view>
+    <view class="course-status status-{{training.status}}">
+      <text>{{training.status === 'pending' ? '待上课' : ''}}{{training.status === 'in_class' ? '上课中' : ''}}{{training.status === 'finished' ? '已下课' : ''}}</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-title">训练信息</view>
+    <view class="info-row">
+      <text class="label">训练类型</text>
+      <text class="value">{{training.type}}</text>
+    </view>
+    <view class="info-row">
+      <text class="label">训练日期</text>
+      <text class="value">{{training.date}} {{training.day}}</text>
+    </view>
+    <view class="info-row">
+      <text class="label">上课时间</text>
+      <text class="value">{{training.startTime}} - {{training.endTime}}</text>
+    </view>
+    <view class="info-row">
+      <text class="label">训练时长</text>
+      <text class="value">{{training.duration}}</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-title">训练内容</view>
+    <view class="info-row">
+      <text class="label">训练重点</text>
+      <text class="value">{{training.focus}}</text>
+    </view>
+    <view class="info-row">
+      <text class="label">训练难点</text>
+      <text class="value">{{training.difficulty}}</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-title">学员信息</view>
+    <view class="info-row">
+      <text class="label">学员姓名</text>
+      <text class="value">{{childInfo.name || training.childName}}</text>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{training.photos && training.photos.length > 0}}">
+    <view class="card-title">训练照片 ({{training.photoCount}}张)</view>
+    <view class="photo-grid">
+      <view 
+        class="photo-item" 
+        wx:for="{{training.photos}}" 
+        wx:key="index"
+        bind:tap="previewImage"
+        data-url="{{item}}"
+      >
+        <image src="{{item}}" mode="aspectFill" />
+      </view>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{!training.photos || training.photos.length === 0}}">
+    <view class="card-title">训练照片</view>
+    <view class="empty-photos">暂无训练照片</view>
+  </view>
+
+  <view class="card" wx:if="{{training.videos && training.videos.length > 0}}">
+    <view class="card-title">训练视频 ({{training.videoCount}}个)</view>
+    <view class="video-grid">
+      <view 
+        class="video-item" 
+        wx:for="{{training.videos}}" 
+        wx:key="index"
+        bind:tap="playVideo"
+        data-url="{{item}}"
+      >
+        <video 
+          src="{{item}}" 
+          mode="aspectFill"
+          poster=""
+          controls
+        ></video>
+      </view>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{training.videos && training.videos.length === 0}}">
+    <view class="card-title">训练视频</view>
+    <view class="empty-videos">暂无训练视频</view>
+  </view>
+</view>
