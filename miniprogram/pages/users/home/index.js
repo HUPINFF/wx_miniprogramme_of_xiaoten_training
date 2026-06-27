@@ -27,6 +27,8 @@ Page({
     growthList: [],
     // 课程体系
     courseList: [],
+    // 登录弹窗
+    showLoginModal: false,
   },
 
   /**
@@ -135,7 +137,10 @@ Page({
       
       // 无论成功失败，都隐藏骨架屏
       this.setData({ loading: false });
-      
+
+      // 数据加载完成后，检查登录状态，未登录则弹出登录提醒
+      this.checkShowLoginModal();
+
       // 打印加载结果统计
       const successCount = results.filter(r => r.status === 'fulfilled').length;
       console.log(`首页数据加载完成: ${successCount}/${results.length} 成功`);
@@ -376,12 +381,51 @@ Page({
     });
   },
 
+  // ==================== 登录检查 ====================
+
+  /**
+   * 检查登录状态，未登录则跳转登录页
+   */
+  checkLogin() {
+    const token = wx.getStorageSync('token');
+    if (!token) {
+      wx.navigateTo({ url: '/pages/common/login/index' });
+      return false;
+    }
+    return true;
+  },
+
+  /**
+   * 数据加载完成后检查登录状态，未登录则弹出登录提醒弹窗
+   */
+  checkShowLoginModal() {
+    const token = wx.getStorageSync('token');
+    if (!token) {
+      this.setData({ showLoginModal: true });
+    }
+  },
+
+  /** 登录弹窗 - 确认 */
+  onLoginConfirm() {
+    this.setData({ showLoginModal: false });
+    wx.navigateTo({ url: '/pages/common/login/index' });
+  },
+
+  /** 登录弹窗 - 取消 */
+  onLoginCancel() {
+    this.setData({ showLoginModal: false });
+  },
+
+  /** 阻止冒泡 */
+  stopPropagation() {},
+
   // ==================== 快捷入口 ====================
 
   /**
    * 快捷入口 - 训练数据
    */
   goToTrainingData() {
+    if (!this.checkLogin()) return;
     wx.navigateTo({ url: "/pages/users/children/index" });
   },
 
@@ -389,6 +433,7 @@ Page({
    * 快捷入口 - 课程表
    */
   goToSchedule() {
+    if (!this.checkLogin()) return;
     const childId = this.data.childInfo?._id;
     if (!childId) {
       wx.showToast({ title: '请先添加孩子信息', icon: 'none' });
@@ -401,6 +446,7 @@ Page({
    * 快捷入口 - 预约上课
    */
   goToBookClass() {
+    if (!this.checkLogin()) return;
     wx.switchTab({ url: "/pages/users/orders/index" });
   },
 
@@ -408,6 +454,7 @@ Page({
    * 快捷入口 - 上课记录
    */
   goToClassRecords() {
+    if (!this.checkLogin()) return;
     wx.navigateTo({ url: '/pages/users/class-records/index' });
   },
 
@@ -415,6 +462,7 @@ Page({
    * 快捷入口 - 课堂点评
    */
   goToClassComments() {
+    if (!this.checkLogin()) return;
     wx.navigateTo({ url: '/pages/users/class-comments/index' });
   },
 
@@ -436,6 +484,7 @@ Page({
    * 快捷入口 - 我的反馈
    */
   goToFeedback() {
+    if (!this.checkLogin()) return;
     const childId = this.data.childInfo?._id;
     if (!childId) {
       wx.showToast({ title: '请先添加孩子信息', icon: 'none' });
@@ -448,6 +497,7 @@ Page({
    * 加入我们 - 预约教练
    */
   goToBookCoach() {
+    if (!this.checkLogin()) return;
     wx.navigateTo({ url: '/pages/users/book-coach/index' });
   },
 

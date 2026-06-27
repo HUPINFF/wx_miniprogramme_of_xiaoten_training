@@ -1435,3 +1435,96 @@ page {
   color: var(--text-hint);
   font-size: 28rpx;
 }
+
+/* ==================== 登录提醒弹窗 ==================== */
+.login-modal-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.login-modal {
+  width: 580rpx;
+  background: #fff;
+  border-radius: 32rpx;
+  padding: 60rpx 48rpx 40rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 16rpx 48rpx rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease;
+}
+
+.login-modal-icon {
+  font-size: 80rpx;
+  margin-bottom: 24rpx;
+}
+
+.login-modal-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 16rpx;
+}
+
+.login-modal-desc {
+  font-size: 26rpx;
+  color: var(--text-sub);
+  text-align: center;
+  line-height: 1.6;
+  margin-bottom: 48rpx;
+}
+
+.login-modal-actions {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 20rpx;
+}
+
+.login-modal-btn {
+  width: 100%;
+  height: 88rpx;
+  border-radius: 44rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  border: none;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  overflow: visible;
+}
+
+.login-modal-btn::after {
+  border: none;
+}
+
+.login-modal-btn.confirm {
+  background: linear-gradient(135deg, var(--primary), #059669);
+  color: #fff;
+}
+
+.login-modal-btn.confirm:active {
+  opacity: 0.9;
+  transform: scale(0.98);
+}
+
+.login-modal-btn.cancel {
+  background: var(--bg);
+  color: var(--text-sub);
+}
+
+.login-modal-btn.cancel:active {
+  background: #e5e7eb;
+  transform: scale(0.98);
+}

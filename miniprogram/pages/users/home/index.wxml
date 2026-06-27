@@ -388,3 +388,16 @@
     </view>
   </view>
 </view>
+
+<!-- 登录提醒弹窗 -->
+<view wx:if="{{showLoginModal}}" class="login-modal-mask" bind:tap="onLoginCancel">
+  <view class="login-modal" catch:tap="stopPropagation">
+    <view class="login-modal-icon">👋</view>
+    <view class="login-modal-title">欢迎来到腾鑫体育</view>
+    <view class="login-modal-desc">登录后可查看训练数据、预约课程、记录成长，体验完整功能</view>
+    <view class="login-modal-actions">
+      <button class="login-modal-btn cancel" bind:tap="onLoginCancel">随便看看</button>
+      <button class="login-modal-btn confirm" bind:tap="onLoginConfirm">去登录</button>
+    </view>
+  </view>
+</view>

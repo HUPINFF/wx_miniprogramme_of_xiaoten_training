@@ -15,19 +15,30 @@ Page({
 
   },
 
+  checkLogin() {
+    const token = wx.getStorageSync('token');
+    if (!token) {
+      wx.navigateTo({ url: '/pages/common/login/index' });
+      return false;
+    }
+    return true;
+  },
+
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
+    if (!this.checkLogin()) return;
     this.loadUserInfo();
     this.loadChildInfo();
-    this.loadCoachInfo();      // 【新增】加载教练信息
+    this.loadCoachInfo();
   },
 
   /**
    * 生命周期函数--监听页面显示
    */
   onShow() {
+    if (!this.checkLogin()) return;
     this.loadChildInfo();
     this.loadUserInfo();       // 【新增】刷新用户信息
   },

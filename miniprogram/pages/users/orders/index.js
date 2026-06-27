@@ -17,7 +17,17 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
+    if (!this.checkLogin()) return;
     this.loadAppointMents();
+  },
+
+  checkLogin() {
+    const token = wx.getStorageSync('token');
+    if (!token) {
+      wx.navigateTo({ url: '/pages/common/login/index' });
+      return false;
+    }
+    return true;
   },
 
 

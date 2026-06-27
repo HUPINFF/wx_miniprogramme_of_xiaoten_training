@@ -1,5 +1,6 @@
 {
   "pages": [
+    "pages/users/home/index",
     "pages/common/login/index",
     "pages/common/agreement/index",
     "pages/common/order-detail/index",
@@ -31,7 +32,6 @@
     "pages/coach/growth-detail/index",
     "pages/coach/course-manage/index",
     "pages/coach/course-detail/index",
-    "pages/users/home/index",
     "pages/users/children/index",
     "pages/users/orders/index",
     "pages/users/book-class/index",

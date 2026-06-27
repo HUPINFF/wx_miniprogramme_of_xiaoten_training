@@ -35,7 +35,17 @@ Page({
   },
 
   onLoad: function (options) {
+    if (!this.checkLogin()) return;
     this.loadChildData();
+  },
+
+  checkLogin() {
+    const token = wx.getStorageSync('token');
+    if (!token) {
+      wx.navigateTo({ url: '/pages/common/login/index' });
+      return false;
+    }
+    return true;
   },
 
   onShow: function () {
