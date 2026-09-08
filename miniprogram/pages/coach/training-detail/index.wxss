@@ -1,74 +1,117 @@
-.container {
-  padding: 24rpx;
+/* pages/coach/training-detail/index.wxss */
+
+/* ==================== 全局变量（iOS 化） ==================== */
+page {
+  --bg: #F2F2F7;
+  --primary: #007AFF;
+  --card: #ffffff;
+  --text-main: #000000;
+  --text-sub: rgba(60, 60, 67, 0.6);
+  --text-hint: rgba(60, 60, 67, 0.34);
+  --border: rgba(60, 60, 67, 0.1);
+  --radius-sm: 14rpx;
+  --radius-md: 20rpx;
+  --radius-lg: 28rpx;
+  --radius-xl: 32rpx;
 }
 
+.container {
+  min-height: 100vh;
+  background-color: var(--bg);
+  padding: 24rpx;
+  padding-bottom: 60rpx;
+}
+
+/* ==================== 顶部信息卡 ==================== */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 24rpx;
-  background: linear-gradient(135deg, #07c160 0%, #04a853 100%);
-  border-radius: 16rpx;
+  padding: 32rpx;
+  background: #ffffff;
+  border: 1rpx solid rgba(60, 60, 67, 0.08);
+  border-radius: 28rpx;
   margin-bottom: 24rpx;
 }
 
 .course-name {
-  font-size: 36rpx;
-  font-weight: 600;
-  color: #fff;
+  flex: 1;
+  font-size: 38rpx;
+  font-weight: 700;
+  color: #000000;
+  padding-right: 24rpx;
 }
 
 .course-status {
+  flex-shrink: 0;
   font-size: 24rpx;
-  padding: 8rpx 20rpx;
-  border-radius: 20rpx;
-  background: rgba(255, 255, 255, 0.3);
-  color: #fff;
+  padding: 10rpx 24rpx;
+  border-radius: 999rpx;
+  background: #f2f2f7;
+  color: rgba(60, 60, 67, 0.6);
 }
 
+/* 状态语义色 */
+.course-status.status-pending {
+  background: rgba(0, 122, 255, 0.12);
+  color: #007aff;
+}
+
+.course-status.status-in_class {
+  background: rgba(255, 149, 0, 0.16);
+  color: #ff9500;
+}
+
+.course-status.status-finished {
+  background: rgba(52, 199, 89, 0.16);
+  color: #34c759;
+}
+
+/* ==================== 白色分组卡 ==================== */
 .card {
-  background: #fff;
-  border-radius: 16rpx;
-  padding: 24rpx;
+  background: #ffffff;
+  border: 1rpx solid rgba(60, 60, 67, 0.08);
+  border-radius: 20rpx;
+  padding: 24rpx 28rpx;
   margin-bottom: 24rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
 }
 
 .card-title {
   font-size: 30rpx;
   font-weight: 600;
-  color: #333;
-  margin-bottom: 24rpx;
+  color: #000000;
+  margin-bottom: 16rpx;
   padding-bottom: 16rpx;
-  border-bottom: 1rpx solid #f0f0f0;
+  border-bottom: 1rpx solid rgba(60, 60, 67, 0.1);
 }
 
 .info-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16rpx 0;
+  padding: 20rpx 0;
 }
 
 .info-row:not(:last-child) {
-  border-bottom: 1rpx solid #f5f5f5;
+  border-bottom: 1rpx solid rgba(60, 60, 67, 0.08);
 }
 
 .label {
   font-size: 28rpx;
-  color: #666;
+  color: rgba(60, 60, 67, 0.6);
 }
 
 .value {
   font-size: 28rpx;
-  color: #333;
+  color: #000000;
   font-weight: 500;
 }
 
+/* ==================== 照片 / 视频 ==================== */
 .photo-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16rpx;
+  gap: 12rpx;
 }
 
 .photo-item {
@@ -76,6 +119,7 @@
   aspect-ratio: 1;
   border-radius: 12rpx;
   overflow: hidden;
+  background: #f2f2f7;
 }
 
 .photo-item image {
@@ -85,7 +129,7 @@
 
 .empty-photos {
   text-align: center;
-  color: #999;
+  color: rgba(60, 60, 67, 0.34);
   font-size: 28rpx;
   padding: 40rpx 0;
 }
@@ -101,6 +145,7 @@
   aspect-ratio: 4/3;
   border-radius: 12rpx;
   overflow: hidden;
+  background: #000;
 }
 
 .video-item video {
@@ -110,7 +155,7 @@
 
 .empty-videos {
   text-align: center;
-  color: #999;
+  color: rgba(60, 60, 67, 0.34);
   font-size: 28rpx;
   padding: 40rpx 0;
 }

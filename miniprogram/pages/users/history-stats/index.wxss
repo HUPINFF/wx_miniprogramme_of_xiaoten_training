@@ -108,3 +108,52 @@
     gap: 16rpx;
   }
 }
+
+/* ==================== iOS 精修（追加覆盖，后面规则优先） ==================== */
+.container {
+  background-color: #F2F2F7;
+}
+
+.weekly-card {
+  background-color: #ffffff;
+  border-radius: 28rpx;
+  box-shadow: none;
+}
+
+.week-header {
+  border-bottom: 1rpx solid rgba(60, 60, 67, 0.1);
+}
+
+.week-range {
+  color: #000000;
+}
+
+.stat-item {
+  background-color: #f7f7fa;
+}
+
+.stat-label {
+  color: rgba(60, 60, 67, 0.34);
+}
+
+.stat-value {
+  color: #000000;
+}
+
+/* 空态 / 加载更多 */
+.empty {
+  color: rgba(60, 60, 67, 0.34);
+}
+
+.load-more {
+  color: #007aff;
+}
+
+.loading {
+  color: rgba(60, 60, 67, 0.34);
+}
+
+.loading-spinner {
+  border: 4rpx solid rgba(60, 60, 67, 0.1);
+  border-top-color: #007aff;
+}

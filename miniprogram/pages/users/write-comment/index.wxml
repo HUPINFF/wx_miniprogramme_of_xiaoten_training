@@ -57,7 +57,7 @@
     <!-- 匿名选项 -->
     <view class="form-item">
       <view class="anonymous" bind:tap="toggleAnonymous">
-        <checkbox value="{{isAnonymous}}" color="#07c160"/>
+        <checkbox value="{{isAnonymous}}" color="#007AFF"/>
         <text>匿名点评</text>
         <text class="anonymous-hint">（匿名后其他家长看不到您的昵称）</text>
       </view>

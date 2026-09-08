@@ -196,3 +196,92 @@
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* ==================== iOS 精修（追加覆盖，后面规则优先） ==================== */
+.container {
+  background-color: #F2F2F7;
+}
+
+/* 筛选栏：iOS 分段控件 */
+.filter-bar {
+  width: auto;
+  margin: 16rpx 30rpx 24rpx;
+  background-color: #ffffff;
+  border: 1rpx solid rgba(60, 60, 67, 0.1);
+  border-radius: 999rpx;
+  padding: 6rpx;
+  box-shadow: none;
+}
+.filter-item {
+  border-radius: 999rpx;
+  color: rgba(60, 60, 67, 0.6);
+}
+.filter-item.active {
+  background: #007aff;
+  color: #ffffff;
+}
+
+/* 记录列表 */
+.record-list {
+  padding: 0 24rpx;
+}
+.record-card {
+  border-radius: 28rpx;
+  box-shadow: none;
+}
+.record-card:active {
+  transform: none;
+  opacity: 0.85;
+}
+.record-date {
+  border-right: 1rpx solid rgba(60, 60, 67, 0.1);
+}
+.record-date .day {
+  color: #007aff;
+}
+.record-date .date {
+  color: rgba(60, 60, 67, 0.34);
+}
+.course-name {
+  color: #000000;
+}
+.coach-name {
+  color: rgba(60, 60, 67, 0.6);
+}
+.coach-avatar {
+  background-color: rgba(60, 60, 67, 0.1);
+}
+.stat-item {
+  background-color: #f7f7fa;
+  color: rgba(60, 60, 67, 0.6);
+}
+.record-photos {
+  background-color: rgba(0, 122, 255, 0.1);
+}
+.photo-count {
+  color: #007aff;
+}
+.arrow {
+  color: rgba(60, 60, 67, 0.25);
+}
+
+/* 更多 / 空态 / 加载 */
+.load-more,
+.no-more {
+  color: rgba(60, 60, 67, 0.34);
+}
+.load-more {
+  color: #007aff;
+}
+.empty {
+  color: rgba(60, 60, 67, 0.34);
+}
+.loading {
+  background-color: rgba(255, 255, 255, 0.96);
+  color: rgba(60, 60, 67, 0.6);
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
+}
+.loading-spinner {
+  border: 4rpx solid rgba(60, 60, 67, 0.1);
+  border-top-color: #007aff;
+}

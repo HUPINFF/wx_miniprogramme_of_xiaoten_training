@@ -4,7 +4,7 @@
   <!-- 顶部横幅 -->
   <view class="contact-header">
     <view class="header-content">
-      <text class="header-title">📞 随时为您服务</text>
+      <text class="header-title">随时为您服务</text>
       <text class="header-subtitle">有任何问题或建议，欢迎随时联系</text>
     </view>
   </view>

@@ -1,4 +1,22 @@
 /* pages/coach/children/detail/index.wxss */
+
+/* ==================== 全局变量（iOS 化） ==================== */
+page {
+  --bg: #F2F2F7;
+  --primary: #007AFF;
+  --primary-dark: #0056CF;
+  --primary-light: rgba(0, 122, 255, 0.1);
+  --card: #ffffff;
+  --text-main: #000000;
+  --text-sub: rgba(60, 60, 67, 0.6);
+  --text-hint: rgba(60, 60, 67, 0.34);
+  --border: rgba(60, 60, 67, 0.1);
+  --radius-sm: 14rpx;
+  --radius-md: 20rpx;
+  --radius-lg: 28rpx;
+  --radius-xl: 32rpx;
+}
+
 .container {
   min-height: 100vh;
   background-color: #f5f7fa;
@@ -374,4 +392,155 @@
   font-weight: 500;
   color: #fff;
   letter-spacing: 1rpx;
+}
+
+/* ==================== iOS 精修（追加覆盖，后面规则优先） ==================== */
+
+/* 容器灰底 */
+.container {
+  background-color: #f2f2f7;
+}
+
+/* 加载 */
+.loading-spinner {
+  border-top-color: #007aff;
+}
+
+/* 学员信息卡 → 纯白卡，深色文字可读 */
+.child-header {
+  width: auto;
+  margin: 0 8rpx 24rpx;
+  background: #ffffff;
+  border: 1rpx solid rgba(60, 60, 67, 0.08);
+  border-radius: 28rpx;
+  box-shadow: none;
+  padding: 32rpx;
+}
+.avatar-large {
+  border: 3rpx solid #ffffff;
+  background-color: #f2f2f7;
+}
+.child-basic .name {
+  color: #000000;
+  font-weight: 700;
+}
+.child-basic .info {
+  color: rgba(60, 60, 67, 0.6);
+  opacity: 1;
+}
+.hours-label {
+  color: rgba(60, 60, 67, 0.6);
+  opacity: 1;
+}
+.hours-value {
+  color: #007aff;
+}
+.hours-value.warning {
+  color: #ff3b30;
+}
+.edit-hours-btn {
+  background: #007aff;
+  border: none;
+  border-radius: 999rpx;
+  box-shadow: none;
+}
+.edit-hours-btn:active {
+  transform: scale(0.96);
+  opacity: 0.9;
+  box-shadow: none;
+}
+
+/* 快捷操作：去投影，图标浅灰衬底 */
+.quick-actions {
+  background-color: #ffffff;
+  border-radius: 28rpx;
+  box-shadow: none;
+  padding: 16rpx 8rpx;
+}
+.action-btn text:last-child {
+  color: rgba(60, 60, 67, 0.6);
+}
+.action-btn:active {
+  background-color: rgba(60, 60, 67, 0.04);
+}
+
+/* 分组卡：去投影 + hairline 标题分隔 */
+.section {
+  background-color: #ffffff;
+  border-radius: 28rpx;
+  box-shadow: none;
+}
+.section-header {
+  padding-bottom: 20rpx;
+  border-bottom: 1rpx solid rgba(60, 60, 67, 0.1);
+}
+.section-title,
+.title {
+  color: #000000;
+}
+.section-date {
+  color: rgba(60, 60, 67, 0.34);
+}
+.section-more {
+  color: #007aff;
+}
+
+/* 表现网格 / 历史 / 训练 / 反馈：中性浅底行，语义色改系统蓝 */
+.performance-item {
+  background-color: #f7f7fa;
+}
+.performance-item .label {
+  color: rgba(60, 60, 67, 0.34);
+}
+.performance-item .value {
+  color: #000000;
+}
+.history-item {
+  background-color: #f7f7fa;
+}
+.history-item .date {
+  color: #007aff;
+}
+.history-item .score {
+  color: rgba(60, 60, 67, 0.6);
+}
+.history-item .arrow {
+  color: rgba(60, 60, 67, 0.25);
+}
+.training-item {
+  background-color: #f7f7fa;
+}
+.training-header .date {
+  color: #007aff;
+}
+.training-header .type {
+  background-color: rgba(0, 122, 255, 0.12);
+  color: #007aff;
+}
+.training-item .name {
+  color: #000000;
+}
+.training-footer .focus {
+  color: rgba(60, 60, 67, 0.34);
+}
+.training-footer .photo-count {
+  color: #007aff;
+}
+.feedback-item {
+  background-color: #f7f7fa;
+}
+.feedback-header .date {
+  color: #007aff;
+}
+.feedback-header .week {
+  color: rgba(60, 60, 67, 0.34);
+}
+.feedback-item .content {
+  color: rgba(60, 60, 67, 0.6);
+}
+
+/* 空状态 */
+.empty,
+.emp-txt {
+  color: rgba(60, 60, 67, 0.34);
 }

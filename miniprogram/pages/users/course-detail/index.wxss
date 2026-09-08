@@ -1,7 +1,25 @@
 /* pages/users/course-detail/index.wxss */
+page {
+  --bg: #F2F2F7;
+  --primary: #007AFF;
+  --primary-dark: #0056CF;
+  --primary-light: rgba(0, 122, 255, 0.1);
+  --card: #ffffff;
+  --text-main: #000000;
+  --text-sub: rgba(60, 60, 67, 0.6);
+  --text-hint: rgba(60, 60, 67, 0.34);
+  --border: rgba(60, 60, 67, 0.1);
+  --radius-sm: 14rpx;
+  --radius-md: 20rpx;
+  --radius-lg: 28rpx;
+  --radius-xl: 32rpx;
+
+  background-color: var(--bg);
+}
+
 .container {
   min-height: 100vh;
-  background: linear-gradient(160deg, #f8fafc 0%, #eef4ff 50%, #f0f7ff 100%);
+  background-color: var(--bg);
 }
 
 .page-content {
@@ -362,5 +380,80 @@
 
 .loading-text {
   font-size: 28rpx;
-  color: #8896a6;
+  color: rgba(60, 60, 67, 0.6);
+}
+
+/* ==================== iOS 精修（追加覆盖，后面规则优先） ==================== */
+
+/* 封面：去蓝绿渐变占位，改中性；overlay 收敛 */
+.cover-section {
+  background: linear-gradient(135deg, #f7f7fa 0%, #ececf1 100%);
+  border-radius: 28rpx;
+}
+.cover-overlay {
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.5));
+}
+.course-hours-badge {
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(20rpx);
+  -webkit-backdrop-filter: blur(20rpx);
+  border: 1rpx solid rgba(255, 255, 255, 0.25);
+  border-radius: 999rpx;
+}
+
+/* 卡片：平面白卡 */
+.info-card,
+.advice-card,
+.custom-section,
+.empty-state {
+  background: #ffffff;
+  border-radius: 28rpx;
+  box-shadow: none;
+  border: none;
+}
+.label-text,
+.advice-title,
+.section-title text:nth-child(2),
+.empty-title {
+  color: #000;
+}
+.content-count,
+.empty-subtitle {
+  color: rgba(60, 60, 67, 0.6);
+}
+.info-content,
+.advice-content,
+.custom-item {
+  background: #f7f7fa;
+  border: none;
+}
+.info-content text,
+.advice-content text,
+.custom-desc text {
+  color: rgba(60, 60, 67, 0.6);
+}
+.advice-card.parent {
+  border-left: 4rpx solid #34C759;
+}
+.advice-card.coach {
+  border-left: 4rpx solid #007AFF;
+}
+.custom-desc {
+  border-top: 1rpx solid rgba(60, 60, 67, 0.1);
+}
+
+/* 底部联系按钮 → 系统蓝实心 */
+.bottom-button {
+  background: #007AFF;
+  border-radius: 28rpx;
+  box-shadow: none;
+}
+.bottom-button:active {
+  opacity: 0.85;
+}
+
+/* 加载 */
+.loading-spinner {
+  border: 4rpx solid rgba(0, 122, 255, 0.15);
+  border-top-color: #007AFF;
 }

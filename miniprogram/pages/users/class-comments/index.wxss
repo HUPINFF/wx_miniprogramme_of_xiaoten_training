@@ -1,7 +1,25 @@
 /* pages/users/class-comments/index.wxss */
+page {
+  --bg: #F2F2F7;
+  --primary: #007AFF;
+  --primary-dark: #0056CF;
+  --primary-light: rgba(0, 122, 255, 0.1);
+  --card: #ffffff;
+  --text-main: #000000;
+  --text-sub: rgba(60, 60, 67, 0.6);
+  --text-hint: rgba(60, 60, 67, 0.34);
+  --border: rgba(60, 60, 67, 0.1);
+  --radius-sm: 14rpx;
+  --radius-md: 20rpx;
+  --radius-lg: 28rpx;
+  --radius-xl: 32rpx;
+
+  background-color: var(--bg);
+}
+
 .container {
   min-height: 100vh;
-  background-color: #f5f7fa;
+  background-color: var(--bg);
   padding-bottom: 40rpx;
 }
 
@@ -284,4 +302,125 @@
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+/* ==================== iOS 精修（追加覆盖，后面规则优先） ==================== */
+
+/* 筛选栏 → iOS segmented */
+.filter-bar {
+  background-color: #ffffff;
+  box-shadow: none;
+  border-radius: 999rpx;
+}
+.filter-item {
+  color: rgba(60, 60, 67, 0.6);
+  border-radius: 999rpx;
+}
+.filter-item.active {
+  background: #007AFF;
+  color: #fff;
+}
+.filter-item .badge {
+  background-color: #FF3B30;
+}
+
+/* 课堂卡片 */
+.class-card {
+  background-color: #ffffff;
+  border-radius: 28rpx;
+  box-shadow: none;
+}
+.class-name {
+  color: #000;
+}
+.class-date {
+  color: rgba(60, 60, 67, 0.6);
+}
+.status {
+  border-radius: 999rpx;
+}
+.status.commented {
+  background-color: rgba(52, 199, 89, 0.14);
+  color: #34C759;
+}
+.status.uncommented {
+  background-color: rgba(255, 149, 0, 0.15);
+  color: #C77700;
+}
+
+/* 教练信息行 */
+.coach-info {
+  border-bottom: 1rpx solid rgba(60, 60, 67, 0.1);
+}
+.coach-avatar {
+  background-color: #f2f2f7;
+}
+.coach-name {
+  color: rgba(60, 60, 67, 0.6);
+}
+
+/* 训练内容字段 */
+.training-content {
+  background-color: #f7f7fa;
+  border-radius: 16rpx;
+}
+.content-item .label {
+  color: rgba(60, 60, 67, 0.34);
+}
+.content-item .value {
+  color: rgba(60, 60, 67, 0.6);
+}
+.photo-item {
+  background-color: #f2f2f7;
+}
+
+/* 点评区域 */
+.comment-section {
+  background-color: #f7f7fa;
+  border-radius: 16rpx;
+}
+.comment-label {
+  color: #000;
+}
+.rating .star {
+  color: rgba(60, 60, 67, 0.2);
+}
+.rating .star.active {
+  color: #FF9500;
+}
+.comment-content {
+  color: rgba(60, 60, 67, 0.6);
+}
+.comment-time {
+  color: rgba(60, 60, 67, 0.34);
+}
+
+/* 按钮 */
+.comment-btn,
+.edit-btn {
+  border-radius: 24rpx;
+}
+.comment-btn {
+  background: #007AFF;
+}
+.comment-btn:active {
+  opacity: 0.85;
+}
+.edit-btn {
+  background-color: rgba(0, 122, 255, 0.1);
+  color: #007AFF;
+  border: none;
+}
+.edit-btn:active {
+  opacity: 0.85;
+}
+
+/* 加载更多 */
+.load-more {
+  color: #007AFF;
+}
+
+/* 空状态 */
+.empty {
+  color: rgba(60, 60, 67, 0.6);
 }

@@ -730,3 +730,199 @@
     100% { transform: rotate(360deg); }
   }
 
+/* ==================== iOS 精修（追加覆盖，后面规则优先） ==================== */
+.container1,
+.container {
+  background-color: #F2F2F7;
+}
+
+/* 孩子卡：蓝绿渐变头改白底 iOS 卡片 */
+.child-card {
+  background: #ffffff;
+  border-radius: 28rpx;
+  box-shadow: none;
+  width: 100%;
+}
+.child-name .name {
+  color: #000000;
+}
+.child-name .age {
+  color: rgba(60, 60, 67, 0.6);
+}
+.child-tag {
+  color: rgba(60, 60, 67, 0.6);
+}
+
+/* 白色区块统一去投影，改分组白卡 */
+.section {
+  width: auto;
+  box-shadow: none;
+  border-radius: 28rpx;
+}
+.section-title {
+  color: #000000;
+}
+.section-date {
+  color: rgba(60, 60, 67, 0.34);
+}
+.section-more {
+  color: #007aff;
+}
+.section-header .picker_one,
+.section-header .picker_two {
+  background: #f2f2f7;
+  border: none;
+  color: rgba(60, 60, 67, 0.6);
+}
+
+/* 统计格 */
+.stat-item {
+  background-color: #f7f7fa;
+}
+.stat-label {
+  color: rgba(60, 60, 67, 0.6);
+}
+.stat-value {
+  color: #000;
+}
+.stat-trend.up,
+.chart-compare.up {
+  color: #FF9500;
+}
+.stat-trend.down,
+.chart-compare.down {
+  color: #34C759;
+}
+.trend-desc {
+  color: rgba(60, 60, 67, 0.34);
+}
+
+/* 训练列表 hairline 分隔 */
+.training-item {
+  border-bottom: 1rpx solid rgba(60, 60, 67, 0.1);
+}
+.training-day .day {
+  color: #000;
+}
+.training-day .date {
+  color: rgba(60, 60, 67, 0.34);
+}
+.training-tag {
+  background: #f2f2f7;
+  color: rgba(60, 60, 67, 0.6);
+}
+.training-tag.speed {
+  background: rgba(0, 122, 255, 0.1);
+  color: #007aff;
+}
+.training-tag.endurance {
+  background: rgba(52, 199, 89, 0.14);
+  color: #34C759;
+}
+.training-tag.coordination {
+  background: rgba(255, 149, 0, 0.15);
+  color: #FF9500;
+}
+.training-content {
+  background-color: #f7f7fa;
+}
+.training-row .label {
+  color: rgba(60, 60, 67, 0.6);
+}
+.training-row .text {
+  color: #000;
+}
+.training-row .text.highlight {
+  color: #007aff;
+}
+.coach-name {
+  color: rgba(60, 60, 67, 0.6);
+}
+.photo-info {
+  background: rgba(0, 122, 255, 0.1);
+}
+.photo-count,
+.photo-info .arrow {
+  color: #007aff;
+}
+
+/* 图表：灰底卡片、蓝色当月柱 */
+.chart-item {
+  background-color: #f7f7fa;
+}
+.chart-label {
+  color: #000;
+  border-bottom: 1rpx solid rgba(60, 60, 67, 0.1);
+}
+.bar-value {
+  color: rgba(60, 60, 67, 0.6);
+}
+.bar-month {
+  color: rgba(60, 60, 67, 0.34);
+}
+.chart-container::-webkit-scrollbar-thumb {
+  background-color: rgba(60, 60, 67, 0.2);
+}
+
+/* 每周反馈 */
+.feedback-item {
+  border-bottom: 1rpx solid rgba(60, 60, 67, 0.1);
+}
+.feedback-info .coach-name {
+  color: #000;
+}
+.feedback-info .feedback-time {
+  color: rgba(60, 60, 67, 0.34);
+}
+.feedback-content {
+  background-color: #f7f7fa;
+  color: rgba(60, 60, 67, 0.6);
+}
+
+/* 体质测评徽章：语义淡底 + 同色文字 */
+.rating-badge.excellent {
+  background-color: rgba(52, 199, 89, 0.14);
+  color: #34C759;
+}
+.rating-badge.good {
+  background-color: rgba(0, 122, 255, 0.1);
+  color: #007aff;
+}
+.rating-badge.normal {
+  background-color: rgba(255, 149, 0, 0.15);
+  color: #FF9500;
+}
+.rating-badge.poor {
+  background-color: rgba(255, 59, 48, 0.12);
+  color: #FF3B30;
+}
+.assessment-row {
+  border-bottom: 1rpx solid rgba(60, 60, 67, 0.1);
+}
+.assessment-label {
+  color: #000;
+}
+.assessment-tag,
+.assessment-comment {
+  background-color: #f7f7fa;
+  color: rgba(60, 60, 67, 0.6);
+}
+.assessment-footer {
+  border-top: 1rpx solid rgba(60, 60, 67, 0.1);
+  color: rgba(60, 60, 67, 0.34);
+}
+
+/* 空态 / 加载 */
+.empty-tip,
+.empty-assessment,
+.emp-text {
+  color: rgba(60, 60, 67, 0.34);
+}
+.loading text {
+  color: rgba(60, 60, 67, 0.34);
+}
+.loading-spinner {
+  border: 4rpx solid rgba(60, 60, 67, 0.1);
+  border-top-color: #007aff;
+}
+

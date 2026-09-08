@@ -91,3 +91,46 @@
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* ==================== iOS 精修（追加覆盖，后面规则优先） ==================== */
+.container {
+  background-color: #F2F2F7;
+}
+
+/* 训练信息：紫色渐变卡改白底卡片 */
+.training-info {
+  width: auto;
+  margin: 24rpx;
+  background: #ffffff;
+  border-radius: 28rpx;
+  color: #000000;
+  box-shadow: none;
+}
+.training-name {
+  color: #000000;
+}
+.training-date,
+.training-coach {
+  color: rgba(60, 60, 67, 0.6);
+  opacity: 1;
+}
+
+/* 照片占位 */
+.photo-item {
+  background-color: rgba(60, 60, 67, 0.1);
+}
+
+/* 空态 / 加载 */
+.empty {
+  color: rgba(60, 60, 67, 0.34);
+}
+
+.loading {
+  background-color: rgba(255, 255, 255, 0.96);
+  color: rgba(60, 60, 67, 0.6);
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
+}
+.loading-spinner {
+  border: 4rpx solid rgba(60, 60, 67, 0.1);
+  border-top-color: #007aff;
+}

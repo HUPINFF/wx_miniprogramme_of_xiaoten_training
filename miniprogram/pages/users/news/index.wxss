@@ -85,3 +85,47 @@
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* ==================== iOS 精修（追加覆盖，后面规则优先） ==================== */
+.container {
+  background-color: #F2F2F7;
+}
+
+.news-list {
+  width: auto;
+  padding: 16rpx 24rpx;
+}
+
+.news-card {
+  background-color: #ffffff;
+  border-radius: 28rpx;
+  box-shadow: none;
+  margin-bottom: 20rpx;
+}
+.news-card:active {
+  transform: none;
+  opacity: 0.85;
+}
+.news-title {
+  color: #000000;
+}
+.news-time {
+  color: rgba(60, 60, 67, 0.34);
+}
+
+/* 空态 / 加载更多 / 加载 */
+.empty {
+  color: rgba(60, 60, 67, 0.34);
+}
+.load-more {
+  color: #007aff;
+}
+.loading {
+  background-color: rgba(255, 255, 255, 0.96);
+  color: rgba(60, 60, 67, 0.6);
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
+}
+.loading-spinner {
+  border: 4rpx solid rgba(60, 60, 67, 0.1);
+  border-top-color: #007aff;
+}

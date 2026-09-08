@@ -1,29 +1,34 @@
-/* pages/coach/common.wxss - 通用样式，可在各页面导入 */
+/* pages/coach/common.wxss - 通用样式（iOS 化），可在各页面导入 */
+page {
+  background-color: #F2F2F7;
+}
+
 .container {
   min-height: 100vh;
-  background-color: #f5f7fa;
-  padding: 32rpx;
-  /* text-align: ; */
+  background-color: #F2F2F7;
+  padding: 24rpx;
   margin: 0 auto;
+  box-sizing: border-box;
 }
 
 /* 卡片样式 */
 .card {
-  background-color: #fff;
-  border-radius: 24rpx;
+  background-color: #ffffff;
+  border-radius: 28rpx;
   padding: 32rpx;
   margin-bottom: 24rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.02);
+  box-shadow: none;
 }
 
 /* 区块标题 */
 .section {
-  width: 90%;
-  background-color: #fff;
-  border-radius: 24rpx;
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 28rpx;
   padding: 32rpx;
   margin-bottom: 24rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.02);
+  box-shadow: none;
+  box-sizing: border-box;
 }
 
 .section-header {
@@ -35,24 +40,24 @@
 
 .section-title {
   font-size: 34rpx;
-  font-weight: 600;
-  color: #1a1a1a;
+  font-weight: 700;
+  color: #000000;
 }
 
 .section-more {
-  color: #07c160;
+  color: #007aff;
 }
 
 .section-count {
   font-size: 28rpx;
-  color: #999;
+  color: rgba(60, 60, 67, 0.34);
 }
 
 /* 空状态 */
 .empty {
   text-align: center;
   padding: 60rpx 0;
-  color: #999;
+  color: rgba(60, 60, 67, 0.34);
   font-size: 28rpx;
 }
 
@@ -63,15 +68,15 @@
   align-items: center;
   justify-content: center;
   padding: 60rpx 0;
-  color: #999;
+  color: rgba(60, 60, 67, 0.34);
   font-size: 28rpx;
 }
 
 .loading-spinner {
   width: 60rpx;
   height: 60rpx;
-  border: 4rpx solid #f0f0f0;
-  border-top-color: #07c160;
+  border: 4rpx solid #ECECF0;
+  border-top-color: #007aff;
   border-radius: 50%;
   margin-bottom: 20rpx;
   animation: spin 1s linear infinite;
@@ -84,14 +89,20 @@
 
 /* 按钮 */
 .btn-primary {
-  background-color: #07c160;
+  background-color: #007aff;
   color: #fff;
-  border-radius: 44rpx;
-  height: 88rpx;
-  line-height: 88rpx;
+  border-radius: 24rpx;
+  height: 96rpx;
+  line-height: 96rpx;
   font-size: 32rpx;
+  font-weight: 600;
+  box-shadow: none;
+}
+
+.btn-primary::after {
+  border: none;
 }
 
 .btn-primary:active {
-  background-color: #06a34d;
+  background-color: #0056cf;
 }

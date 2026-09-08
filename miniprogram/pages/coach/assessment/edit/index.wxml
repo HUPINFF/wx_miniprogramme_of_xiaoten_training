@@ -21,7 +21,7 @@
 
     <!-- 基础信息 -->
     <view class="section">
-      <view class="section-title">📋 基础信息</view>
+      <view class="section-title">基础信息</view>
       <view class="form-row">
         <view class="form-item half">
           <text class="label">身高（cm）</text>
@@ -43,7 +43,7 @@
 
     <!-- 核心力量 -->
     <view class="section">
-      <view class="section-title">💪 核心力量</view>
+      <view class="section-title">核心力量</view>
 
       <view class="form-item">
         <text class="label">{{gender === '男' ? '1分钟俯卧撑(次)' : '1分钟仰卧起坐(次)'}}</text>
@@ -53,7 +53,7 @@
 
     <!-- 基础身体素质 -->
     <view class="section">
-      <view class="section-title">🏃 基础身体素质</view>
+      <view class="section-title">基础身体素质</view>
 
       <view class="form-row">
         <view class="form-item half">
@@ -94,7 +94,7 @@
 
     <!-- 专项动作模式（强/中/弱） -->
     <view class="section">
-      <view class="section-title">🎯 专项动作模式</view>
+      <view class="section-title">专项动作模式</view>
 
       <view class="action-item" wx:for="{{actionList}}" wx:key="field">
         <text class="action-label">{{item.label}}</text>
@@ -108,7 +108,7 @@
 
     <!-- 综合评定 -->
     <view class="section">
-      <view class="section-title">📊 综合评定</view>
+      <view class="section-title">综合评定</view>
 
       <view class="form-item">
         <text class="label">整体等级</text>

@@ -1,47 +1,47 @@
-/* pages/coach/assessment/history/index.wxss */
+/* pages/coach/assessment/history/index.wxss — iOS 风格 */
+page {
+  background-color: #f2f2f7;
+}
+
 .container {
   min-height: 100vh;
-  background-color: #f5f7fa;
-  padding-bottom: 40rpx;
+  background-color: #f2f2f7;
+  padding: 24rpx 24rpx 40rpx;
+  box-sizing: border-box;
 }
 
 /* 孩子信息头部 */
 .child-header {
-  width: 85%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  margin: 20rpx;
-  padding: 30rpx;
-  border-radius: 24rpx;
+  background: #ffffff;
+  margin-bottom: 24rpx;
+  padding: 40rpx 30rpx;
+  border-radius: 28rpx;
   text-align: center;
-  color: #fff;
 }
 
 .child-name {
   font-size: 40rpx;
-  font-weight: 600;
+  font-weight: 700;
+  color: #000;
   display: block;
   margin-bottom: 8rpx;
 }
 
 .child-tip {
   font-size: 26rpx;
-  opacity: 0.9;
+  color: rgba(60, 60, 67, 0.6);
 }
 
 /* 测评列表 */
 .assessment-list {
-  width: 90%;
-  margin: 0 auto;
-  padding: 0 20rpx;
+  padding-bottom: 8rpx;
 }
 
 .assessment-card {
-  /* width: %; */
-  background-color: #fff;
-  border-radius: 24rpx;
+  background-color: #ffffff;
+  border-radius: 28rpx;
   padding: 28rpx;
-  margin-bottom: 24rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  margin-bottom: 20rpx;
 }
 
 /* 卡片头部 */
@@ -51,51 +51,48 @@
   align-items: center;
   margin-bottom: 24rpx;
   padding-bottom: 16rpx;
-  border-bottom: 2rpx solid #f0f0f0;
+  border-bottom: 1rpx solid rgba(60, 60, 67, 0.1);
 }
 
 .month {
-  font-size: 34rpx;
-  font-weight: 600;
-  color: #07c160;
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #000;
 }
 
 .rating {
-  padding: 0 24rpx;
-  border-radius: 32rpx;
-  font-size: 28rpx;
-  font-weight: 500;
-  padding-bottom: 30rpx;
-  line-height: 1;
-  /* vertical-align: top; */
-  padding-bottom: 30rpx ;
+  padding: 8rpx 24rpx;
+  border-radius: 999rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  line-height: 1.4;
 }
 
 .rating.excellent {
-  background-color: #e8f5e8;
-  color: #07c160;
+  background-color: rgba(52, 199, 89, 0.14);
+  color: #34c759;
 }
 
 .rating.good {
-  background-color: #e3f2fd;
-  color: #1976d2;
+  background-color: rgba(0, 122, 255, 0.1);
+  color: #007aff;
 }
 
 .rating.normal {
-  background-color: #fff3e0;
-  color: #f5a623;
+  background-color: rgba(255, 149, 0, 0.14);
+  color: #ff9500;
 }
 
 .rating.poor {
-  background-color: #ffe0e0;
-  color: #ff6b6b;
+  background-color: rgba(255, 59, 48, 0.12);
+  color: #ff3b30;
 }
 
 /* 通用区块 */
 .section {
   margin-bottom: 24rpx;
   padding-bottom: 16rpx;
-  border-bottom: 2rpx solid #f0f0f0;
+  border-bottom: 1rpx solid rgba(60, 60, 67, 0.1);
 }
 
 .section:last-child {
@@ -106,34 +103,35 @@
 
 .section-title {
   font-size: 28rpx;
-  font-weight: 600;
-  color: #333;
+  font-weight: 700;
+  color: #000;
   margin-bottom: 16rpx;
 }
 
 /* 信息网格 */
 .info-grid {
   display: flex;
-  gap: 24rpx;
+  gap: 16rpx;
   flex-wrap: wrap;
 }
 
 .info-item {
   font-size: 26rpx;
-  color: #666;
-  background-color: #f8f9fc;
-  padding: 8rpx 20rpx;
-  border-radius: 30rpx;
+  color: rgba(60, 60, 67, 0.6);
+  background-color: #f2f2f7;
+  padding: 10rpx 20rpx;
+  border-radius: 999rpx;
 }
 
 /* 核心力量 */
 .core-value {
   font-size: 28rpx;
-  color: #07c160;
-  background-color: #e8f5e8;
+  color: #34c759;
+  background-color: rgba(52, 199, 89, 0.14);
   padding: 12rpx 24rpx;
-  border-radius: 30rpx;
+  border-radius: 999rpx;
   display: inline-block;
+  font-weight: 600;
 }
 
 /* 身体素质网格 */
@@ -145,10 +143,10 @@
 
 .fitness-item {
   font-size: 26rpx;
-  color: #666;
-  background-color: #f8f9fc;
-  padding: 10rpx 16rpx;
-  border-radius: 20rpx;
+  color: rgba(60, 60, 67, 0.6);
+  background-color: #f2f2f7;
+  padding: 14rpx 16rpx;
+  border-radius: 16rpx;
 }
 
 /* 动作模式网格 */
@@ -160,19 +158,19 @@
 
 .action-item {
   font-size: 26rpx;
-  color: #666;
-  background-color: #f8f9fc;
-  padding: 10rpx 16rpx;
-  border-radius: 20rpx;
+  color: rgba(60, 60, 67, 0.6);
+  background-color: #f2f2f7;
+  padding: 14rpx 16rpx;
+  border-radius: 16rpx;
 }
 
 /* 综合评价 */
 .comment-text {
   font-size: 28rpx;
-  color: #666;
-  line-height: 1.5;
+  color: rgba(60, 60, 67, 0.6);
+  line-height: 1.6;
   display: block;
-  background-color: #f8f9fc;
+  background-color: #f2f2f7;
   padding: 20rpx;
   border-radius: 16rpx;
 }
@@ -181,28 +179,28 @@
 .footer-time {
   margin-top: 20rpx;
   padding-top: 16rpx;
-  border-top: 2rpx solid #f0f0f0;
+  border-top: 1rpx solid rgba(60, 60, 67, 0.1);
   text-align: right;
   font-size: 24rpx;
-  color: #999;
+  color: rgba(60, 60, 67, 0.34);
 }
 
 /* 空状态 */
 .empty {
   text-align: center;
   padding: 120rpx 0;
-  color: #999;
+  color: rgba(60, 60, 67, 0.34);
   font-size: 28rpx;
 }
 
 .empty-hint {
   display: block;
   font-size: 24rpx;
-  color: #ccc;
+  color: rgba(60, 60, 67, 0.25);
   margin-top: 12rpx;
 }
 
-/* 加载状态 */
+/* 加载 HUD */
 .loading {
   position: fixed;
   top: 50%;
@@ -212,9 +210,9 @@
   flex-direction: column;
   align-items: center;
   gap: 20rpx;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(28, 28, 30, 0.88);
   padding: 40rpx;
-  border-radius: 20rpx;
+  border-radius: 24rpx;
   color: #fff;
   z-index: 1000;
 }
@@ -222,7 +220,7 @@
 .loading-spinner {
   width: 60rpx;
   height: 60rpx;
-  border: 4rpx solid rgba(255, 255, 255, 0.3);
+  border: 4rpx solid rgba(255, 255, 255, 0.25);
   border-top-color: #fff;
   border-radius: 50%;
   animation: spin 1s linear infinite;

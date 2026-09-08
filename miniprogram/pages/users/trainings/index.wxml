@@ -3,7 +3,7 @@
   <nav-bar title="课表" showBack="{{true}}"></nav-bar>
   
   <view class="header">
-    <text class="title">📅 课表 · {{currentYearMonth}}</text>
+    <text class="title">课表 · {{currentYearMonth}}</text>
   </view>
 
   <scroll-view scroll-y class="schedule-list">

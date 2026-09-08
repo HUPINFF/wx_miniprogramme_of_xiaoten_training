@@ -4,7 +4,7 @@
   <view class="content" wx:if="{{comment}}">
     <!-- 点评信息 -->
     <view class="section comment-section">
-      <view class="section-title">💬 家长点评</view>
+      <view class="section-title">家长点评</view>
       
       <view class="comment-header">
         <image class="avatar" src="{{comment.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"></image>
@@ -29,7 +29,7 @@
 
     <!-- 训练信息 -->
     <view class="section training-section" wx:if="{{training}}">
-      <view class="section-title">📋 训练详情</view>
+      <view class="section-title">训练详情</view>
       
       <view class="training-info">
         <view class="info-row">
@@ -52,13 +52,13 @@
 
       <!-- 教练反馈 -->
       <view class="feedback" wx:if="{{training.feedback}}">
-        <view class="feedback-title">📝 教练反馈</view>
+        <view class="feedback-title">教练反馈</view>
         <text class="feedback-content">{{training.feedback}}</text>
       </view>
 
       <!-- 训练照片 -->
       <view class="media-section" wx:if="{{photos.length > 0}}">
-        <view class="media-title">📸 训练照片</view>
+        <view class="media-title">训练照片</view>
         <view class="media-grid">
           <view class="media-item" wx:for="{{photos}}" wx:key="*this" bind:tap="previewImage" data-url="{{item}}">
             <image src="{{item}}" mode="aspectFill"></image>
@@ -68,7 +68,7 @@
 
       <!-- 训练视频 -->
       <view class="media-section" wx:if="{{videos.length > 0}}">
-        <view class="media-title">🎬 训练视频</view>
+        <view class="media-title">训练视频</view>
         <view class="video-list">
           <view class="video-item" wx:for="{{videos}}" wx:key="*this">
             <video 

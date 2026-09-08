@@ -1,21 +1,21 @@
-/* pages/coach/post-class/index.wxss */
+/* pages/coach/post-class/index.wxss — iOS 风格 */
 @import "../common.wxss";
 
 .container {
-  min-height: 100vh;
-  background-color: #f5f5f5;
+  padding: 0;
 }
 
 .content {
   padding: 24rpx;
+  padding-bottom: 180rpx;
 }
 
 /* 课程卡片 */
 .course-card {
-  background: #fff;
-  border-radius: 24rpx;
+  background: #ffffff;
+  border-radius: 28rpx;
   padding: 32rpx;
-  margin-bottom: 32rpx;
+  margin-bottom: 24rpx;
 }
 
 .course-header {
@@ -23,34 +23,36 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 1rpx solid rgba(60, 60, 67, 0.1);
 }
 
 .course-name {
   font-size: 36rpx;
-  font-weight: 600;
-  color: #333;
+  font-weight: 700;
+  color: #000;
 }
 
 .course-status {
-  font-size: 26rpx;
-  color: #07c160;
-  background: #e8f8f0;
-  padding: 6rpx 16rpx;
-  border-radius: 20rpx;
+  font-size: 24rpx;
+  color: #34c759;
+  background: rgba(52, 199, 89, 0.14);
+  padding: 6rpx 20rpx;
+  border-radius: 999rpx;
+  font-weight: 600;
 }
 
 .course-info {
   display: flex;
   flex-direction: column;
-  gap: 16rpx;
 }
 
 .info-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16rpx 0;
-  border-bottom: 2rpx solid #f0f0f0;
+  padding: 18rpx 0;
+  border-bottom: 1rpx solid rgba(60, 60, 67, 0.1);
 }
 
 .info-item:last-child {
@@ -59,54 +61,58 @@
 
 .info-item .label {
   font-size: 28rpx;
-  color: #999;
+  color: rgba(60, 60, 67, 0.6);
 }
 
 .info-item .value {
   font-size: 28rpx;
-  color: #333;
-  font-weight: 500;
+  color: #000;
+  font-weight: 600;
 }
 
 /* 区块标题 */
 .section-title {
   font-size: 30rpx;
-  font-weight: 600;
-  color: #333;
+  font-weight: 700;
+  color: #000;
   margin-bottom: 20rpx;
-  padding-left: 8rpx;
+  padding: 0 8rpx;
 }
 
 /* 选项列表 */
 .option-list {
   display: flex;
   flex-direction: column;
-  gap: 20rpx;
-  margin-bottom: 200rpx;
+  gap: 16rpx;
 }
 
 .option-item {
-  background: #fff;
-  border-radius: 20rpx;
+  background: #ffffff;
+  border-radius: 28rpx;
   padding: 28rpx;
   display: flex;
   align-items: center;
   gap: 24rpx;
 }
 
+.option-item:active {
+  background: #f7f7fa;
+}
+
 .option-icon {
   width: 80rpx;
   height: 80rpx;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: rgba(0, 122, 255, 0.1);
   border-radius: 20rpx;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .option-icon text {
   font-size: 40rpx;
-  color: #fff;
+  color: #007aff;
 }
 
 .option-info {
@@ -119,21 +125,23 @@
 .option-name {
   font-size: 32rpx;
   font-weight: 600;
-  color: #333;
+  color: #000;
 }
 
 .option-desc {
-  font-size: 26rpx;
-  color: #999;
+  font-size: 24rpx;
+  color: rgba(60, 60, 67, 0.34);
 }
 
 .option-arrow {
   width: 40rpx;
+  text-align: right;
 }
 
 .option-arrow text {
   font-size: 28rpx;
-  color: #ccc;
+  color: rgba(60, 60, 67, 0.25);
+  font-weight: 500;
 }
 
 /* 底部区域 */
@@ -142,19 +150,25 @@
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 24rpx;
-  background: #fff;
-  border-top: 2rpx solid #f0f0f0;
+  padding: 20rpx 28rpx;
+  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+  background: rgba(249, 249, 251, 0.92);
+  backdrop-filter: blur(20rpx);
+  border-top: 1rpx solid rgba(60, 60, 67, 0.12);
 }
 
 .finish-btn {
   width: 100%;
   height: 96rpx;
-  background: linear-gradient(135deg, #07c160 0%, #06a34d 100%);
-  border-radius: 48rpx;
+  background: #007aff;
+  border-radius: 24rpx;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.finish-btn:active {
+  background-color: #0056cf;
 }
 
 .finish-btn text {

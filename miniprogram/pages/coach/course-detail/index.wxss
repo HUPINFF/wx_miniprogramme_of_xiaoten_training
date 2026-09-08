@@ -1,4 +1,22 @@
 /* pages/coach/course-detail/index.wxss */
+
+/* ==================== 全局变量（iOS 化） ==================== */
+page {
+  --bg: #F2F2F7;
+  --primary: #007AFF;
+  --primary-dark: #0056CF;
+  --primary-light: rgba(0, 122, 255, 0.1);
+  --card: #ffffff;
+  --text-main: #000000;
+  --text-sub: rgba(60, 60, 67, 0.6);
+  --text-hint: rgba(60, 60, 67, 0.34);
+  --border: rgba(60, 60, 67, 0.1);
+  --radius-sm: 14rpx;
+  --radius-md: 20rpx;
+  --radius-lg: 28rpx;
+  --radius-xl: 32rpx;
+}
+
 .container {
   min-height: 100vh;
   background: linear-gradient(160deg, #f8fafc 0%, #eef4ff 50%, #f0f7ff 100%);
@@ -371,4 +389,94 @@
 .loading-text {
   font-size: 28rpx;
   color: #8896a6;
+}
+
+/* ==================== iOS 精修（追加覆盖，后面规则优先） ==================== */
+
+/* 容器灰底 */
+.container {
+  background: #f2f2f7;
+}
+
+/* 底部悬浮按钮 → iOS 系统蓝 */
+.float-button {
+  background: #007aff;
+  border-radius: 999rpx;
+  box-shadow: none;
+}
+.float-button:active {
+  opacity: 0.85;
+}
+
+/* 封面占位：中性浅底；有图时白描边细节保持 */
+.cover-section {
+  background: linear-gradient(135deg, #eef2ff 0%, #e7f1fb 100%);
+  border-radius: 28rpx;
+}
+
+/* 信息卡 / 建议卡 / 自定义卡 / 空状态：去投影收敛圆角 */
+.info-card,
+.advice-card,
+.custom-section,
+.empty-state {
+  border: 1rpx solid rgba(60, 60, 67, 0.08);
+  border-radius: 28rpx;
+  box-shadow: none;
+}
+.label-text,
+.advice-title,
+.section-title text:nth-child(2),
+.empty-title {
+  color: #000000;
+}
+.info-content {
+  background: #f7f7fa;
+  border: none;
+}
+.info-content text,
+.advice-content text,
+.custom-desc text {
+  color: rgba(60, 60, 67, 0.6);
+}
+.advice-card.parent {
+  border-left: 6rpx solid #007aff;
+}
+.advice-card.coach {
+  border-left: 6rpx solid #007aff;
+}
+.advice-content {
+  background: #f7f7fa;
+}
+.content-count {
+  color: rgba(60, 60, 67, 0.34);
+}
+.custom-item {
+  background: #f7f7fa;
+}
+.custom-desc {
+  border-top: 1rpx solid rgba(60, 60, 67, 0.08);
+  background: #ffffff;
+}
+
+/* 空状态 */
+.empty-illustration {
+  background: rgba(0, 122, 255, 0.12);
+}
+.empty-subtitle {
+  color: rgba(60, 60, 67, 0.34);
+}
+
+/* 加载 */
+.loading-cover {
+  background: rgba(247, 247, 250, 0.9);
+}
+.loading-card {
+  border: 1rpx solid rgba(60, 60, 67, 0.08);
+  box-shadow: none;
+}
+.loading-spinner {
+  border-top-color: #007aff;
+}
+.loading-text {
+  color: rgba(60, 60, 67, 0.34);
 }

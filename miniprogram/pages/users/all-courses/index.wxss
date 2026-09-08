@@ -1,5 +1,20 @@
+/* pages/users/all-courses/index.wxss */
 page {
-  background-color: #f5f7fa;
+  --bg: #F2F2F7;
+  --primary: #007AFF;
+  --primary-dark: #0056CF;
+  --primary-light: rgba(0, 122, 255, 0.1);
+  --card: #ffffff;
+  --text-main: #000000;
+  --text-sub: rgba(60, 60, 67, 0.6);
+  --text-hint: rgba(60, 60, 67, 0.34);
+  --border: rgba(60, 60, 67, 0.1);
+  --radius-sm: 14rpx;
+  --radius-md: 20rpx;
+  --radius-lg: 28rpx;
+  --radius-xl: 32rpx;
+
+  background-color: var(--bg);
 }
 
 .container {
@@ -17,18 +32,22 @@ page {
 .course-card {
   display: flex;
   align-items: center;
-  background: #ffffff;
-  border-radius: 16rpx;
-  padding: 24rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+  background: var(--card);
+  border-radius: 24rpx;
+  padding: 20rpx;
+  transition: opacity 0.2s ease;
+}
+
+.course-card:active {
+  opacity: 0.85;
 }
 
 .course-cover {
   width: 160rpx;
   height: 160rpx;
-  border-radius: 12rpx;
+  border-radius: 16rpx;
   overflow: hidden;
-  margin-right: 20rpx;
+  margin-right: 24rpx;
   flex-shrink: 0;
 }
 
@@ -43,11 +62,12 @@ page {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #4a90d9 0%, #67b26f 100%);
+  background: linear-gradient(135deg, #f7f7fa 0%, #ececf1 100%);
 }
 
 .course-no-cover text {
   font-size: 60rpx;
+  opacity: 0.6;
 }
 
 .course-info {
@@ -55,17 +75,18 @@ page {
   display: flex;
   flex-direction: column;
   gap: 8rpx;
+  min-width: 0;
 }
 
 .course-name {
   font-size: 30rpx;
   font-weight: 600;
-  color: #333;
+  color: #000;
 }
 
 .course-desc {
   font-size: 24rpx;
-  color: #888;
+  color: rgba(60, 60, 67, 0.6);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -79,12 +100,18 @@ page {
 
 .course-hours {
   font-size: 24rpx;
-  color: #07c160;
+  color: #007AFF;
+  background: rgba(0, 122, 255, 0.1);
+  padding: 4rpx 16rpx;
+  border-radius: 999rpx;
+  font-weight: 500;
 }
 
 .card-arrow {
   font-size: 36rpx;
-  color: #ccc;
+  color: rgba(60, 60, 67, 0.25);
+  font-weight: 500;
+  margin-left: 12rpx;
 }
 
 .empty-state {
@@ -98,11 +125,12 @@ page {
 .empty-icon {
   font-size: 120rpx;
   margin-bottom: 30rpx;
+  opacity: 0.4;
 }
 
 .empty-text {
   font-size: 28rpx;
-  color: #999;
+  color: rgba(60, 60, 67, 0.6);
 }
 
 .loading {
@@ -110,6 +138,6 @@ page {
   justify-content: center;
   align-items: center;
   padding: 200rpx;
-  color: #999;
+  color: rgba(60, 60, 67, 0.34);
   font-size: 28rpx;
 }

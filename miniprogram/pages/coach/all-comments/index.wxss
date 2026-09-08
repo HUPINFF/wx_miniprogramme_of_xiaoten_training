@@ -1,24 +1,30 @@
+/* pages/coach/all-comments/index.wxss — iOS 风格 */
 page {
-  background-color: #f5f7fa;
+  background-color: #f2f2f7;
 }
 
 .container {
   min-height: 100vh;
   padding: 24rpx;
   padding-bottom: 40rpx;
+  box-sizing: border-box;
 }
 
 .comment-list {
   display: flex;
   flex-direction: column;
-  gap: 24rpx;
+  gap: 20rpx;
 }
 
 .comment-item {
   background: #ffffff;
-  border-radius: 16rpx;
-  padding: 24rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  border-radius: 28rpx;
+  padding: 28rpx;
+  transition: transform 0.2s;
+}
+
+.comment-item:active {
+  transform: scale(0.98);
 }
 
 .comment-header {
@@ -32,6 +38,8 @@ page {
   height: 64rpx;
   border-radius: 50%;
   margin-right: 16rpx;
+  background-color: #f2f2f7;
+  flex-shrink: 0;
 }
 
 .comment-info {
@@ -40,8 +48,8 @@ page {
 
 .comment-name {
   font-size: 28rpx;
-  color: #333;
-  font-weight: 500;
+  color: #000;
+  font-weight: 600;
 }
 
 .comment-rating {
@@ -53,18 +61,19 @@ page {
 
 .star {
   font-size: 24rpx;
-  color: #ff9800;
+  color: #ff9500;
 }
 
 .rating-text {
   font-size: 24rpx;
-  color: #ff9800;
+  color: #ff9500;
   margin-left: 8rpx;
+  font-weight: 600;
 }
 
 .comment-time {
   font-size: 24rpx;
-  color: #999;
+  color: rgba(60, 60, 67, 0.34);
 }
 
 .comment-tags {
@@ -76,15 +85,16 @@ page {
 
 .tag {
   font-size: 22rpx;
-  color: #07c160;
-  background: #e8f5e9;
-  padding: 6rpx 16rpx;
-  border-radius: 8rpx;
+  color: #007aff;
+  background: rgba(0, 122, 255, 0.1);
+  padding: 6rpx 18rpx;
+  border-radius: 999rpx;
+  font-weight: 500;
 }
 
 .comment-content {
   font-size: 28rpx;
-  color: #333;
+  color: rgba(60, 60, 67, 0.6);
   line-height: 1.6;
   display: block;
 }
@@ -100,11 +110,12 @@ page {
 .empty-icon {
   font-size: 120rpx;
   margin-bottom: 30rpx;
+  opacity: 0.4;
 }
 
 .empty-text {
   font-size: 28rpx;
-  color: #999;
+  color: rgba(60, 60, 67, 0.34);
 }
 
 .loading {
@@ -112,6 +123,6 @@ page {
   justify-content: center;
   align-items: center;
   padding: 100rpx;
-  color: #999;
+  color: rgba(60, 60, 67, 0.34);
   font-size: 28rpx;
 }

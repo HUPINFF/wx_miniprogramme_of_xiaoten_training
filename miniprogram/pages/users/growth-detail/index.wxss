@@ -1,7 +1,25 @@
 /* pages/users/growth-detail/index.wxss */
+page {
+  --bg: #F2F2F7;
+  --primary: #007AFF;
+  --primary-dark: #0056CF;
+  --primary-light: rgba(0, 122, 255, 0.1);
+  --card: #ffffff;
+  --text-main: #000000;
+  --text-sub: rgba(60, 60, 67, 0.6);
+  --text-hint: rgba(60, 60, 67, 0.34);
+  --border: rgba(60, 60, 67, 0.1);
+  --radius-sm: 14rpx;
+  --radius-md: 20rpx;
+  --radius-lg: 28rpx;
+  --radius-xl: 32rpx;
+
+  background-color: var(--bg);
+}
+
 .container {
   min-height: 100vh;
-  background: linear-gradient(160deg, #f8fafc 0%, #eef4ff 50%, #f0f7ff 100%);
+  background-color: var(--bg);
 }
 
 .page-content {
@@ -369,5 +387,113 @@
 
 .loading-text {
   font-size: 28rpx;
-  color: #8896a6;
+  color: rgba(60, 60, 67, 0.6);
+}
+
+/* ==================== iOS 精修（追加覆盖，后面规则优先） ==================== */
+
+/* 头部卡片：白卡无投影无彩边 */
+.header-card {
+  background: #ffffff;
+  border-radius: 28rpx;
+  box-shadow: none;
+  border: none;
+}
+.avatar-ring {
+  background: rgba(0, 122, 255, 0.1);
+  box-shadow: none;
+}
+.main-title {
+  color: #000;
+}
+.category-badge {
+  border-radius: 999rpx;
+}
+.category-badge.fitness {
+  color: #34C759;
+  background: rgba(52, 199, 89, 0.14);
+}
+.category-badge.height {
+  color: #C77700;
+  background: rgba(255, 149, 0, 0.15);
+}
+.sub-title {
+  color: rgba(60, 60, 67, 0.6);
+  letter-spacing: 0;
+}
+
+/* 描述 / 轨迹卡片：平面白卡 */
+.desc-card,
+.timeline-card,
+.empty-state {
+  background: #ffffff;
+  border-radius: 28rpx;
+  box-shadow: none;
+  border: none;
+}
+.label-dot.blue {
+  background: #007AFF;
+  box-shadow: none;
+}
+.label-dot.green {
+  background: #34C759;
+  box-shadow: none;
+}
+.label-text {
+  color: #000;
+}
+.item-count {
+  color: rgba(60, 60, 67, 0.34);
+}
+.desc-body {
+  background: #f7f7fa;
+  border: none;
+  border-radius: 16rpx;
+}
+.desc-body text {
+  color: rgba(60, 60, 67, 0.6);
+}
+
+/* 时间轴：蓝点 + 蓝灰细线 */
+.timeline-track {
+  background: rgba(60, 60, 67, 0.12);
+}
+.track-line {
+  background: linear-gradient(180deg, #007AFF 0%, rgba(0, 122, 255, 0.1) 100%);
+}
+.indicator-dot {
+  background: #007AFF;
+  box-shadow: none;
+}
+.item-card {
+  background: #ffffff;
+  box-shadow: none;
+  border: none;
+  border-radius: 24rpx;
+}
+.card-content {
+  border-bottom: 1rpx solid rgba(60, 60, 67, 0.1);
+}
+.card-footer {
+  background: #f7f7fa;
+}
+.item-index {
+  color: rgba(60, 60, 67, 0.34);
+}
+
+/* 空状态 */
+.empty-illustration {
+  background: rgba(0, 122, 255, 0.1);
+}
+.empty-title {
+  color: #000;
+}
+.empty-subtitle {
+  color: rgba(60, 60, 67, 0.6);
+}
+
+/* 加载 */
+.loading-spinner {
+  border: 4rpx solid rgba(0, 122, 255, 0.15);
+  border-top-color: #007AFF;
 }

@@ -261,3 +261,130 @@
   font-size: 28rpx;
   color: #999;
 }
+
+/* ==================== iOS 精修（追加覆盖，后面规则优先） ==================== */
+.container {
+  background-color: #F2F2F7;
+}
+
+/* 孩子头：蓝渐变横幅改白底 iOS 标题 */
+.child-header {
+  background: transparent;
+  padding: 40rpx 30rpx 8rpx;
+  text-align: left;
+}
+.child-name {
+  color: #000000;
+  font-size: 40rpx;
+}
+.child-hint {
+  color: rgba(60, 60, 67, 0.6);
+}
+
+/* 日期选择栏：白卡 + iOS 分段控件 */
+.date-bar {
+  margin: 8rpx 24rpx 24rpx;
+  border-radius: 28rpx;
+  background: #ffffff;
+  width: auto;
+}
+.tabs {
+  background: #e9e9eb;
+  border-radius: 999rpx;
+  padding: 4rpx;
+}
+.tab {
+  color: rgba(60, 60, 67, 0.6);
+}
+.tab.active {
+  background: #ffffff;
+  color: #000000;
+  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.08);
+}
+.date-select {
+  color: #000000;
+}
+.date-select .arrow {
+  color: rgba(60, 60, 67, 0.34);
+}
+
+/* 汇总卡 */
+.summary-card {
+  margin: 0 24rpx 24rpx;
+  background: #ffffff;
+  border-radius: 28rpx;
+  box-shadow: none;
+}
+.summary-month {
+  color: #000000;
+}
+.summary-count {
+  color: rgba(60, 60, 67, 0.34);
+}
+.summary-content {
+  border-bottom: 1rpx solid rgba(60, 60, 67, 0.1);
+}
+.summary-label {
+  color: rgba(60, 60, 67, 0.34);
+}
+.summary-item.income .summary-value {
+  color: #34C759;
+}
+.summary-item.expense .summary-value {
+  color: #FF3B30;
+}
+.balance-label {
+  color: rgba(60, 60, 67, 0.6);
+}
+.balance-value {
+  color: #000000;
+}
+
+/* 流水列表 */
+.records-list {
+  padding: 0 24rpx;
+}
+.date-text {
+  color: #000000;
+}
+.date-weekday {
+  color: rgba(60, 60, 67, 0.34);
+}
+.date-income {
+  color: #34C759;
+}
+.date-expense {
+  color: #FF3B30;
+}
+.record-item {
+  background: #ffffff;
+  border-radius: 24rpx;
+  box-shadow: none;
+}
+.record-icon {
+  background: #f2f2f7;
+  border-radius: 50%;
+}
+.record-type {
+  color: #000000;
+}
+.record-desc {
+  color: rgba(60, 60, 67, 0.6);
+}
+.record-time {
+  color: rgba(60, 60, 67, 0.34);
+}
+.record-amount.income {
+  color: #34C759;
+}
+.record-amount.expense {
+  color: #FF3B30;
+}
+
+/* 空态 */
+.empty-state {
+  color: rgba(60, 60, 67, 0.34);
+}
+.empty-text {
+  color: rgba(60, 60, 67, 0.34);
+}

@@ -1,38 +1,44 @@
+/* pages/coach/upload-videos/index.wxss — iOS 风格 */
+page {
+  background-color: #f2f2f7;
+}
+
 .container {
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background-color: #f2f2f7;
 }
 
 .content {
-  padding: 20rpx;
+  padding: 24rpx;
+  padding-bottom: 180rpx;
 }
 
+/* 提示信息 */
 .tips {
-  background-color: #fffbe6;
-  border: 1rpx solid #ffe58f;
-  border-radius: 12rpx;
-  padding: 20rpx;
-  margin-bottom: 20rpx;
+  background-color: #ffffff;
+  border-radius: 20rpx;
+  padding: 24rpx;
+  margin-bottom: 24rpx;
 }
 
 .tips-text {
   font-size: 26rpx;
-  color: #ad8b00;
+  color: rgba(60, 60, 67, 0.6);
+  line-height: 1.6;
 }
 
 .video-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 16rpx;
-  margin-bottom: 200rpx;
+  gap: 20rpx;
 }
 
 .video-item {
-  width: calc(50% - 8rpx);
-  aspect-ratio: 4/3;
+  width: calc(50% - 10rpx);
+  aspect-ratio: 4 / 3;
   position: relative;
-  background-color: #fff;
-  border-radius: 12rpx;
+  background-color: #ffffff;
+  border-radius: 20rpx;
   overflow: hidden;
 }
 
@@ -47,7 +53,7 @@
   right: 10rpx;
   width: 48rpx;
   height: 48rpx;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, 0.55);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -58,9 +64,10 @@
 .delete-btn::after {
   content: '';
   position: absolute;
-  width: 20rpx;
-  height: 2rpx;
+  width: 22rpx;
+  height: 3rpx;
   background-color: #fff;
+  border-radius: 2rpx;
 }
 
 .delete-btn::before {
@@ -75,91 +82,90 @@
   position: absolute;
   bottom: 10rpx;
   right: 10rpx;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, 0.55);
   color: #fff;
   font-size: 22rpx;
-  padding: 4rpx 8rpx;
-  border-radius: 4rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
 }
 
+/* 添加按钮 */
 .add-btn {
-  width: calc(50% - 8rpx);
-  aspect-ratio: 4/3;
-  background-color: #fff;
-  border: 2rpx dashed #ddd;
-  border-radius: 12rpx;
+  width: calc(50% - 10rpx);
+  aspect-ratio: 4 / 3;
+  background-color: #ffffff;
+  border: 1rpx dashed rgba(60, 60, 67, 0.25);
+  border-radius: 20rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  position: relative
+  position: relative;
+  box-sizing: border-box;
 }
 
 .add-btn::before {
   content: '';
-  width: 60rpx;
-  height: 7rpx;
-  /* border: 3rpx solid #07c160; */
-  border-radius: 20%;
-  transform: rotate(-90deg);
-  background-color: #07c160;
   position: absolute;
-  top: 50%;
+  top: 42%;
   left: 50%;
-  transform: translate(-50%, -80%) rotate(180deg);  /* 向上偏移一点 */
+  transform: translate(-50%, -50%);
+  width: 64rpx;
+  height: 6rpx;
+  border-radius: 3rpx;
+  background-color: #007aff;
 }
 
 .add-btn::after {
   content: '';
   position: absolute;
-  border-radius: 20%;
-  width: 60rpx;
-  height: 7rpx;
-  /* transform:translateY(-22rpx) rotate(180deg); */
-  background-color: #07c160;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -80%) rotate(-90deg);  /* 和外圈对齐 */
-}
-
-/* .add-btn::before::after {
-  content: '';
-  position: absolute;
-  top: 50%;
+  top: 42%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 40rpx;
-  height: 5rpx;
-  background-color: #07c160;
-} */
-
-.add-text {
-  font-size: 26rpx;
-  color: #999;
-  margin-top: 100rpx;
+  width: 6rpx;
+  height: 64rpx;
+  border-radius: 3rpx;
+  background-color: #007aff;
 }
 
+.add-text {
+  position: absolute;
+  bottom: 32rpx;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 26rpx;
+  color: rgba(60, 60, 67, 0.6);
+}
+
+/* 底部区域 */
 .bottom-area {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 20rpx 30rpx;
+  padding: 20rpx 28rpx;
   padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
-  background-color: #fff;
-  border-top: 1rpx solid #eee;
+  background: rgba(249, 249, 251, 0.92);
+  backdrop-filter: blur(20rpx);
+  border-top: 1rpx solid rgba(60, 60, 67, 0.12);
 }
 
 .save-btn {
-  background: linear-gradient(135deg, #07c160 0%, #10b981 100%);
+  background: #007aff;
   color: #fff;
   font-size: 32rpx;
-  font-weight: 500;
+  font-weight: 600;
   text-align: center;
-  padding: 24rpx;
-  border-radius: 16rpx;
+  padding: 28rpx;
+  border-radius: 24rpx;
+}
+
+.save-btn:active {
+  background-color: #0056cf;
 }
 
 .save-btn.disabled {
-  background: #ccc;
+  background: #e5e5ea;
+  color: rgba(60, 60, 67, 0.3);
 }

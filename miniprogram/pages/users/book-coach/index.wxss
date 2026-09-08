@@ -3,17 +3,28 @@
    ======================================== */
 
 page {
-  background: #f0f7f4;
+  --bg: #F2F2F7;
+  --primary: #007AFF;
+  --primary-dark: #0056CF;
+  --primary-light: rgba(0, 122, 255, 0.1);
+  --card: #ffffff;
+  --text-main: #000000;
+  --text-sub: rgba(60, 60, 67, 0.6);
+  --text-hint: rgba(60, 60, 67, 0.34);
+  --border: rgba(60, 60, 67, 0.1);
+  --radius-sm: 14rpx;
+  --radius-md: 20rpx;
+  --radius-lg: 28rpx;
+  --radius-xl: 32rpx;
+
+  background-color: var(--bg);
   font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif;
 }
 
 /* ===== 页面容器 ===== */
 .page {
   min-height: 100vh;
-  background:
-    radial-gradient(ellipse at 10% 5%, rgba(34, 197, 94, 0.04) 0%, transparent 60%),
-    radial-gradient(ellipse at 90% 95%, rgba(16, 185, 129, 0.03) 0%, transparent 50%),
-    #f0f7f4;
+  background-color: var(--bg);
 }
 
 /* ========================================
@@ -394,5 +405,114 @@ page {
 
 .bottom-spacer {
   height: 120rpx;
+}
+
+/* ==================== iOS 精修（追加覆盖，后面规则优先） ==================== */
+/* 保留自建毛玻璃 top-nav / filter-bar 观感，仅统一颜色与 hairline */
+
+/* 页面文字 */
+.nav-back-icon {
+  color: #000;
+}
+.nav-title {
+  color: #000;
+  letter-spacing: 0;
+}
+.result-count {
+  color: rgba(60, 60, 67, 0.6);
+}
+
+/* 导航 hairline 中性化 */
+.top-nav {
+  border-bottom: 1rpx solid rgba(60, 60, 67, 0.12);
+}
+.filter-bar {
+  border-bottom: 1rpx solid rgba(60, 60, 67, 0.12);
+}
+
+/* 视图切换 → iOS segmented（灰轨道 + 白底激活项 + 蓝字） */
+.view-toggle {
+  background: rgba(60, 60, 67, 0.1);
+  border-radius: 999rpx;
+  padding: 3rpx;
+}
+.toggle-item {
+  border-radius: 999rpx;
+}
+.toggle-item.active {
+  background: #ffffff;
+  box-shadow: none;
+}
+.toggle-label {
+  color: rgba(60, 60, 67, 0.6);
+}
+.toggle-item.active .toggle-label {
+  color: #007AFF;
+}
+
+/* 教练卡片：无投影白卡 */
+.coach-card {
+  box-shadow: none;
+}
+.coach-card:active {
+  transform: none;
+  opacity: 0.9;
+}
+.card-avatar-wrap {
+  background: #f2f2f7;
+}
+.avatar-overlay {
+  background: linear-gradient(transparent, rgba(255, 255, 255, 0.7));
+}
+
+/* 头像职级徽章 → 叠图 frosted 深色标签 */
+.rank-badge {
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(20rpx);
+  -webkit-backdrop-filter: blur(20rpx);
+  border: 1rpx solid rgba(255, 255, 255, 0.25);
+  color: #fff;
+  border-radius: 999rpx;
+}
+
+.card-name {
+  color: #000;
+  letter-spacing: 0;
+}
+.card-bio {
+  color: rgba(60, 60, 67, 0.6);
+}
+
+/* 预约按钮 → 系统蓝实心 */
+.book-btn {
+  background: #007AFF;
+  border-radius: 24rpx;
+  box-shadow: none;
+  letter-spacing: 0;
+}
+.book-btn:active {
+  opacity: 0.85;
+}
+.btn-press {
+  transform: none;
+  box-shadow: none;
+}
+
+/* 加载 / 空状态 */
+.loading-spinner {
+  border: 4rpx solid rgba(0, 122, 255, 0.15);
+  border-top-color: #007AFF;
+}
+.loading-text {
+  color: rgba(60, 60, 67, 0.6);
+}
+.empty-icon-wrap {
+  background: #f2f2f7;
+}
+.empty-title {
+  color: #000;
+}
+.empty-desc {
+  color: rgba(60, 60, 67, 0.34);
 }
 

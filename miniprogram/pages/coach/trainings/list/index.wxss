@@ -1,63 +1,61 @@
-/* pages/coach/trainings/list/index.wxss */
-.container {
-  min-height: 100vh;
-  background-color: #f5f7fa;
+/* pages/coach/trainings/list/index.wxss — iOS 风格 */
+page {
+  background-color: #f2f2f7;
 }
 
-/* 筛选栏 */
+.container {
+  min-height: 100vh;
+  background-color: #f2f2f7;
+  padding: 8rpx 0 40rpx;
+}
+
+/* 筛选栏：iOS 分段控件 */
 .filter-bar {
-  background-color: #fff;
-  width: 90%;
+  width: calc(100% - 48rpx);
+  margin: 16rpx auto 8rpx;
   display: flex;
-  padding: 20rpx 32rpx;
-  border-bottom: 2rpx solid #f0f0f0;
+  background: #ffffff;
+  border: 1rpx solid rgba(60, 60, 67, 0.1);
+  border-radius: 999rpx;
+  padding: 6rpx;
   position: sticky;
-  top: 0;
+  top: 8rpx;
   z-index: 10;
 }
 
 .filter-item {
   flex: 1;
   text-align: center;
-  padding: 16rpx 0;
-  font-size: 28rpx;
-  color: #666;
-  border-radius: 8rpx;
+  padding: 16rpx 8rpx;
+  font-size: 26rpx;
+  color: rgba(60, 60, 67, 0.6);
+  border-radius: 999rpx;
   transition: all 0.2s;
+  font-weight: 500;
 }
 
 .filter-item.active {
-  color: #07c160;
-  font-weight: 500;
-  position: relative;
+  color: #ffffff;
+  font-weight: 600;
+  background: #007aff;
 }
 
 .filter-item.active::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60rpx;
-  height: 4rpx;
-  background-color: #07c160;
-  border-radius: 2rpx;
+  display: none;
 }
 
 /* 训练卡片 */
 .training-list {
-  width: 95%;
+  width: calc(100% - 48rpx);
   margin: 0 auto;
-  padding: 24rpx;
+  padding: 12rpx 0;
 }
 
 .training-card {
-  width: 90%;
-  background-color: #fff;
-  border-radius: 24rpx;
+  background-color: #ffffff;
+  border-radius: 28rpx;
   padding: 28rpx;
-  margin-bottom: 24rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  margin-bottom: 20rpx;
   transition: transform 0.2s;
 }
 
@@ -70,60 +68,55 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20rpx;
-  padding-bottom: 16rpx;
-  border-bottom: 2rpx solid #f0f0f0;
+  margin-bottom: 16rpx;
 }
 
-.date-info {
-  display: flex;
-  align-items: baseline;
-  gap: 12rpx;
-}
-
-.date-info .date {
+.training-header .date {
   font-size: 30rpx;
-  font-weight: 600;
-  color: #333;
+  font-weight: 700;
+  color: #000;
 }
 
-.date-info .day {
+.training-header .day {
   font-size: 24rpx;
-  color: #999;
+  color: rgba(60, 60, 67, 0.34);
 }
 
 .type-tag {
+  display: inline-block;
   padding: 6rpx 20rpx;
-  border-radius: 30rpx;
+  border-radius: 999rpx;
   font-size: 24rpx;
-  background-color: #f5f5f5;
-  color: #666;
+  font-weight: 500;
+  background-color: #f2f2f7;
+  color: rgba(60, 60, 67, 0.6);
+  margin-bottom: 20rpx;
 }
 
 .type-tag.speed {
-  background-color: #e3f2fd;
-  color: #1976d2;
+  background-color: rgba(0, 122, 255, 0.1);
+  color: #007aff;
 }
 
 .type-tag.endurance {
-  background-color: #e8f5e9;
-  color: #2e7d32;
+  background-color: rgba(52, 199, 89, 0.14);
+  color: #34c759;
 }
 
 .type-tag.coordination {
-  background-color: #fff3e0;
-  color: #f57c00;
+  background-color: rgba(255, 149, 0, 0.14);
+  color: #ff9500;
 }
 
-/* 卡片内容 */
+/* 训练内容 */
 .training-body {
   margin-bottom: 20rpx;
 }
 
 .training-body .name {
   font-size: 32rpx;
-  font-weight: 500;
-  color: #333;
+  font-weight: 600;
+  color: #000;
   display: block;
   margin-bottom: 16rpx;
 }
@@ -138,14 +131,15 @@
 
 .focus-info .label,
 .difficulty-info .label {
-  width: 120rpx;
-  color: #999;
+  width: 140rpx;
+  color: rgba(60, 60, 67, 0.34);
+  flex-shrink: 0;
 }
 
 .focus-info .content,
 .difficulty-info .content {
   flex: 1;
-  color: #666;
+  color: rgba(60, 60, 67, 0.6);
 }
 
 /* 卡片底部 */
@@ -154,7 +148,7 @@
   justify-content: space-between;
   align-items: center;
   padding-top: 16rpx;
-  border-top: 2rpx solid #f0f0f0;
+  border-top: 1rpx solid rgba(60, 60, 67, 0.1);
 }
 
 .coach-info {
@@ -167,12 +161,12 @@
   width: 48rpx;
   height: 48rpx;
   border-radius: 24rpx;
-  background-color: #f0f0f0;
+  background-color: #f2f2f7;
 }
 
 .coach-name {
   font-size: 24rpx;
-  color: #999;
+  color: rgba(60, 60, 67, 0.34);
 }
 
 .photo-info {
@@ -187,7 +181,7 @@
 
 .photo-count {
   font-size: 24rpx;
-  color: #07c160;
+  color: #007aff;
 }
 
 /* 加载更多 */
@@ -196,22 +190,18 @@
   text-align: center;
   padding: 32rpx;
   font-size: 26rpx;
-  color: #999;
-}
-
-.load-more {
-  color: #07c160;
+  color: rgba(60, 60, 67, 0.34);
 }
 
 /* 空状态 */
 .empty {
   text-align: center;
   padding: 120rpx 0;
-  color: #999;
+  color: rgba(60, 60, 67, 0.34);
   font-size: 28rpx;
 }
 
-/* 加载状态 */
+/* 加载 HUD */
 .loading {
   position: fixed;
   top: 50%;
@@ -221,16 +211,16 @@
   flex-direction: column;
   align-items: center;
   gap: 20rpx;
-  background-color: rgba(0,0,0,0.7);
+  background-color: rgba(28, 28, 30, 0.88);
   padding: 40rpx;
-  border-radius: 20rpx;
+  border-radius: 24rpx;
   color: #fff;
 }
 
 .loading-spinner {
   width: 60rpx;
   height: 60rpx;
-  border: 4rpx solid rgba(255,255,255,0.3);
+  border: 4rpx solid rgba(255, 255, 255, 0.25);
   border-top-color: #fff;
   border-radius: 50%;
   animation: spin 1s linear infinite;

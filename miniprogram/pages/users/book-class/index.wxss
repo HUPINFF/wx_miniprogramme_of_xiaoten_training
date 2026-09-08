@@ -1,18 +1,36 @@
 /* pages/users/book-class/index.wxss */
+page {
+  --bg: #F2F2F7;
+  --primary: #007AFF;
+  --primary-dark: #0056CF;
+  --primary-light: rgba(0, 122, 255, 0.1);
+  --card: #ffffff;
+  --text-main: #000000;
+  --text-sub: rgba(60, 60, 67, 0.6);
+  --text-hint: rgba(60, 60, 67, 0.34);
+  --border: rgba(60, 60, 67, 0.1);
+  --radius-sm: 14rpx;
+  --radius-md: 20rpx;
+  --radius-lg: 28rpx;
+  --radius-xl: 32rpx;
+
+  background-color: var(--bg);
+}
+
 .container {
   min-height: 100vh;
-  background-color: #f5f7fa;
-  padding-bottom: 40rpx;
+  background-color: var(--bg);
+  padding-bottom: 60rpx;
 }
 
 /* 通用区块 */
 .section {
-  width: 85%;
-  background-color: #fff;
-  border-radius: 24rpx;
-  margin: 20rpx;
+  width: 90%;
+  background-color: #ffffff;
+  border-radius: 28rpx;
+  margin: 20rpx auto;
   padding: 30rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  box-shadow: none;
 }
 
 .form-item {
@@ -21,37 +39,38 @@
 
 .label {
   font-size: 28rpx;
-  color: #666;
+  color: #000;
   display: block;
   margin-bottom: 16rpx;
   font-weight: 500;
 }
 
 .picker {
-  background-color: #f8f9fc;
+  background-color: #f7f7fa;
   padding: 24rpx;
   border-radius: 16rpx;
   font-size: 28rpx;
-  color: #333;
+  color: #000;
 }
 
-/* 孩子信息卡片 */
+/* 孩子信息卡片（当前注释隐藏，若启用按白卡渲染） */
 .child-card {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.85) 0%, rgba(16, 185, 129, 0.85) 100%);
-  border-radius: 24rpx;
+  background: #ffffff;
+  border-radius: 28rpx;
   margin: 20rpx;
   padding: 30rpx;
   display: flex;
   align-items: center;
   gap: 24rpx;
-  color: #fff;
+  color: #000;
+  box-shadow: none;
 }
 
 .child-avatar {
   width: 100rpx;
   height: 100rpx;
   border-radius: 50%;
-  background-color: #fff;
+  background-color: #f2f2f7;
 }
 
 .child-info {
@@ -61,18 +80,19 @@
 .child-name {
   font-size: 36rpx;
   font-weight: 600;
+  color: #000;
   display: block;
   margin-bottom: 8rpx;
 }
 
 .child-detail {
   font-size: 26rpx;
-  opacity: 0.9;
+  color: rgba(60, 60, 67, 0.6);
 }
 
 /* 预约信息 */
 .order-info {
-  background-color: #f8f9fc;
+  background-color: #f7f7fa;
   border-radius: 16rpx;
   padding: 20rpx;
 }
@@ -80,7 +100,7 @@
 .info-row {
   display: flex;
   padding: 16rpx 0;
-  border-bottom: 2rpx solid #e0e0e0;
+  border-bottom: 1rpx solid rgba(60, 60, 67, 0.1);
 }
 
 .info-row:last-child {
@@ -90,48 +110,24 @@
 .info-label {
   width: 120rpx;
   font-size: 28rpx;
-  color: #999;
+  color: rgba(60, 60, 67, 0.6);
 }
 
 .info-value {
   flex: 1;
   font-size: 28rpx;
-  color: #333;
+  color: #000;
   font-weight: 500;
 }
-
-/* 提交按钮 */
-.submit-btn {
-  background-color: #07c160;
-  color: #fff;
-  border-radius: 44rpx;
-  height: 88rpx;
-  font-size: 32rpx;
-  margin: 20rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-}
-
-.submit-btn::after {
-  border: none;
-}
-
-.submit-btn[disabled] {
-  background-color: #ccc;
-  opacity: 0.6;
-}
-
 
 /* 文本域 */
 .textarea {
   width: 100%;
-  background-color: #f8f9fc;
+  background-color: #f7f7fa;
   padding: 24rpx;
   border-radius: 16rpx;
   font-size: 28rpx;
-  color: #333;
+  color: #000;
   box-sizing: border-box;
   min-height: 160rpx;
   line-height: 1.5;
@@ -139,7 +135,7 @@
 
 .optional {
   font-size: 24rpx;
-  color: #999;
+  color: rgba(60, 60, 67, 0.34);
   font-weight: normal;
   margin-left: 8rpx;
 }
@@ -148,6 +144,36 @@
   display: block;
   text-align: right;
   font-size: 24rpx;
-  color: #999;
+  color: rgba(60, 60, 67, 0.34);
   margin-top: 12rpx;
+}
+
+/* 提交按钮 → 系统蓝实心 */
+.submit-btn {
+  background-color: #007AFF;
+  color: #fff;
+  border-radius: 24rpx;
+  height: 92rpx;
+  font-size: 32rpx;
+  margin: 20rpx auto;
+  width: 90%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  box-shadow: none;
+}
+
+.submit-btn::after {
+  border: none;
+}
+
+.submit-btn:active {
+  opacity: 0.85;
+}
+
+.submit-btn[disabled] {
+  background-color: #d1d1d6;
+  color: #ffffff;
+  opacity: 1;
 }

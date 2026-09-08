@@ -1,21 +1,21 @@
 /* pages/users/moments/index.wxss */
 
-/* ==================== 全局变量 ==================== */
+/* ==================== 全局变量（iOS 化） ==================== */
 page {
-  --bg: #f5f7fa;
-  --primary: #07c160;
-  --primary-light: #e8f5e9;
+  --bg: #F2F2F7;
+  --primary: #007AFF;
+  --primary-light: rgba(0, 122, 255, 0.1);
   --card: #ffffff;
-  --text-main: #1a1a2e;
-  --text-sub: #6b7280;
-  --text-hint: #9ca3af;
-  --shadow-1: 0 2rpx 8rpx rgba(0,0,0,0.04);
-  --shadow-2: 0 4rpx 16rpx rgba(0,0,0,0.06);
-  --shadow-3: 0 8rpx 24rpx rgba(0,0,0,0.08);
-  --radius-sm: 16rpx;
-  --radius-md: 24rpx;
-  --radius-lg: 32rpx;
-  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --text-main: #000000;
+  --text-sub: rgba(60, 60, 67, 0.6);
+  --text-hint: rgba(60, 60, 67, 0.34);
+  --shadow-1: 0 1rpx 4rpx rgba(0, 0, 0, 0.03);
+  --shadow-2: 0 2rpx 10rpx rgba(0, 0, 0, 0.04);
+  --shadow-3: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+  --radius-sm: 14rpx;
+  --radius-md: 20rpx;
+  --radius-lg: 28rpx;
+  --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ==================== 页面容器 ==================== */
@@ -207,4 +207,54 @@ page {
   font-size: 36rpx;
   font-weight: 700;
   color: var(--text-main);
+}
+
+/* ==================== iOS 精修（追加覆盖，后面规则优先） ==================== */
+.container {
+  background-color: var(--bg);
+  padding: 16rpx 24rpx 60rpx;
+}
+
+.moments-grid {
+  width: 100%;
+}
+
+/* 卡片：去投影，hairline 细分隔 */
+.moment-card {
+  border: 1rpx solid rgba(60, 60, 67, 0.08);
+  box-shadow: none;
+}
+.moment-card:active {
+  transform: none;
+  opacity: 0.85;
+  box-shadow: none;
+  border-color: rgba(0, 122, 255, 0.6);
+}
+
+/* 图片占位 */
+.moment-image[src=""] {
+  background: #f0f2f5;
+}
+
+/* 信息区白底 */
+.moment-title-wrapper {
+  background: #ffffff;
+}
+.video-tag {
+  background: rgba(0, 122, 255, 0.1);
+  color: #007aff;
+  box-shadow: none;
+}
+
+/* 加载态：白色浮层 */
+.loading {
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
+}
+.loading text {
+  color: rgba(60, 60, 67, 0.6);
+}
+.loading-spinner {
+  border: 4rpx solid rgba(60, 60, 67, 0.1);
+  border-top-color: #007aff;
 }

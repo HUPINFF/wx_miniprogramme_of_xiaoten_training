@@ -128,3 +128,58 @@
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* ==================== iOS 精修（追加覆盖，后面规则优先） ==================== */
+.container {
+  background-color: #F2F2F7;
+}
+
+.header {
+  color: #000000;
+}
+
+.day-card {
+  background-color: #ffffff;
+  border-radius: 28rpx;
+  box-shadow: none;
+}
+
+.weekday {
+  color: #000000;
+}
+.date {
+  color: rgba(60, 60, 67, 0.6);
+}
+.lesson-count {
+  background-color: #f2f2f7;
+  color: rgba(60, 60, 67, 0.6);
+}
+
+.course-item {
+  border-top: 1rpx solid rgba(60, 60, 67, 0.1);
+}
+.time {
+  color: #007aff;
+}
+.course-name {
+  color: #000000;
+}
+.coach {
+  color: rgba(60, 60, 67, 0.6);
+}
+
+.no-course,
+.empty {
+  color: rgba(60, 60, 67, 0.34);
+}
+
+/* 加载态：白色浮层 */
+.loading {
+  background-color: rgba(255, 255, 255, 0.96);
+  color: rgba(60, 60, 67, 0.6);
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
+}
+.loading-spinner {
+  border: 4rpx solid rgba(60, 60, 67, 0.1);
+  border-top-color: #007aff;
+}

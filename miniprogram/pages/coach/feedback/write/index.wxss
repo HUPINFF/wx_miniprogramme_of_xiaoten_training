@@ -1,16 +1,20 @@
-/* pages/coach/feedback/write/index.wxss */
+/* pages/coach/feedback/write/index.wxss — iOS 风格 */
+page {
+  background-color: #f2f2f7;
+}
+
 .container {
   min-height: 100vh;
-  background-color: #f5f7fa;
+  background-color: #f2f2f7;
   padding: 24rpx;
+  box-sizing: border-box;
 }
 
 .form-card {
-  width: 90%;
-  margin: 0 auto ;
-  background-color: #fff;
-  border-radius: 24rpx;
+  background-color: #ffffff;
+  border-radius: 28rpx;
   padding: 32rpx;
+  box-sizing: border-box;
 }
 
 .form-item {
@@ -23,26 +27,29 @@
 
 .label {
   font-size: 28rpx;
-  color: #666;
+  color: rgba(60, 60, 67, 0.6);
   display: block;
   margin-bottom: 16rpx;
   font-weight: 500;
 }
 
 .picker {
-  background-color: #f8f9fc;
-  padding: 24rpx;
-  border-radius: 16rpx;
+  background-color: #f2f2f7;
+  height: 88rpx;
+  line-height: 88rpx;
+  padding: 0 24rpx;
+  box-sizing: border-box;
+  border-radius: 20rpx;
   font-size: 28rpx;
-  color: #333;
+  color: #000;
 }
 
 /* 孩子信息 */
 .child-info {
   display: flex;
   align-items: center;
-  background-color: #f8f9fc;
-  border-radius: 16rpx;
+  background-color: #f2f2f7;
+  border-radius: 20rpx;
   padding: 24rpx;
   margin-bottom: 40rpx;
 }
@@ -52,31 +59,31 @@
   height: 80rpx;
   border-radius: 50%;
   margin-right: 20rpx;
-  background-color: #e0e0e0;
+  background-color: #ececf0;
 }
 
 .child-info .name {
   font-size: 32rpx;
-  font-weight: 500;
-  color: #333;
+  font-weight: 600;
+  color: #000;
   display: block;
   margin-bottom: 6rpx;
 }
 
 .child-info .hint {
   font-size: 24rpx;
-  color: #999;
+  color: rgba(60, 60, 67, 0.34);
 }
 
 /* 周期显示 */
 .week-range {
-  background-color: #f8f9fc;
+  background-color: rgba(0, 122, 255, 0.1);
   padding: 24rpx;
-  border-radius: 16rpx;
+  border-radius: 20rpx;
   font-size: 28rpx;
-  color: #07c160;
+  color: #007aff;
   text-align: center;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 /* 评分星星 */
@@ -87,51 +94,45 @@
 
 .star {
   font-size: 48rpx;
-  color: #e0e0e0;
+  color: #e5e5ea;
   transition: color 0.2s;
 }
 
 .star.active {
-  color: #ffb400;
+  color: #ff9500;
 }
 
-/* 标签 */
+/* 进步标签 */
 .tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 20rpx;
+  gap: 16rpx;
 }
 
 .tag {
-  padding: 12rpx 24rpx;
-  background-color: #f5f5f5;
-  border-radius: 32rpx;
+  padding: 14rpx 28rpx;
+  background-color: #f2f2f7;
+  border-radius: 999rpx;
   font-size: 26rpx;
-  color: #666;
+  color: rgba(60, 60, 67, 0.6);
   display: inline-block;
-  margin: 0 8rpx 16rpx 0;
   transition: all 0.2s;
-  border: 2rpx solid transparent;  /* 添加透明边框 */
+  font-weight: 500;
 }
 
-/* 选中高亮样式 */
-.tag.op {
-  background-color: #07c160 !important ;  
-  color: #fff !important;
-  border: 2rpx solid #ffb400 !important;  
-  transform: scale(1.02) !important;
+.tag.active {
+  background-color: #007aff;
+  color: #ffffff;
 }
 
-/* 点击效果 */
 .tag:active {
-  transform: scale(0.98);
   opacity: 0.8;
 }
 
 /* 本周表现总结 */
 .performance-summary {
-  background-color: #f8f9fc;
-  border-radius: 16rpx;
+  background-color: #f2f2f7;
+  border-radius: 20rpx;
   padding: 24rpx;
   display: flex;
   flex-wrap: wrap;
@@ -146,32 +147,32 @@
 
 .summary-item .label {
   font-size: 24rpx;
-  color: #999;
+  color: rgba(60, 60, 67, 0.34);
   margin-bottom: 8rpx;
 }
 
 .summary-item .value {
   font-size: 32rpx;
   font-weight: 600;
-  color: #333;
+  color: #000;
 }
 
 .no-data {
-  background-color: #f8f9fc;
-  border-radius: 16rpx;
+  background-color: #f2f2f7;
+  border-radius: 20rpx;
   padding: 40rpx;
   text-align: center;
-  color: #999;
+  color: rgba(60, 60, 67, 0.34);
   font-size: 28rpx;
 }
 
 /* 文本框 */
 textarea {
-  background-color: #f8f9fc;
+  background-color: #f2f2f7;
   padding: 24rpx;
-  border-radius: 16rpx;
+  border-radius: 20rpx;
   font-size: 28rpx;
-  color: #333;
+  color: #000;
   width: 100%;
   min-height: 300rpx;
   box-sizing: border-box;
@@ -182,29 +183,33 @@ textarea {
   display: block;
   text-align: right;
   font-size: 24rpx;
-  color: #999;
+  color: rgba(60, 60, 67, 0.34);
   margin-top: 12rpx;
 }
 
-/* 提交按钮 */
+/* 提交按钮 → iOS 系统蓝 */
 .submit-btn {
   padding: 0;
-  background-color: #07c160;
+  background-color: #007aff;
   color: #fff;
-  border-radius: 44rpx;
-  height: 88rpx;
-  line-height: 88rpx;
+  border-radius: 24rpx;
+  height: 96rpx;
+  line-height: 96rpx;
   font-size: 32rpx;
+  font-weight: 600;
   margin-top: 32rpx;
-  /* display: flex; */
-  /* align-items: center; */
-  /* text-align: center; */
-  /* justify-content: center; */
+}
+
+.submit-btn::after {
+  border: none;
+}
+
+.submit-btn:active {
+  background-color: #0056cf;
+  opacity: 0.85;
 }
 
 .submit-btn[disabled] {
-  background-color: #ccc;
+  background-color: #e5e5ea;
+  color: rgba(60, 60, 67, 0.3);
 }
-
-
-

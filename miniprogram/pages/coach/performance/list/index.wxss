@@ -1,74 +1,70 @@
-/* pages/coach/performance/list/index.wxss */
-.container {
-  min-height: 100vh;
-  background-color: #f5f7fa;
+/* pages/coach/performance/list/index.wxss — iOS 风格 */
+page {
+  background-color: #f2f2f7;
 }
 
-/* 筛选栏 */
+.container {
+  min-height: 100vh;
+  background-color: #f2f2f7;
+  padding: 8rpx 0 40rpx;
+}
+
+/* 筛选栏：iOS 分段控件 */
 .filter-bar {
-  width: 95%;
-  background-color: #fff;
+  width: calc(100% - 48rpx);
+  margin: 16rpx auto 8rpx;
   display: flex;
-  padding: 20rpx 32rpx;
-  border-bottom: 2rpx solid #f0f0f0;
+  background: #ffffff;
+  border: 1rpx solid rgba(60, 60, 67, 0.1);
+  border-radius: 999rpx;
+  padding: 6rpx;
   position: sticky;
-  top: 0;
+  top: 8rpx;
   z-index: 10;
 }
 
 .filter-item {
   flex: 1;
   text-align: center;
-  padding: 16rpx 0;
-  font-size: 28rpx;
-  color: #666;
-  border-radius: 8rpx;
+  padding: 16rpx 8rpx;
+  font-size: 26rpx;
+  color: rgba(60, 60, 67, 0.6);
+  border-radius: 999rpx;
   transition: all 0.2s;
+  font-weight: 500;
 }
 
 .filter-item.active {
-  color: #07c160;
-  font-weight: 500;
-  position: relative;
+  color: #ffffff;
+  font-weight: 600;
+  background: #007aff;
 }
 
 .filter-item.active::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60rpx;
-  height: 4rpx;
-  background-color: #07c160;
-  border-radius: 2rpx;
+  display: none;
 }
 
 /* 统计信息 */
 .stats-info {
-  background-color: #fff;
-  padding: 16rpx 32rpx;
   font-size: 24rpx;
-  color: #999;
-  border-bottom: 2rpx solid #f0f0f0;
+  color: rgba(60, 60, 67, 0.34);
   text-align: center;
+  padding: 12rpx 0 4rpx;
 }
 
 /* 表现列表 */
 .performance-list {
-  width: 90%;
+  width: calc(100% - 48rpx);
   margin: 0 auto;
-  
-  padding: 24rpx;
+  padding: 12rpx 0;
 }
 
 /* 表现卡片 */
 .performance-card {
-  background-color: #fff;
-  border-radius: 24rpx;
+  background-color: #ffffff;
+  border-radius: 28rpx;
   padding: 28rpx;
-  margin-bottom: 24rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  margin-bottom: 20rpx;
   transition: transform 0.2s;
 }
 
@@ -83,38 +79,39 @@
   align-items: center;
   margin-bottom: 24rpx;
   padding-bottom: 16rpx;
-  border-bottom: 2rpx solid #f0f0f0;
+  border-bottom: 1rpx solid rgba(60, 60, 67, 0.1);
 }
 
 .week-date {
   font-size: 30rpx;
-  font-weight: 600;
-  color: #07c160;
+  font-weight: 700;
+  color: #000;
 }
 
 .arrow {
   font-size: 28rpx;
-  color: #ccc;
+  color: rgba(60, 60, 67, 0.25);
+  font-weight: 500;
 }
 
 /* 表现数据网格 */
 .performance-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 20rpx;
+  gap: 16rpx;
   margin-bottom: 20rpx;
 }
 
 .performance-item {
-  background-color: #f8f9fc;
-  border-radius: 16rpx;
+  background-color: #f2f2f7;
+  border-radius: 20rpx;
   padding: 20rpx;
   text-align: center;
 }
 
 .performance-item .label {
   font-size: 24rpx;
-  color: #999;
+  color: rgba(60, 60, 67, 0.34);
   display: block;
   margin-bottom: 8rpx;
 }
@@ -122,15 +119,15 @@
 .performance-item .value {
   font-size: 32rpx;
   font-weight: 600;
-  color: #333;
+  color: #000;
 }
 
 /* 趋势分析 */
 .trend-analysis {
   display: flex;
-  gap: 24rpx;
+  gap: 16rpx;
   padding-top: 16rpx;
-  border-top: 2rpx solid #f0f0f0;
+  border-top: 1rpx solid rgba(60, 60, 67, 0.1);
 }
 
 .trend-item {
@@ -138,27 +135,27 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #f8f9fc;
+  background-color: #f2f2f7;
   padding: 12rpx 20rpx;
-  border-radius: 20rpx;
+  border-radius: 16rpx;
 }
 
 .trend-label {
   font-size: 24rpx;
-  color: #666;
+  color: rgba(60, 60, 67, 0.6);
 }
 
 .trend-value {
   font-size: 26rpx;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .trend-value.up {
-  color: #f5a623;
+  color: #ff9500;
 }
 
 .trend-value.down {
-  color: #07c160;
+  color: #34c759;
 }
 
 /* 加载更多 */
@@ -167,22 +164,18 @@
   text-align: center;
   padding: 32rpx;
   font-size: 26rpx;
-  color: #999;
-}
-
-.load-more {
-  color: #07c160;
+  color: rgba(60, 60, 67, 0.34);
 }
 
 /* 空状态 */
 .empty {
   text-align: center;
   padding: 120rpx 0;
-  color: #999;
+  color: rgba(60, 60, 67, 0.34);
   font-size: 28rpx;
 }
 
-/* 加载状态 */
+/* 加载 HUD */
 .loading {
   position: fixed;
   top: 50%;
@@ -192,16 +185,16 @@
   flex-direction: column;
   align-items: center;
   gap: 20rpx;
-  background-color: rgba(0,0,0,0.7);
+  background-color: rgba(28, 28, 30, 0.88);
   padding: 40rpx;
-  border-radius: 20rpx;
+  border-radius: 24rpx;
   color: #fff;
 }
 
 .loading-spinner {
   width: 60rpx;
   height: 60rpx;
-  border: 4rpx solid rgba(255,255,255,0.3);
+  border: 4rpx solid rgba(255, 255, 255, 0.25);
   border-top-color: #fff;
   border-radius: 50%;
   animation: spin 1s linear infinite;

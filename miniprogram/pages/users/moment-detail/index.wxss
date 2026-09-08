@@ -102,3 +102,50 @@
   color: #999;
   font-size: 28rpx;
 }
+
+/* ==================== iOS 精修（追加覆盖，后面规则优先） ==================== */
+.container {
+  background-color: #F2F2F7;
+}
+
+.detail-card {
+  width: auto;
+  margin: 24rpx;
+  border-radius: 28rpx;
+  box-shadow: none;
+}
+
+.detail-image,
+.detail-video {
+  background-color: rgba(60, 60, 67, 0.1);
+}
+
+.video-tag {
+  background: rgba(0, 122, 255, 0.1);
+  color: #007aff;
+  border-radius: 999rpx;
+}
+.detail-title {
+  color: #000000;
+}
+.detail-desc {
+  color: rgba(60, 60, 67, 0.6);
+}
+.detail-time {
+  border-top: 1rpx solid rgba(60, 60, 67, 0.1);
+  color: rgba(60, 60, 67, 0.34);
+}
+
+/* 空态 / 加载 */
+.empty {
+  color: rgba(60, 60, 67, 0.34);
+}
+.loading {
+  background-color: rgba(255, 255, 255, 0.96);
+  color: rgba(60, 60, 67, 0.6);
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
+}
+.loading-spinner {
+  border: 4rpx solid rgba(60, 60, 67, 0.1);
+  border-top-color: #007aff;
+}
