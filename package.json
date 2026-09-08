@@ -1,0 +1,24 @@
+{
+  "name": "miniprogram-5",
+  "version": "1.0.0",
+  "description": "这是云开发的快速启动指引，其中演示了如何上手使用云开发的三大基础能力：",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HUPINFF/wx_miniprogramme_of_xiaoten_training.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/HUPINFF/wx_miniprogramme_of_xiaoten_training/issues"
+  },
+  "homepage": "https://github.com/HUPINFF/wx_miniprogramme_of_xiaoten_training#readme",
+  "devDependencies": {
+    "jest": "^30.4.2"
+  }
+}
