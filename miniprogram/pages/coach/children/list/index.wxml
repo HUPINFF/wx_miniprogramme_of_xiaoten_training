@@ -10,10 +10,10 @@
 
 <view wx:if="{{loading}}" class="skeleton-list">
     <view class="skeleton-item" wx:for="{{[1,2,3,4]}}" wx:key="*this">
-      <view class="skeleton-avatar skeleton-shrimmer"></view>
+      <view class="skeleton-avatar skeleton-shimmer"></view>
       <view class="skeleton-info">
-        <view class="skeleton-line skeleton-line-name skeleton-shrimmer"></view>
-        <view class="skeleton-line skeleton0line-mata skeleton-shrimmer"></view>
+        <view class="skeleton-line skeleton-line-name skeleton-shimmer"></view>
+        <view class="skeleton-line skeleton-line-meta skeleton-shimmer"></view>
       </view>
     </view>
   </view>
@@ -22,7 +22,7 @@
   <view class="child-item" wx:for="{{children}}" wx:key="_id" bind:tap="viewDetail" data-id="{{item._id}}">
     <image class="avatar" src="cloud://hupin255-5gfbw856b1c861ef.6875-hupin255-5gfbw856b1c861ef-1410552194/default_avatar/6756593ba0eb6a537f7060da8ede3ca8.jpeg" mode="aspectFill"></image>
 
-    <view class="Info">
+    <view class="info">
       <text class="name">{{item.name}}</text>
       <text class="age">{{item.age}}岁 · {{item.gender === 'male' ? '男':'女'}} </text>
     </view>
@@ -49,7 +49,7 @@
 
 <!-- 关联学员弹窗 -->
   <view class="modal-mask" wx:if="{{showAddModal}}" bind:tap="closeModal">
-    <view class="moal-container" catch:tap="stopPropagation">
+    <view class="modal-container" catch:tap="stopPropagation">
       <view class="modal-header">
         <text class="modal-title">关联学员</text>
         <text class="modal-close" bind:tap="closeModal">✕</text>

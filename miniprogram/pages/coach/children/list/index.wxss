@@ -1,112 +1,150 @@
-/* pages/coach/children/index.wxss */
+/* pages/coach/children/list/index.wxss — iOS 风格 */
+page {
+  background-color: #F2F2F7;
+}
+
 .container {
   min-height: 100vh;
-  background-color: #f5f7fa;
+  background-color: #F2F2F7;
   padding-bottom: 40rpx;
 }
 
-/* 添加按钮 */
-.add-btn {
-  width: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12rpx;
-  background: linear-gradient(135deg, #81c784 0%, #66bb6a 100%);
-  margin: 20rpx auto;
-  padding: 24rpx;
-  border-radius: 48rpx;
-  color: #fff;
-  box-shadow: 0 4rpx 12rpx rgba(7, 193, 96, 0.3);
-}
-
-.add-icon {
-  font-size: 40rpx;
-  font-weight: bold;
-}
-
-.add-text {
-  font-size: 32rpx;
-  font-weight: 500;
-}
-
-/* 搜索栏 */
+/* 搜索栏：iOS 灰底圆角字段 */
 .header {
-  width: 85%;
-  background-color: #fff;
-  border-radius: 24rpx;
-  margin: 20rpx;
-  padding: 20rpx 32rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+  width: calc(100% - 60rpx);
+  margin: 16rpx auto;
+  background-color: #e9e9eb;
+  border-radius: 18rpx;
+  padding: 18rpx 28rpx;
+  box-shadow: none;
 }
 
 .header input {
   font-size: 28rpx;
-  color: #333;
+  color: #000;
 }
 
 /* 学员列表 */
 .child-list {
-  width: 95%;
-  padding: 0 20rpx;
+  width: calc(100% - 60rpx);
+  margin: 0 auto;
 }
 
 .child-item {
   display: flex;
   align-items: center;
-  background-color: #fff;
-  border-radius: 20rpx;
-  padding: 24rpx;
+  background-color: #ffffff;
+  border-radius: 28rpx;
+  padding: 24rpx 28rpx;
   margin-bottom: 20rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s;
+  box-shadow: none;
 }
 
 .child-item:active {
-  transform: scale(0.98);
+  transform: none;
+  opacity: 0.8;
 }
 
 .avatar {
-  width: 100rpx;
-  height: 100rpx;
+  width: 96rpx;
+  height: 96rpx;
   border-radius: 50%;
   margin-right: 24rpx;
-  background-color: #f0f0f0;
+  background-color: #e9e9eb;
+  flex-shrink: 0;
 }
 
-.info {
+.info,
+.Info {
   flex: 1;
 }
 
 .name {
   font-size: 32rpx;
-  font-weight: 600;
-  color: #333;
+  font-weight: 700;
+  color: #000;
   display: block;
   margin-bottom: 8rpx;
 }
 
 .age {
   font-size: 26rpx;
-  color: #999;
+  color: rgba(60, 60, 67, 0.6);
 }
 
 /* 空状态 */
 .empty {
   text-align: center;
   padding: 120rpx 0;
-  color: #999;
+  color: rgba(60, 60, 67, 0.34);
   font-size: 28rpx;
 }
 
 .empty-hint {
   display: block;
   font-size: 24rpx;
-  color: #ccc;
+  color: rgba(60, 60, 67, 0.34);
   margin-top: 12rpx;
 }
 
-/* 弹窗样式 */
+/* 添加学员按钮：iOS 系统蓝实心 */
+.add-btn {
+  width: calc(100% - 60rpx);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  background: #007aff;
+  margin: 24rpx auto;
+  padding: 26rpx;
+  border-radius: 24rpx;
+  color: #fff;
+  box-shadow: none;
+}
+
+.add-btn:active {
+  opacity: 0.85;
+}
+
+.add-icon {
+  font-size: 40rpx;
+  font-weight: 400;
+}
+
+.add-text {
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+/* 更换教练按钮：iOS 浅蓝次按钮 */
+.change-coach-btn {
+  width: calc(100% - 60rpx);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  background: rgba(0, 122, 255, 0.12);
+  margin: 0 auto 40rpx;
+  padding: 24rpx;
+  border-radius: 24rpx;
+  color: #007aff;
+  box-shadow: none;
+}
+
+.change-coach-btn:active {
+  opacity: 0.8;
+}
+
+.change-coach-icon {
+  font-size: 32rpx;
+}
+
+.change-coach-text {
+  font-size: 30rpx;
+  font-weight: 600;
+}
+
+/* 弹窗 */
 .modal-mask {
   position: fixed;
   top: 0;
@@ -114,17 +152,17 @@
   right: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(10px);  
   z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.modal-container {
+.modal-container,
+.moal-container {
   width: 85%;
   background-color: #fff;
-  border-radius: 32rpx;
+  border-radius: 36rpx;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -134,70 +172,64 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 32rpx;
-  border-bottom: 2rpx solid #f0f0f0;
+  padding: 32rpx 32rpx 8rpx;
 }
 
 .modal-title {
-  margin-left: 25rpx;
-  font-size: 36rpx;
-  font-weight: bold;
-  color: #ffffff;
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #000;
 }
 
 .modal-close {
-  font-size: 44rpx;
-  color: #fff;
+  font-size: 36rpx;
+  color: rgba(60, 60, 67, 0.34);
   padding: 10rpx;
   line-height: 1;
 }
 
 .modal-body {
-  padding: 32rpx;
+  padding: 24rpx 32rpx 8rpx;
 }
 
 .form-item {
-  margin-bottom: 32rpx;
+  margin-bottom: 16rpx;
 }
 
 .label {
   font-size: 28rpx;
-  color: #ffffff;
+  color: #000;
   display: block;
-  margin-bottom: 12rpx;
-  margin-left: 25rpx;
+  margin-bottom: 16rpx;
   font-weight: 500;
 }
 
 .required {
-  color: #ff6b6b;
+  color: #ff3b30;
   margin-left: 4rpx;
 }
 
 .input {
-  width: 90%;
-  background-color: #f8f9fc;
+  width: 100%;
+  background-color: #f2f2f7;
   height: 80rpx;
-  /* padding: 24rpx; */
-  padding-left:24rpx ;
-  margin: 20rpx;
+  padding-left: 24rpx;
   border-radius: 16rpx;
   font-size: 28rpx;
-  color: #333;
+  color: #000;
   box-sizing: border-box;
 }
 
 .hint {
   font-size: 24rpx;
-  color: #ffffff;
+  color: rgba(60, 60, 67, 0.6);
   margin-top: 12rpx;
-  margin-left: 25rpx;
   display: block;
 }
 
 /* 学员预览 */
 .child-preview {
-  background-color: #e8f5e8;
+  background-color: rgba(0, 122, 255, 0.08);
   border-radius: 16rpx;
   padding: 24rpx;
   margin-top: 20rpx;
@@ -205,9 +237,10 @@
 
 .preview-title {
   font-size: 26rpx;
-  color: #07c160;
+  color: #007aff;
   display: block;
   margin-bottom: 12rpx;
+  font-weight: 600;
 }
 
 .preview-info {
@@ -218,106 +251,121 @@
 
 .preview-name {
   font-size: 32rpx;
-  font-weight: 600;
-  color: #333;
+  font-weight: 700;
+  color: #000;
 }
 
-.preview-age, .preview-gender {
+.preview-age,
+.preview-gender {
   font-size: 26rpx;
-  color: #666;
+  color: rgba(60, 60, 67, 0.6);
 }
 
 /* 错误提示 */
-.error-tip {
-  background-color: #ffe0e0;
+.modal-tip {
+  background-color: rgba(255, 59, 48, 0.1);
   border-radius: 16rpx;
-  padding: 20rpx;
+  padding: 20rpx 24rpx;
   margin-top: 20rpx;
   text-align: center;
-  color: #ff6b6b;
-  font-size: 26rpx;
 }
 
 .modal-tip text {
-  color: red;
-  margin-left: 25rpx;
-  font-weight: bold;
+  color: #ff3b30;
+  font-weight: 500;
+  font-size: 26rpx;
 }
 
 .modal-footer {
   display: flex;
   padding: 24rpx 32rpx 32rpx;
-  gap: 24rpx;
-  border-top: 2rpx solid #f0f0f0;
+  gap: 20rpx;
 }
 
-.cancel-btn, .confirm-btn {
+.cancel-btn,
+.confirm-btn {
   flex: 1;
   height: 88rpx;
-  border-radius: 44rpx;
+  border-radius: 999rpx;
   font-size: 30rpx;
+  font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: center;
   border: none;
+  line-height: 1.4;
+}
+
+.cancel-btn::after,
+.confirm-btn::after {
+  border: none;
 }
 
 .cancel-btn {
-  background-color: #f8f9fc;
-  color: #666;
+  background-color: #f2f2f7;
+  color: #000;
 }
 
 .confirm-btn {
-  background: linear-gradient(135deg, #07c160 0%, #06a34d 100%);
+  background: #007aff;
   color: #fff;
 }
 
 .confirm-btn[disabled] {
-  background: #ccc;
-  opacity: 0.6;
+  background: #c7c7cc;
+  color: #fff;
+  opacity: 1;
 }
 
-
+/* 骨架屏 */
 .skeleton-list {
-  width: 95%;
-  padding: 0 20rpx;
+  width: calc(100% - 60rpx);
+  margin: 0 auto;
 }
+
 .skeleton-item {
   display: flex;
   align-items: center;
   background: #fff;
-  border-radius: 20rpx;
-  padding: 24rpx;
+  border-radius: 28rpx;
+  padding: 24rpx 28rpx;
   margin-bottom: 20rpx;
 }
+
 .skeleton-avatar {
-  width: 100rpx;
-  height: 100rpx;
+  width: 96rpx;
+  height: 96rpx;
   border-radius: 50%;
-  background: #f2f3f5;
+  background: #e9e9eb;
   margin-right: 24rpx;
 }
+
 .skeleton-info {
   flex: 1;
 }
+
 .skeleton-line {
   height: 24rpx;
   border-radius: 12rpx;
-  background: #f2f3f5;
+  background: #e9e9eb;
   margin-bottom: 14rpx;
 }
+
 .skeleton-line-name {
   width: 220rpx;
   height: 30rpx;
 }
+
 .skeleton-line-meta {
   width: 300rpx;
   margin-bottom: 0;
 }
+
 .skeleton-shimmer {
   position: relative;
   overflow: hidden;
 }
+
 .skeleton-shimmer::after {
   content: '';
   position: absolute;
@@ -333,31 +381,8 @@
   );
   animation: skeleton-shimmer 1.3s infinite;
 }
+
 @keyframes skeleton-shimmer {
   0% { left: -150%; }
   100% { left: 150%; }
-}
-
-/* 更换教练按钮 */
-.change-coach-btn {
-  width: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12rpx;
-  background: linear-gradient(135deg, #81c784 0%, #66bb6a 100%);
-  margin: 20rpx auto 40rpx;
-  padding: 24rpx;
-  border-radius: 48rpx;
-  color: #fff;
-  box-shadow: 0 4rpx 12rpx rgba(129, 199, 132, 0.3);
-}
-
-.change-coach-icon {
-  font-size: 36rpx;
-}
-
-.change-coach-text {
-  font-size: 32rpx;
-  font-weight: 500;
 }

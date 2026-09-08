@@ -135,7 +135,7 @@
           class="start-btn status-{{item.status || 'pending'}}"
           bind:tap="goToClass"
           data-id="{{item._id}}"
-          style="{{(!item.status || item.status === 'pending') && !item.canStart ? 'background: #ccc;' : ''}}{{item.status === 'in_class' ? 'background: #4a90d9;' : ''}}{{item.status === 'finished' ? 'background: #999;' : ''}}"
+          style="{{(!item.status || item.status === 'pending') && !item.canStart ? 'background: #c7c7cc;' : ''}}{{item.status === 'in_class' ? 'background: #007AFF;' : ''}}{{item.status === 'finished' ? 'background: #aeaeb2;' : ''}}"
         >
           <text>{{(!item.status || item.status === 'pending') && item.canStart ? '上课' : ''}}{{(!item.status || item.status === 'pending') && !item.canStart ? '未到时间' : ''}}{{item.status === 'in_class' ? '上课中' : ''}}{{item.status === 'finished' ? '已下课' : ''}}</text>
         </view>

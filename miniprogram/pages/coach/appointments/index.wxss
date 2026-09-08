@@ -1,97 +1,111 @@
-/* pages/coach/appointments/index.wxss */
-.container {
-  min-height: 100vh;
-  background-color: #f5f7fa;
-  padding-bottom: 40rpx;
+/* pages/coach/appointments/index.wxss — iOS 风格 */
+page {
+  background-color: #F2F2F7;
 }
 
-/* Tab 切换 */
+.container {
+  min-height: 100vh;
+  background-color: #F2F2F7;
+  padding: 8rpx 0 40rpx;
+}
+
+/* Tab：iOS 分段控件 */
 .tabs {
-  width: 100%;
+  width: calc(100% - 60rpx);
+  margin: 16rpx auto;
   display: flex;
-  background-color: #fff;
-  padding: 20rpx 0;
-  margin-bottom: 20rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+  background: #ffffff;
+  border: 1rpx solid rgba(60, 60, 67, 0.1);
+  border-radius: 999rpx;
+  padding: 6rpx;
 }
 
 .tab-item {
   flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6rpx;
   text-align: center;
-  font-size: 28rpx;
-  color: #666;
-  padding: 16rpx 0;
+  font-size: 26rpx;
+  color: rgba(60, 60, 67, 0.6);
+  padding: 16rpx 8rpx;
   position: relative;
-}
-
-.tab-item.active {
-  color: #07c160;
+  border-radius: 999rpx;
+  background: transparent;
   font-weight: 500;
 }
 
+.tab-item.active {
+  color: #ffffff;
+  font-weight: 600;
+  background: #007aff;
+}
+
 .tab-item.active::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60rpx;
-  height: 4rpx;
-  background-color: #07c160;
-  border-radius: 2rpx;
+  display: none;
 }
 
 .tab-item .badge {
-  background-color: #ff6b6b;
+  background-color: #ff3b30;
   color: #fff;
-  font-size: 20rpx;
-  padding: 2rpx 12rpx;
-  border-radius: 20rpx;
-  margin-left: 8rpx;
+  font-size: 18rpx;
+  min-width: 30rpx;
+  height: 30rpx;
+  line-height: 30rpx;
+  padding: 0 8rpx;
+  border-radius: 15rpx;
+  text-align: center;
 }
 
 /* 预约卡片 */
 .appointmentList {
-  width: 90%;
+  width: calc(100% - 60rpx);
   margin: 0 auto;
-  padding: 0 20rpx;
 }
 
 .appointment-card {
-  background-color: #fff;
-  border-radius: 24rpx;
-  padding: 28rpx;
+  background-color: #ffffff;
+  border-radius: 28rpx;
+  padding: 28rpx 32rpx;
   margin-bottom: 20rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
 }
 
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 16rpx;
-  border-bottom: 2rpx solid #f0f0f0;
-  margin-bottom: 16rpx;
+  padding-bottom: 18rpx;
+  border-bottom: 1rpx solid rgba(60, 60, 67, 0.12);
+  margin-bottom: 18rpx;
 }
 
 .child-name {
   font-size: 32rpx;
-  font-weight: 600;
-  color: #333;
+  font-weight: 700;
+  color: #000;
 }
 
 .date {
-  font-size: 24rpx;
-  color: #999;
+  font-size: 22rpx;
+  color: rgba(60, 60, 67, 0.6);
+  background: #f2f2f7;
+  padding: 4rpx 16rpx;
+  border-radius: 999rpx;
+  font-weight: 500;
 }
 
 .card-content {
-  margin-bottom: 20rpx;
+  margin-bottom: 6rpx;
 }
 
 .info-row {
   display: flex;
-  margin-bottom: 16rpx;
+  align-items: center;
+  margin-bottom: 12rpx;
+  padding: 14rpx 20rpx;
+  background: #f7f7fa;
+  border-radius: 16rpx;
 }
 
 .info-row:last-child {
@@ -100,49 +114,59 @@
 
 .label {
   width: 80rpx;
-  font-size: 26rpx;
-  color: #999;
+  font-size: 24rpx;
+  color: rgba(60, 60, 67, 0.34);
+  flex-shrink: 0;
 }
 
 .value {
   flex: 1;
   font-size: 28rpx;
-  color: #333;
+  color: #000;
+  font-weight: 600;
 }
 
 .value.remark {
-  color: #ff6b6b;
+  color: #ff3b30;
 }
 
 .card-footer {
   display: flex;
   justify-content: flex-end;
   gap: 20rpx;
-  padding-top: 16rpx;
-  border-top: 2rpx solid #f0f0f0;
+  padding-top: 18rpx;
+  border-top: 1rpx solid rgba(60, 60, 67, 0.12);
+}
+
+.approve-btn,
+.reject-btn {
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  padding: 12rpx 40rpx;
+  line-height: 1.6;
+  margin: 0;
 }
 
 .approve-btn {
-  background-color: #07c160;
+  background-color: #007aff;
   color: #fff;
   border: none;
-  border-radius: 30rpx;
-  font-size: 24rpx;
-  padding: 10rpx 40rpx;
 }
 
 .reject-btn {
-  background-color: #fff;
-  color: #ff6b6b;
-  border: 2rpx solid #ff6b6b;
-  border-radius: 30rpx;
-  font-size: 24rpx;
-  padding: 10rpx 40rpx;
+  background-color: rgba(255, 59, 48, 0.12);
+  color: #ff3b30;
+  border: none;
+}
+
+.approve-btn::after,
+.reject-btn::after {
+  border: none;
 }
 
 .empty {
   text-align: center;
   padding: 100rpx 0;
-  color: #999;
+  color: rgba(60, 60, 67, 0.34);
   font-size: 28rpx;
 }

@@ -1,24 +1,24 @@
 /* pages/coach/workbench/index.wxss */
 
-/* ==================== 全局变量 ==================== */
+/* ==================== 全局变量（iOS 化） ==================== */
 page {
-  --bg: #f5f7fa;
-  --primary: #07c160;
-  --primary-dark: #05a350;
-  --primary-light: #e8f5e9;
+  --bg: #F2F2F7;
+  --primary: #007AFF;
+  --primary-dark: #0056CF;
+  --primary-light: rgba(0, 122, 255, 0.1);
   --card: #ffffff;
-  --text-main: #1a1a2e;
-  --text-sub: #6b7280;
-  --text-hint: #9ca3af;
-  --border: #f3f4f6;
-  --shadow-1: 0 2rpx 8rpx rgba(0,0,0,0.04);
-  --shadow-2: 0 4rpx 16rpx rgba(0,0,0,0.06);
-  --shadow-3: 0 8rpx 24rpx rgba(0,0,0,0.08);
-  --radius-sm: 16rpx;
-  --radius-md: 24rpx;
-  --radius-lg: 32rpx;
-  --radius-xl: 40rpx;
-  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --text-main: #000000;
+  --text-sub: rgba(60, 60, 67, 0.6);
+  --text-hint: rgba(60, 60, 67, 0.34);
+  --border: rgba(60, 60, 67, 0.1);
+  --shadow-1: 0 1rpx 4rpx rgba(0, 0, 0, 0.03);
+  --shadow-2: 0 2rpx 10rpx rgba(0, 0, 0, 0.04);
+  --shadow-3: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+  --radius-sm: 14rpx;
+  --radius-md: 20rpx;
+  --radius-lg: 28rpx;
+  --radius-xl: 32rpx;
+  --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ==================== 页面容器 ==================== */
@@ -1123,4 +1123,169 @@ page {
 @keyframes skeleton-shimmer {
   0% { left: -150%; }
   100% { left: 150%; }
+}
+
+/* ==================== iOS 精修（追加覆盖，后面规则优先） ==================== */
+
+/* 头区：白底 + iOS 大标题 */
+.gradient-bg {
+  height: 340rpx;
+  background: linear-gradient(180deg, #ffffff 0%, #ffffff 55%, #f7f7fa 100%);
+}
+.gradient-bg::after {
+  display: none;
+}
+.header-area {
+  padding: 88rpx 44rpx 20rpx;
+  align-items: flex-start;
+}
+.header-title {
+  color: #000000;
+  text-shadow: none;
+  letter-spacing: 0;
+}
+.header-subtitle {
+  color: rgba(60, 60, 67, 0.6);
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  backdrop-filter: none;
+  letter-spacing: 0;
+}
+
+/* 欢迎语 → 白卡，去绿渐变与发光 */
+.welcome {
+  background: #ffffff;
+  border: 1rpx solid rgba(60, 60, 67, 0.08);
+  box-shadow: none;
+}
+.welcome::before,
+.welcome::after {
+  display: none;
+}
+.greeting {
+  color: #000000;
+  text-shadow: none;
+}
+.date {
+  color: rgba(60, 60, 67, 0.6);
+}
+.date::before {
+  display: none;
+}
+.welcome-right {
+  color: #007aff;
+  animation: none;
+  filter: none;
+  font-size: 56rpx;
+  opacity: 0.9;
+}
+
+/* 快捷入口：浅灰衬底单色图标 */
+.quick-actions {
+  box-shadow: none;
+}
+.action:active {
+  background: transparent;
+  transform: none;
+  opacity: 0.7;
+}
+.action text:first-child {
+  background: #f2f2f7;
+  color: #007aff;
+  border-radius: 16rpx;
+}
+.action text:last-child {
+  color: rgba(60, 60, 67, 0.6);
+}
+
+/* 白色 section 去投影，标题 hairline 分隔 */
+.section {
+  box-shadow: none;
+}
+.section-header {
+  border-bottom: 1rpx solid rgba(60, 60, 67, 0.12);
+}
+.section-more {
+  background: transparent;
+  color: #007aff;
+  padding: 6rpx 0;
+}
+.section-more:active {
+  background: transparent;
+  color: #0056cf;
+  transform: none;
+}
+
+/* 今日课程：灰底行 + 系统蓝时间/按钮 */
+.training-item {
+  background: #f7f7fa;
+  border: none;
+}
+.training-item:active {
+  background: #ececf1;
+  border-color: transparent;
+}
+.time {
+  color: #007aff;
+}
+.start-btn {
+  background-color: #007aff;
+  border-radius: 999rpx;
+}
+.start-btn:active {
+  transform: none;
+}
+
+/* 待办：灰底行 + 系统红角标 */
+.todo-item {
+  background: #f7f7fa;
+  border: none;
+}
+.todo-item:active {
+  background: #ececf1;
+  border-color: transparent;
+}
+.badge {
+  background: #ff3b30;
+  box-shadow: none;
+}
+
+/* 轮播：图片本身圆角，去投影 */
+.banner {
+  box-shadow: none;
+}
+
+/* 动态列表：hairline + 蓝点 */
+.news-dot {
+  background: #007aff;
+  box-shadow: none;
+}
+.news-item {
+  border-bottom: 1rpx solid rgba(60, 60, 67, 0.12);
+}
+.news-item:last-child {
+  border-bottom: none;
+}
+.news-time {
+  background: #f2f2f7;
+}
+
+/* 成长/课程 横向卡：去上浮、中性图底、系统蓝标签 */
+.growth-cover,
+.course-cover {
+  background: linear-gradient(135deg, #eef2ff 0%, #e7f1fb 100%);
+}
+.growth-no-cover,
+.course-no-cover {
+  background: #f0f2f5;
+}
+.growth-badge,
+.course-badge {
+  background: #007aff;
+  box-shadow: none;
+}
+.growth-tag {
+  background: rgba(0, 122, 255, 0.1);
+  color: #007aff;
 }

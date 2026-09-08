@@ -280,3 +280,66 @@
   transform: scale(0.96);
   box-shadow: 0 2rpx 8rpx rgba(7, 193, 96, 0.2);
 }
+
+/* ==================== iOS 精修（追加覆盖） ==================== */
+.coach-card {
+  box-shadow: none;
+  border: 1rpx solid rgba(60, 60, 67, 0.08);
+}
+.coach-card::before,
+.coach-card::after {
+  display: none;
+}
+.coach-card.editing {
+  border-color: rgba(0, 122, 255, 0.4);
+  box-shadow: none;
+}
+.coach-avatar image {
+  box-shadow: none;
+  border: none;
+}
+.coach-name text:first-child {
+  color: #000000;
+}
+.coach-bio {
+  color: rgba(60, 60, 67, 0.6);
+}
+.coach-bio::before {
+  content: none;
+}
+.coach-name .edit-tag,
+.contact-item {
+  border: none;
+}
+.contact-item {
+  color: #007aff;
+  background: rgba(0, 122, 255, 0.1);
+}
+.coach-name .edit-tag,
+.edit-icon {
+  color: #007aff;
+  background: rgba(0, 122, 255, 0.1);
+}
+.save-btn {
+  background: #007aff;
+  border-radius: 999rpx;
+  box-shadow: none;
+}
+.save-btn:active {
+  opacity: 0.85;
+  transform: none;
+  box-shadow: none;
+}
+.cancel-btn {
+  background: #f2f2f7;
+  color: #000;
+  border: none;
+  border-radius: 999rpx;
+}
+.edit-name:focus,
+.edit-phone:focus,
+.edit-wechat:focus,
+.edit-bio:focus {
+  border-color: #007aff;
+  background: #f7f7fa;
+}
