@@ -1,22 +1,22 @@
-/* ==================== 全局变量 ==================== */
+/* ==================== 全局变量（iOS 化） ==================== */
 page {
-  --primary: #07c160;
-  --primary-dark: #05a350;
-  --primary-light: #e8f5e9;
-  --accent: #00d2ff;
-  --bg-page: #f0f2f5;
+  --primary: #007AFF;
+  --primary-dark: #0056CF;
+  --primary-light: rgba(0, 122, 255, 0.1);
+  --accent: #5AC8FA;
+  --bg-page: #F2F2F7;
   --bg-card: #ffffff;
-  --text-primary: #1a1a2e;
-  --text-secondary: #4a4a68;
-  --text-tertiary: #8a8aa3;
-  --border-light: rgba(255, 255, 255, 0.2);
-  --shadow-sm: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
-  --radius-sm: 16rpx;
-  --radius-md: 24rpx;
-  --radius-lg: 32rpx;
-  --radius-xl: 40rpx;
-  
+  --text-primary: #000000;
+  --text-secondary: rgba(60, 60, 67, 0.6);
+  --text-tertiary: rgba(60, 60, 67, 0.34);
+  --border-light: rgba(60, 60, 67, 0.1);
+  --shadow-sm: 0 1rpx 4rpx rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  --radius-sm: 14rpx;
+  --radius-md: 20rpx;
+  --radius-lg: 28rpx;
+  --radius-xl: 32rpx;
+
   background-color: var(--bg-page);
 }
 
@@ -869,4 +869,144 @@ page {
 .legend-text {
   font-size: 24rpx;
   color: var(--text-secondary);
+}
+
+/* ==================== iOS 精修（追加覆盖，后面规则优先） ==================== */
+
+/* 头区：白底 + 深色大标题 */
+.gradient-bg {
+  height: 360rpx;
+  background: linear-gradient(180deg, #ffffff 0%, #ffffff 55%, #f7f7fa 100%);
+}
+.gradient-bg::after {
+  display: none;
+}
+.header-area {
+  padding: 24rpx 44rpx 8rpx;
+}
+.header-title {
+  color: #000000;
+  text-shadow: none;
+}
+.header-subtitle {
+  color: rgba(60, 60, 67, 0.6);
+}
+
+/* 项目 Tab：去玻璃拟态，改浅胶囊选中态 */
+.tab-container {
+  padding: 8rpx 24rpx 0;
+}
+.tab-list {
+  padding: 12rpx 6rpx;
+}
+.tab-item {
+  background: #ffffff;
+  border: 1rpx solid rgba(60, 60, 67, 0.12);
+  border-radius: 999rpx;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+.tab-item:active {
+  transform: none;
+  opacity: 0.8;
+}
+.tab-item.active {
+  background: rgba(0, 122, 255, 0.12);
+  box-shadow: none;
+  border-color: transparent;
+  transform: none;
+}
+.tab-item.active .tab-name {
+  color: #007aff;
+}
+
+/* 时间分段控件：实白底 + hairline（iOS segmented） */
+.time-tab-wrapper {
+  padding: 8rpx 30rpx 24rpx;
+}
+.time-tab {
+  background: #ffffff;
+  border: 1rpx solid rgba(60, 60, 67, 0.1);
+  backdrop-filter: none;
+  box-shadow: none;
+}
+.time-tab-divider {
+  background: rgba(60, 60, 67, 0.1);
+}
+
+/* 大卡统一无投影，accent 细条改蓝 */
+.chart-section,
+.timeline-section,
+.compare-section {
+  border-radius: 28rpx;
+  box-shadow: none;
+}
+.chart-accent {
+  height: 4rpx;
+  background: linear-gradient(90deg, #007aff, #5ac8fa);
+}
+.timeline-header,
+.compare-header {
+  border-bottom: 1rpx solid rgba(60, 60, 67, 0.1);
+}
+
+/* 时间轴：蓝线蓝点去发光 */
+.timeline-item::before {
+  background: linear-gradient(180deg, #007aff, rgba(0, 122, 255, 0.12));
+}
+.month-dot {
+  box-shadow: none;
+}
+
+/* 空状态：去绿色渐变圆与绿光按钮 */
+.empty-circle.outer {
+  background: rgba(0, 122, 255, 0.1);
+  opacity: 0.8;
+}
+.empty-circle.inner {
+  background: rgba(0, 122, 255, 0.05);
+  opacity: 0.9;
+}
+.empty-action {
+  background: #007aff;
+  border-radius: 24rpx;
+  box-shadow: none;
+}
+.empty-action:active {
+  opacity: 0.9;
+}
+
+/* 选择器 / 对比按钮：灰字段 + 系统蓝激活 */
+.select-btn {
+  background: #f2f2f7;
+  border-color: transparent;
+}
+.select-btn.disabled {
+  background: rgba(0, 122, 255, 0.12);
+  border-color: transparent;
+}
+.select-btn.disabled text {
+  color: #007aff;
+}
+.compare-btn {
+  background: #f2f2f7;
+}
+.compare-btn.active {
+  background: #007aff;
+  box-shadow: none;
+}
+.compare-btn text {
+  color: rgba(60, 60, 67, 0.5);
+}
+.compare-btn.active text {
+  color: #ffffff;
+}
+.compare-chart {
+  border-top: 1rpx solid rgba(60, 60, 67, 0.1);
+}
+.legend-dot.first {
+  background: #ff3b30;
+}
+.legend-dot.last {
+  background: #007aff;
 }

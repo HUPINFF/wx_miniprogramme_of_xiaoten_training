@@ -67,17 +67,17 @@
     }
   },
   "window": {
-    "backgroundColor": "#F6F6F6",
+    "backgroundColor": "#F2F2F7",
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#F6F6F6",
+    "navigationBarBackgroundColor": "#F2F2F7",
     "navigationBarTitleText": "教练管理平台",
     "navigationBarTextStyle": "black",
     "navigationStyle": "custom"
   },
   "tabBar": {
-    "color": "#999",
-    "selectedColor": "#4a90d9",
-    "backgroundColor": "#fff",
+    "color": "#8E8E93",
+    "selectedColor": "#007AFF",
+    "backgroundColor": "#ffffff",
     "list": [
       {
         "pagePath": "pages/users/home/index",

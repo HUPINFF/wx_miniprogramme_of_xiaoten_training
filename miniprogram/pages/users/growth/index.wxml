@@ -6,7 +6,7 @@
   
   <!-- 顶部标题区 -->
   <view class="header-area">
-    <text class="header-title">📈 成长记录</text>
+    <text class="header-title">成长记录</text>
     <text class="header-subtitle">记录每一次进步</text>
   </view>
 

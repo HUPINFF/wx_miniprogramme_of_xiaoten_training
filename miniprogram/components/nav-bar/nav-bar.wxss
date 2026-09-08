@@ -3,57 +3,69 @@
   top: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.95) 0%, rgba(16, 185, 129, 0.95) 100%);
-  backdrop-filter: blur(20px);
+  background: rgba(249, 249, 251, 0.82);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   z-index: 999;
-  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+  border-bottom: 1rpx solid rgba(60, 60, 67, 0.12);
 }
 
 .navbar-content {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 30rpx;
+  padding: 0 24rpx;
 }
 
 .navbar-left {
-  width: 60rpx;
+  width: 76rpx;
+  height: 100%;
+  display: flex;
+  align-items: center;
 }
 
 .navbar-back {
-  width: 60rpx;
-  height: 60rpx;
+  min-width: 76rpx;
+  height: 72rpx;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  padding-left: 4rpx;
 }
 
 .back-icon {
-  font-size: 40rpx;
-  color: #fff;
-  font-weight: 500;
+  font-size: 52rpx;
+  font-weight: 300;
+  color: #007AFF;
+  line-height: 1;
 }
 
 .navbar-center {
   flex: 1;
-  text-align: center;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  overflow: hidden;
 }
 
 .brand-name {
   font-size: 34rpx;
   font-weight: 600;
-  color: #fff;
-  letter-spacing: 2rpx;
+  color: #000;
+  letter-spacing: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .brand-sub {
   font-size: 24rpx;
-  color: rgba(255, 255, 255, 0.8);
-  margin-left: 8rpx;
+  color: rgba(60, 60, 67, 0.6);
+  margin-left: 12rpx;
 }
 
 .navbar-right {
-  width: 60rpx;
+  width: 76rpx;
 }
 
 .navbar-placeholder {

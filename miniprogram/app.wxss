@@ -1,3 +1,195 @@
+/* ============================================================
+   iOS 设计系统 tokens（全站共享）
+   页面如有自己的 page{} 变量声明，请以本表为准同步覆盖。
+   ============================================================ */
+page {
+  /* 表面 */
+  --bg: #F2F2F7;                    /* systemGroupedBackground 页面底色 */
+  --card: #FFFFFF;                  /* 卡片 / 单元格 */
+  --fill: #F2F2F7;                  /* 控件浅灰填充 / 图标衬底 */
+  --fill-secondary: #E9E9EB;        /* 更深一级灰底（按压/次级） */
+  --separator: rgba(60, 60, 67, 0.14);   /* hairline 分隔线 */
+  --overlay: rgba(0, 0, 0, 0.5);    /* 遮罩 */
+
+  /* 强调色 */
+  --accent: #007AFF;                /* systemBlue 主操作 */
+  --accent-deep: #005FC7;           /* 按压深蓝 */
+  --accent-tint: rgba(0, 122, 255, 0.12);  /* 蓝色浅底 */
+  --green: #34C759;                 /* 成功/已同意 */
+  --red: #FF3B30;                   /* 危险/拒绝 */
+  --orange: #FF9500;                /* 待处理/提醒 */
+  --yellow: #FFCC00;
+  --indigo: #5856D6;
+  --teal: #30B0C7;
+
+  /* 文字 */
+  --text: #000000;
+  --text-2: rgba(60, 60, 67, 0.6);
+  --text-3: rgba(60, 60, 67, 0.3);
+
+  /* 圆角（收敛：控件 20 / 卡片 32 / 弹窗 36 / 胶囊 pill） */
+  --r-xs: 12rpx;
+  --r-sm: 16rpx;
+  --r-md: 20rpx;
+  --r-lg: 32rpx;
+  --r-xl: 36rpx;
+  --r-pill: 999rpx;
+
+  /* 阴影：默认无，仅需要强调时用极弱一层 */
+  --shadow-ios: 0 1rpx 4rpx rgba(0, 0, 0, 0.04);
+  --shadow-ios-lg: 0 12rpx 32rpx rgba(0, 0, 0, 0.1);
+
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro SC",
+    "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+  font-size: 30rpx;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* —— 通用工具类 —— */
+
+/* 1rpx 高亮分隔线 */
+.hairline {
+  height: 1rpx;
+  background: var(--separator);
+  transform: scaleY(0.5);
+  transform-origin: 0 0;
+}
+
+/* 分区小标题（iOS grouped 的灰色大写式标题） */
+.ios-section-title {
+  margin: 40rpx 36rpx 16rpx;
+  color: var(--text-2);
+  font-size: 24rpx;
+  font-weight: 600;
+  letter-spacing: 1rpx;
+}
+
+/* 纯白卡（无投影，靠分组底色区分） */
+.ios-card {
+  background: var(--card);
+  border-radius: var(--r-lg);
+  padding: 28rpx 32rpx;
+  box-sizing: border-box;
+}
+
+/* inset group 列表容器 */
+.ios-group {
+  margin: 0 28rpx 32rpx;
+  background: var(--card);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.ios-cell {
+  display: flex;
+  align-items: center;
+  min-height: 96rpx;
+  padding: 0 30rpx;
+  background: var(--card);
+}
+.ios-cell + .ios-cell {
+  position: relative;
+}
+.ios-cell + .ios-cell::before {
+  content: "";
+  position: absolute;
+  left: 30rpx;
+  right: 30rpx;
+  top: 0;
+  height: 1rpx;
+  background: var(--separator);
+  transform: scaleY(0.5);
+}
+/* 图标衬底（iOS 设置式：浅灰圆角方 + 单色强调符号） */
+.ios-icon {
+  width: 64rpx;
+  height: 64rpx;
+  margin-right: 24rpx;
+  border-radius: 14rpx;
+  background: var(--fill);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  font-size: 34rpx;
+  flex-shrink: 0;
+}
+
+/* 按钮 */
+.ios-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 92rpx;
+  border-radius: var(--r-md);
+  font-size: 34rpx;
+  font-weight: 600;
+  box-sizing: border-box;
+  transition: opacity 0.15s ease, transform 0.1s ease;
+}
+.ios-btn:active { opacity: 0.72; transform: scale(0.985); }
+.ios-btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+.ios-btn-tinted {           /* iOS 浅蓝"推荐"次按钮 */
+  background: var(--accent-tint);
+  color: var(--accent);
+}
+.ios-btn-gray {
+  background: var(--fill);
+  color: var(--text);
+}
+.ios-btn-plain {            /* 次级文字按钮 */
+  background: transparent;
+  color: var(--accent);
+}
+.ios-btn-danger {
+  background: var(--red);
+  color: #fff;
+}
+.ios-btn-danger-plain {
+  background: transparent;
+  color: var(--red);
+}
+
+/* 状态 pill：语义色淡底 + 前导圆点 */
+.ios-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4rpx 18rpx;
+  border-radius: var(--r-pill);
+  font-size: 24rpx;
+  line-height: 1.6;
+}
+.ios-pill::before {
+  content: "";
+  width: 12rpx;
+  height: 12rpx;
+  margin-right: 10rpx;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.9;
+}
+.ios-pill-blue    { background: var(--accent-tint); color: var(--accent); }
+.ios-pill-green   { background: rgba(52,199,89,.14); color: var(--green); }
+.ios-pill-red     { background: rgba(255,59,48,.12); color: var(--red); }
+.ios-pill-orange  { background: rgba(255,149,0,.15); color: var(--orange); }
+.ios-pill-gray    { background: var(--fill); color: var(--text-2); }
+
+/* 骨架屏闪烁（若页面自带 .skeleton 同名则本地优先） */
+.ios-skeleton-shimmer {
+  background: linear-gradient(90deg, #EDEDF2 25%, #F7F7F9 37%, #EDEDF2 63%);
+  background-size: 400% 100%;
+  animation: ios-shimmer 1.4s ease infinite;
+}
+@keyframes ios-shimmer {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+
 @font-face {
   font-family: 'iconfont';  /* Project id 5156334 */
   src: url('//at.alicdn.com/t/c/font_5156334_0wf1fgis4ob.woff2?t=1775645452237') format('woff2'),
