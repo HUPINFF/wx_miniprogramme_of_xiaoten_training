@@ -68,7 +68,7 @@
   <!-- 【新增】我的教练面板 -->
   <view class="coach-section" wx:if="{{coachInfo}}">
     <view class="section-header">
-      <text class="section-title">我的教练</text>
+      <text class="section-title">👨‍🏫 我的教练</text>
     </view>
     <view class="coach-card">
       <text class="coach-name">{{coachInfo.name}} 教练</text>

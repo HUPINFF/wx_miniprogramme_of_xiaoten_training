@@ -9,7 +9,7 @@
       </view>
     </block>
     <!-- 空状态 -->
-    <view wx:if="{{newsList.length === 0 && !loading}}" class="empty">
+    <view class="{{newsList.length ===0 && !loading}}" class="empty">
       <text>暂无动态</text>
     </view>
 

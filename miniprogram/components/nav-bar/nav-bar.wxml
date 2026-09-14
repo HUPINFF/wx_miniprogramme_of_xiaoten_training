@@ -4,7 +4,7 @@
   <!-- 左侧返回按钮（可选） -->
   <view class="navbar-left" wx:if="{{showBack}}">
       <view class="navbar-back" bindtap="goBack">
-        <text class="back-icon">‹</text>
+        <text class="back-icon">←</text>
       </view>
     </view>
 

@@ -28,7 +28,7 @@
       <text class="name">{{childInfo.name}}</text>
       <text class="age">{{childInfo.age}}岁</text>
     </view>
-    <view class="child-tag">训练中 · 坚持就是胜利</view>
+    <view class="child-tag">训练中 · 坚持就是胜利 💪</view>
   </view>
 
   <view wx:if="{{loading}}" class="skeleton-child-card">
@@ -91,7 +91,7 @@
   <!-- 最新动态/公告 -->
   <view class="section">
     <view class="section-header">
-      <text class="section-title" wx:if="{{!loading}}">最新动态</text>
+      <text class="section-title" wx:if="{{!loading}}">📢 最新动态</text>
       <view class="skeleton skeleton-section-title" wx:if="{{loading}}"></view>
       <text class="section-more" wx:if="{{!loading}}" bind:tap="viewAllNews">查看更多</text>
       <view class="skeleton skeleton-tag" wx:if="{{loading}}" style="width: 120rpx; height: 40rpx; border-radius: 20rpx;"></view>
@@ -117,7 +117,7 @@
   <!-- 成长案例 -->
   <view class="section" wx:if="{{!loading && growthList.length > 0}}">
     <view class="section-header">
-      <text class="section-title">成长案例</text>
+      <text class="section-title">🌱 成长案例</text>
       <text class="section-more" bind:tap="viewAllGrowth">查看全部</text>
     </view>
     <view class="growth-list fade-in">
@@ -135,7 +135,7 @@
           <text class="growth-title">{{item.title}}</text>
           <text class="growth-desc">{{item.description || '暂无描述'}}</text>
           <view class="growth-meta">
-            <text class="growth-count">{{item.itemCount || 0}} 张照片</text>
+            <text class="growth-count">📷 {{item.itemCount || 0}}</text>
             <text class="growth-time">{{item.createdAt}}</text>
           </view>
         </view>
@@ -146,7 +146,7 @@
   <!-- 家长点评 -->
   <view class="section">
     <view class="section-header">
-      <text class="section-title" wx:if="{{!loading}}">家长点评</text>
+      <text class="section-title" wx:if="{{!loading}}">💬 家长点评</text>
       <view class="skeleton skeleton-section-title" wx:if="{{loading}}"></view>
       <text class="section-more" wx:if="{{!loading}}" bind:tap="viewAllComments">查看全部</text>
       <view class="skeleton skeleton-tag" wx:if="{{loading}}" style="width: 120rpx; height: 40rpx; border-radius: 20rpx;"></view>
@@ -223,7 +223,7 @@
   <!-- 精彩瞬间（优化版） -->
   <view class="section">
     <view class="section-header">
-      <text class="section-title" wx:if="{{!loading}}">精彩瞬间</text>
+      <text class="section-title" wx:if="{{!loading}}">📸 精彩瞬间</text>
       <view class="skeleton skeleton-section-title" wx:if="{{loading}}"></view>
       <text class="section-more" wx:if="{{!loading}}" bind:tap="viewMoreMoments">更多</text>
       <view class="skeleton skeleton-tag" wx:if="{{loading}}" style="width: 100rpx; height: 40rpx; border-radius: 20rpx;"></view>
@@ -239,7 +239,7 @@
           <view class="moment-info">
             <text class="moment-title">{{item.title}}</text>
             <view class="moment-meta">
-              <view class="moment-views">查看</view>
+              <view class="moment-views">👁️ 查看</view>
               <text class="moment-date">精彩时刻</text>
             </view>
           </view>
@@ -263,7 +263,7 @@
   <!-- 课程体系 -->
   <view class="section" wx:if="{{!loading && courseList.length > 0}}">
     <view class="section-header">
-      <text class="section-title">课程体系</text>
+      <text class="section-title">📚 课程体系</text>
       <text class="section-more" bind:tap="viewAllCourses">查看全部</text>
     </view>
     <scroll-view class="course-scroll" scroll-x="true">
@@ -279,7 +279,7 @@
           <view class="course-info">
             <text class="course-name">{{item.courseName}}</text>
             <text class="course-desc" wx:if="{{item.description}}">{{item.description}}</text>
-            <text class="course-hours">{{item.trainingHours}}课时</text>
+            <text class="course-hours">📅 {{item.trainingHours}}课时</text>
           </view>
         </view>
       </view>
@@ -309,7 +309,7 @@
   <!-- 机构介绍 -->
   <view class="section">
     <view class="section-header">
-      <text class="section-title" wx:if="{{!loading}}">关于我们</text>
+      <text class="section-title" wx:if="{{!loading}}">🏆 关于我们</text>
       <view class="skeleton skeleton-section-title" wx:if="{{loading}}"></view>
       <text class="section-more" wx:if="{{!loading}}" bind:tap="aboutUs">了解更多</text>
       <view class="skeleton skeleton-tag" wx:if="{{loading}}" style="width: 120rpx; height: 40rpx; border-radius: 20rpx;"></view>
@@ -360,7 +360,7 @@
 
   <!-- 联系我们 -->
   <view class="contact-section">
-    <view class="contact-title" wx:if="{{!loading}}">联系我们</view>
+    <view class="contact-title" wx:if="{{!loading}}">📞 联系我们</view>
     <view class="skeleton skeleton-section-title" wx:if="{{loading}}" style="margin: 0 auto 28rpx; display: block;"></view>
 
     <view wx:if="{{!loading}}" class="contact-info fade-in">

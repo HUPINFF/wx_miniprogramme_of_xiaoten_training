@@ -1,25 +1,25 @@
-/* ==================== 全局变量（iOS 化） ==================== */
+/* ==================== 全局变量 ==================== */
 page {
-  --primary: #007AFF;
-  --primary-dark: #0056CF;
-  --primary-light: rgba(0, 122, 255, 0.1);
-  --primary-glow: rgba(0, 122, 255, 0.07);
-  --bg: #F2F2F7;
+  --primary: #07c160;
+  --primary-dark: #05a350;
+  --primary-light: #e8f5e9;
+  --primary-glow: rgba(7, 193, 96, 0.12);
+  --bg: #f5f7fa;
   --card: #ffffff;
-  --text-main: #000000;
-  --text-sub: rgba(60, 60, 67, 0.6);
-  --text-hint: rgba(60, 60, 67, 0.34);
-  --border: rgba(60, 60, 67, 0.1);
-  --shadow-1: 0 1rpx 4rpx rgba(0, 0, 0, 0.03);
-  --shadow-2: 0 2rpx 10rpx rgba(0, 0, 0, 0.04);
-  --shadow-3: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
-  --radius-sm: 14rpx;
-  --radius-md: 20rpx;
-  --radius-lg: 28rpx;
-  --radius-xl: 32rpx;
-  --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  --skeleton-base: #EBEBF0;
-  --skeleton-shine: #F6F6F8;
+  --text-main: #1a1a2e;
+  --text-sub: #6b7280;
+  --text-hint: #9ca3af;
+  --border: #f3f4f6;
+  --shadow-1: 0 2rpx 8rpx rgba(0,0,0,0.04);
+  --shadow-2: 0 4rpx 16rpx rgba(0,0,0,0.06);
+  --shadow-3: 0 8rpx 24rpx rgba(0,0,0,0.08);
+  --radius-sm: 16rpx;
+  --radius-md: 24rpx;
+  --radius-lg: 32rpx;
+  --radius-xl: 40rpx;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --skeleton-base: #f0f0f0;
+  --skeleton-shine: #e0e0e0;
 }
 
 /* ==================== 渐隐动画 ==================== */
@@ -1527,205 +1527,4 @@ page {
 .login-modal-btn.cancel:active {
   background: #e5e7eb;
   transform: scale(0.98);
-}
-
-/* ==================== iOS 精修（追加覆盖，后面规则优先） ==================== */
-
-/* 头区：去掉绿色渐变，改成白底 iOS 大标题（深字、左对齐） */
-.gradient-bg {
-  height: 460rpx;
-  background: linear-gradient(180deg, #ffffff 0%, #ffffff 55%, #f7f7fa 100%);
-}
-.gradient-bg::after {
-  display: none;
-}
-.header-area {
-  padding: 92rpx 44rpx 34rpx;
-  align-items: flex-start;
-}
-.header-title {
-  color: #000000;
-  text-shadow: none;
-  letter-spacing: 0;
-}
-.header-subtitle {
-  color: rgba(60, 60, 67, 0.6);
-  background: transparent;
-  padding: 0;
-  border-radius: 0;
-  backdrop-filter: none;
-  letter-spacing: 0;
-}
-
-/* 白色卡统一去投影去粗边，靠浅灰分组底区分 */
-.section,
-.quick-entry,
-.child-card,
-.contact-section,
-.skeleton-child-card,
-.skeleton-quick-entry {
-  box-shadow: none;
-}
-
-/* 孩子信息卡：左侧改系统蓝细条、装饰圆改极浅蓝 */
-.child-card::before {
-  background: linear-gradient(180deg, #007aff, #5ac8fa);
-  width: 6rpx;
-}
-.child-card::after {
-  background: rgba(0, 122, 255, 0.05);
-}
-
-/* 快捷入口：浅灰衬底小格，去渐变/发光/夸张缩放 */
-.entry-item:active {
-  background: transparent;
-  transform: none;
-  opacity: 0.75;
-}
-.entry-icon {
-  background: #f2f2f7;
-  border-radius: 24rpx;
-  box-shadow: none;
-}
-.entry-item:active .entry-icon {
-  background: #e9e9eb;
-  transform: none;
-  box-shadow: none;
-}
-
-/* “更多/查看全部”→ 蓝色文字链，去掉绿胶囊 */
-.section-more {
-  background: transparent;
-  color: #007aff;
-  padding: 6rpx 0;
-}
-.section-more:active {
-  background: transparent;
-  color: #0056cf;
-  transform: none;
-}
-
-/* 最新动态：hairline 分隔，蓝点无发光 */
-.news-item {
-  border-bottom: 1rpx solid rgba(60, 60, 67, 0.14);
-}
-.news-item:active {
-  background: transparent;
-  transform: none;
-  padding: 24rpx 0;
-}
-.news-dot {
-  background: #007aff;
-  box-shadow: none;
-}
-
-/* 内嵌内容项：浅灰填充面板，去绿渐变/粗边 */
-.comment-item,
-.growth-item,
-.comment-item:active,
-.growth-item:active {
-  background: #f7f7fa;
-  border: 1rpx solid rgba(60, 60, 67, 0.06);
-  box-shadow: none;
-}
-.comment-tags .tag {
-  background: #f2f2f7;
-  color: #007aff;
-}
-.comment-item:active {
-  border-color: rgba(0, 122, 255, 0.3);
-}
-.growth-cover {
-  background: #f0f2f5;
-}
-.growth-no-cover {
-  background: #f0f2f5;
-}
-.growth-badge-small.fitness {
-  background: #007aff;
-  box-shadow: none;
-}
-.growth-badge-small.height {
-  background: #ff9f0a;
-  box-shadow: none;
-}
-.growth-count,
-.growth-time {
-  background: #f2f2f7;
-}
-
-/* 横向卡片：去上浮投影 */
-.moment-item,
-.course-card {
-  box-shadow: none;
-  border-color: rgba(60, 60, 67, 0.08);
-}
-.moment-item:active,
-.course-card:active {
-  transform: none;
-  box-shadow: none;
-  border-color: rgba(0, 122, 255, 0.6);
-}
-.moment-play-icon {
-  color: #007aff;
-}
-.course-cover,
-.course-no-cover {
-  background: linear-gradient(135deg, #eef2ff 0%, #e7f1fb 100%);
-}
-.course-tag {
-  color: #007aff;
-}
-.course-hours {
-  background: rgba(0, 122, 255, 0.1);
-  color: #007aff;
-}
-
-/* 关于我们 */
-.about-logo {
-  box-shadow: none;
-  border: none;
-}
-.about-text {
-  background: #f7f7fa;
-  border: none;
-}
-
-/* 加入我们 → iOS 系统蓝卡（保留轻微高光圆） */
-.join-bg {
-  background: #007aff;
-  box-shadow: none;
-}
-.join-bg:active {
-  transform: none;
-  opacity: 0.9;
-}
-
-/* 联系我们 */
-.contact-section {
-  border: none;
-}
-.contact-title::after {
-  background: #007aff;
-}
-.contact-item {
-  background: #f7f7fa;
-  border: none;
-}
-.contact-item:active {
-  background: #ececf1;
-  transform: none;
-}
-.contact-icon {
-  background: #ffffff;
-  box-shadow: none;
-}
-
-/* 登录弹窗按钮 → 系统蓝 / 次级中性 */
-.login-modal-btn.confirm {
-  background: #007aff;
-}
-.login-modal-btn.cancel {
-  background: #f2f2f7;
-  color: #1c1c1e;
 }

@@ -4,14 +4,14 @@
   <view class="gradient-bg"></view>
 
   <view class="header-area">
-    <text class="header-title">预约上课</text>
+    <text class="header-title">📈 预约上课</text>
     <text class="header-subtitle"></text>
   </view>
 
   <view class="tabs">
     <view class="tab-item {{currentType === 'pending'? 'active':''}}" bind:tap="switchTab" data-tab="pending">
       待确定
-      <text class="badge" wx:if="{{pendingCount > 0}}">{{pendingCount}}</text>
+      <text class="bage" wx:if="{{pendingCount > 0}}">{{pendingCount}}</text>
     </view>
 
     <view class="tab-item {{currentType === 'approved' ? 'active':''}}" bind:tap="switchTab" data-tab="approved">
@@ -50,7 +50,7 @@
 
           <view class="info-row">
             <text class="label">课程</text>
-            <text class="value">{{item.courseType}}</text>
+            <text class="vlaue">{{item.courseType}}</text>
           </view>
         </view>
 
@@ -128,7 +128,7 @@
   </view>
 
   <!-- 已完成列表 -->
-  <view class="appointment-list" wx:if="{{currentType === 'completed'}}">
+  <view class="appointment-list" wx:if="{{currentTab === 'completed'}}">
     <block wx:for="{{completedList}}" wx:key="_id">
       <view class="appointment-card completed">
         <view class="card-header">
