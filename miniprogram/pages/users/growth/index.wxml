@@ -4,28 +4,105 @@
 <!-- 页面内容 -->
 <view class="page-content">
   
-  <!-- 顶部标题区 -->
+  <!-- 顶部标题区：把「成长记录」变成「孩子的成长」 -->
   <view class="header-area">
-    <text class="header-title">📈 成长记录</text>
-    <text class="header-subtitle">记录每一次进步</text>
+    <text class="header-title">{{childInfo.name ? childInfo.name + '的成长' : '成长记录'}}</text>
+    <text class="header-subtitle">每一次训练，都在悄悄改变他</text>
   </view>
 
-  <!-- 项目切换 Tab -->
-  <view class="tab-container">
-    <scroll-view class="tab-scroll" scroll-x="true" enhanced show-scrollbar="{{false}}">
-      <view class="tab-list">
-        <view
-          class="tab-item {{selectedSport === item.key ? 'active' : ''}}"
-          wx:for="{{sportsItems}}"
-          wx:key="key"
-          bind:tap="switchSport"
-          data-key="{{item.key}}"
-        >
-          <text class="tab-icon">{{item.icon || '🏃'}}</text>
-          <text class="tab-name">{{item.name}}</text>
+  <!-- 本月概览条：先给两个最容易读懂的数字 -->
+  <view class="overview-strip" wx:if="{{overviewVisible}}">
+    <view class="overview-item">
+      <view class="overview-num-row">
+        <text class="overview-num">{{monthTrainings}}</text>
+        <text class="overview-unit">次</text>
+      </view>
+      <text class="overview-label">本月训练</text>
+    </view>
+    <view class="overview-divider"></view>
+    <view class="overview-item">
+      <view class="overview-num-row">
+        <text class="overview-num">{{totalImproved}}</text>
+        <text class="overview-unit">项</text>
+      </view>
+      <text class="overview-label">最近测评进步</text>
+    </view>
+  </view>
+
+  <!-- 最新进步故事卡。highlight 为 null 时整卡隐藏（无记录/只有一条/无变化都不渲染） -->
+  <view class="hl-card {{highlight.isImprovement === false ? 'is-down' : ''}}" wx:if="{{highlight}}">
+    <view class="hl-accent"></view>
+    <view class="hl-body">
+
+      <view class="hl-head">
+        <text class="hl-emoji">{{highlight.isImprovement === false ? '💪' : '🎉'}}</text>
+        <text class="hl-label">{{highlight.mode === 'first' ? '首次记录' : (highlight.isImprovement === false ? '继续加油' : '最新进步')}}</text>
+      </view>
+
+      <view class="hl-main">
+        <text class="hl-metric">{{highlight.metricName}}</text>
+        <view class="hl-values">
+          <text class="hl-current">{{highlight.currentText}}</text>
+          <block wx:if="{{highlight.previousText}}">
+            <text class="hl-arrow">←</text>
+            <text class="hl-previous">{{highlight.previousText}}</text>
+          </block>
         </view>
       </view>
-    </scroll-view>
+
+      <view class="hl-foot" wx:if="{{highlight.deltaText}}">
+        <text class="hl-delta">{{highlight.deltaText}}</text>
+        <text class="hl-dot">·</text>
+        <text class="hl-compare">{{highlight.comparisonText}}</text>
+      </view>
+
+      <view class="hl-story" wx:if="{{storyText}}">
+        <text>{{storyText}}</text>
+      </view>
+
+    </view>
+  </view>
+
+  <!-- 能力成长：把 10 项指标按能力域归组，点某项看它的曲线。
+       一条测评都没有时整块隐藏（空状态交给下方图表区）。 -->
+  <view class="ability-section" wx:if="{{abilityGroups.length > 0}}">
+    <view class="ability-head-row">
+      <text class="ability-title">能力成长</text>
+      <text class="ability-hint">点一项，看它的变化</text>
+    </view>
+
+    <view class="ability-grid">
+      <view class="ability-card" wx:for="{{abilityGroups}}" wx:key="key" wx:for-item="group">
+        <view class="ability-card-head">
+          <text class="ability-icon">{{group.icon}}</text>
+          <text class="ability-name">{{group.name}}</text>
+          <text
+            class="ability-badge {{group.improvedCount > 0 ? 'up' : (group.measuredCount > 0 ? '' : 'none')}}"
+            wx:if="{{group.measuredCount > 0}}"
+          >{{group.improvedCount > 0 ? group.improvedCount + '项进步' : '待突破'}}</text>
+          <text class="ability-badge none" wx:else>未测</text>
+        </view>
+
+        <view class="ability-metrics">
+          <view
+            class="metric-row {{selectedSport === metric.key ? 'active' : ''}}"
+            wx:for="{{group.metrics}}"
+            wx:key="key"
+            wx:for-item="metric"
+            hover-class="metric-row-hover"
+            bind:tap="selectMetric"
+            data-key="{{metric.key}}"
+          >
+            <text class="metric-name">{{metric.name}}</text>
+            <text class="metric-value {{metric.hasData ? '' : 'empty'}}">{{metric.hasData ? metric.valueText : '未测'}}</text>
+            <text
+              class="metric-delta {{metric.isImprovement === true ? 'up' : (metric.isImprovement === false ? 'down' : 'flat')}}"
+              wx:if="{{metric.deltaText}}"
+            >{{metric.isImprovement === true ? '↑' : (metric.isImprovement === false ? '↓' : '·')}}{{metric.deltaText}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
   </view>
 
   <!-- 时间选择器（渐变背景到此结束） -->
@@ -97,13 +174,23 @@
       <view class="empty-circle inner"></view>
       <text class="empty-emoji">📈</text>
     </view>
-    <text class="empty-title">暂无数据</text>
-    <text class="empty-desc">开始记录你的第一次运动，见证成长轨迹</text>
-    <view class="empty-action" bind:tap="goRecord">
-      <text>去记录</text>
+    <text class="empty-title">暂无测评数据</text>
+    <text class="empty-desc">上完第一节课，这里就会长出孩子的成长曲线</text>
+    <view class="empty-action" bind:tap="goBooking">
+      <text>去预约训练</text>
       <text class="arrow">→</text>
     </view>
   </view>
+</view>
+
+<!-- 教练的观察：最新一条课后反馈，用「人」的视角给数据配上温度 -->
+<view class="coach-note" wx:if="{{coachNote}}" bind:tap="goFeedback" hover-class="coach-note-hover">
+  <view class="note-head">
+    <text class="note-label">教练的观察</text>
+    <text class="note-meta" wx:if="{{coachNote.weekRange}}">{{coachNote.weekRange}}</text>
+    <text class="note-more">全部反馈 ›</text>
+  </view>
+  <text class="note-content">{{coachNote.content}}</text>
 </view>
 
 <!-- 视频时间轴区域 -->

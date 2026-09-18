@@ -1,0 +1,60 @@
+/* components/coach-tab-bar/index.wxss */
+/* 刻意不使用页面级 CSS 变量：变量是页面作用域的，workbench 还是旧的绿色主题
+   (--primary: #07c160)，schedule/profile 用的是 iOS 主题 (--primary: #007AFF)。
+   组件自己写死颜色，保证在两套主题下表现一致。
+   色值取自 pages/coach/post-class/index.wxss:148-158 的既有底栏。 */
+
+.coach-tab-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 900;                       /* nav-bar 是 999；tab 在底部，不冲突 */
+  display: flex;
+  align-items: center;
+  padding: 12rpx 0;
+  padding-bottom: calc(12rpx + env(safe-area-inset-bottom));
+  background: rgba(249, 249, 251, 0.92);
+  backdrop-filter: blur(20rpx);
+  -webkit-backdrop-filter: blur(20rpx);
+  border-top: 1rpx solid rgba(60, 60, 67, 0.12);
+}
+
+/* ==================== 单项 ==================== */
+.ctb-item {
+  flex: 1;
+  height: 88rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4rpx;
+  transition: transform 0.15s ease;
+}
+
+.ctb-item:active { transform: scale(0.94); }
+
+.ctb-icon { width: 48rpx; height: 48rpx; }
+
+/* 管理端暂无图标，用 emoji 顶替。emoji 改不了颜色，
+   所以用透明度表达选中态，和两侧图标 tab 的明暗对比保持一致 */
+.ctb-emoji {
+  width: 48rpx;
+  height: 48rpx;
+  line-height: 48rpx;
+  font-size: 40rpx;
+  text-align: center;
+  opacity: 0.55;
+  transition: opacity 0.15s ease;
+}
+
+.ctb-emoji.active { opacity: 1; }
+
+.ctb-text {
+  font-size: 20rpx;
+  line-height: 1.2;
+  font-weight: 500;
+  color: rgba(60, 60, 67, 0.6);
+}
+
+.ctb-item.active .ctb-text { color: #007AFF; font-weight: 600; }

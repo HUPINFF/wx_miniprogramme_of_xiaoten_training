@@ -1,0 +1,191 @@
+/* pages/admin/coaches/index.wxss — iOS 风格，与 coach 端其它页面一致 */
+
+page {
+  --bg: #F2F2F7;
+  --primary: #007AFF;
+  --card: #ffffff;
+  --text-main: #000000;
+  --text-sub: rgba(60, 60, 67, 0.6);
+  --text-hint: rgba(60, 60, 67, 0.34);
+  --border: rgba(60, 60, 67, 0.1);
+  --radius-xl: 32rpx;
+  --red: #FF3B30;
+  --orange: #FF9500;
+}
+
+.container {
+  min-height: 100vh;
+  background-color: var(--bg);
+  padding: 24rpx 0 calc(140rpx + env(safe-area-inset-bottom));
+}
+
+/* ==================== 概览 ==================== */
+.summary {
+  margin: 0 38rpx 16rpx;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.summary-text {
+  font-size: 26rpx;
+  font-weight: 500;
+  color: var(--text-sub);
+}
+
+.summary-range {
+  font-size: 22rpx;
+  color: var(--text-hint);
+}
+
+/* ==================== 教练卡片 ==================== */
+.coach-card {
+  margin: 0 30rpx 20rpx;
+  background: var(--card);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.coach-head {
+  display: flex;
+  align-items: center;
+  padding: 28rpx 32rpx;
+  transition: background-color 0.15s ease;
+}
+
+.coach-head:active { background-color: rgba(60, 60, 67, 0.04); }
+
+.coach-avatar {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 50%;
+  margin-right: 24rpx;
+  background: rgba(60, 60, 67, 0.08);
+}
+
+.coach-avatar.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 44rpx;
+}
+
+.coach-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.coach-name-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.coach-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--text-main);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.badge-admin {
+  flex-shrink: 0;
+  font-size: 20rpx;
+  color: var(--primary);
+  background: rgba(0, 122, 255, 0.1);
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+}
+
+.coach-meta {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-top: 10rpx;
+}
+
+.meta-text {
+  font-size: 24rpx;
+  color: var(--text-sub);
+}
+
+.meta-dot {
+  font-size: 24rpx;
+  color: var(--text-hint);
+}
+
+.coach-call {
+  font-size: 36rpx;
+  padding: 12rpx;
+  margin-right: 4rpx;
+}
+
+.coach-arrow {
+  font-size: 36rpx;
+  color: var(--text-hint);
+  transition: transform 0.2s ease;
+}
+
+.coach-arrow.open { transform: rotate(90deg); }
+
+/* ==================== 学员面板 ==================== */
+.student-panel {
+  border-top: 1rpx solid var(--border);
+  background: rgba(60, 60, 67, 0.02);
+  padding: 8rpx 32rpx;
+}
+
+.student-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22rpx 0;
+  border-bottom: 1rpx solid var(--border);
+}
+
+.student-row:last-child { border-bottom: none; }
+
+.student-name {
+  font-size: 27rpx;
+  color: var(--text-main);
+}
+
+.student-hours {
+  font-size: 25rpx;
+  color: var(--text-sub);
+}
+
+.student-hours.low {
+  color: var(--orange);
+  font-weight: 600;
+}
+
+.student-more,
+.student-empty {
+  display: block;
+  font-size: 22rpx;
+  color: var(--text-hint);
+  padding: 20rpx 0;
+  text-align: center;
+}
+
+/* ==================== 空态 ==================== */
+.empty {
+  padding: 160rpx 0;
+  text-align: center;
+}
+
+.empty-text {
+  font-size: 26rpx;
+  color: var(--text-hint);
+}
+
+.loading-hint {
+  text-align: center;
+  font-size: 24rpx;
+  color: var(--text-hint);
+  padding: 40rpx 0;
+}

@@ -1,2 +1,55 @@
 <!--pages/coach/schedule/index.wxml-->
-<text>pages/coach/schedule/index.wxml</text>
+<nav-bar title="今日课" showBack="{{false}}"></nav-bar>
+
+<view class="container">
+  <!-- 概览 -->
+  <view class="summary">
+    <text class="summary-date">{{dateLabel}}</text>
+    <text class="summary-count">{{trainings.length}} 节课</text>
+  </view>
+
+  <!-- 骨架屏 -->
+  <view class="card-list" wx:if="{{loading}}">
+    <view class="skeleton-card" wx:for="{{[1,2,3]}}" wx:key="*this">
+      <view class="sk-time sk-shimmer"></view>
+      <view class="sk-body">
+        <view class="sk-line sk-line-lg sk-shimmer"></view>
+        <view class="sk-line sk-line-sm sk-shimmer"></view>
+      </view>
+    </view>
+  </view>
+
+  <block wx:else>
+    <view class="card-list" wx:if="{{trainings.length > 0}}">
+      <view class="course-card" wx:for="{{trainings}}" wx:key="_id">
+        <view class="cc-time">
+          <text class="cc-start">{{item.startTime}}</text>
+          <view class="cc-dot {{item.statusClass}}"></view>
+        </view>
+
+        <view class="cc-body" bind:tap="goToDetail" data-id="{{item._id}}">
+          <text class="cc-name">{{item.name || '训练课'}}</text>
+          <text class="cc-child">👤 {{item.childName}}</text>
+          <view class="cc-meta" wx:if="{{item.type}}">
+            <text class="cc-tag">{{item.type}}</text>
+          </view>
+        </view>
+
+        <view class="cc-btn {{item.statusClass}}" bind:tap="goToClass" data-id="{{item._id}}">
+          <text>{{item.statusText}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="empty" wx:else>
+      <text class="empty-icon">📅</text>
+      <text class="empty-title">今天没有课程安排</text>
+      <text class="empty-hint">可在训练记录中新增排课</text>
+      <view class="empty-btn" bind:tap="gotoAddTraining">
+        <text>去排课</text>
+      </view>
+    </view>
+  </block>
+
+  <coach-tab-bar current="schedule" />
+</view>

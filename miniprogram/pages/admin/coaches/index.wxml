@@ -1,0 +1,75 @@
+<!-- pages/admin/coaches/index.wxml — 教练列表 -->
+<nav-bar title="教练管理" showBack="{{false}}"></nav-bar>
+
+<view class="container">
+
+  <view class="summary" wx:if="{{coaches.length}}">
+    <text class="summary-text">共 {{coaches.length}} 位教练</text>
+    <text class="summary-range" wx:if="{{weekRangeText}}">本周 {{weekRangeText}}</text>
+  </view>
+
+  <view class="empty" wx:if="{{!loading && !coaches.length}}">
+    <text class="empty-text">还没有教练账号</text>
+  </view>
+
+  <!-- 教练卡片 -->
+  <view class="coach-card" wx:for="{{coaches}}" wx:key="_id" wx:for-index="index">
+
+    <view class="coach-head" data-index="{{index}}" bind:tap="onExpand">
+      <image
+        wx:if="{{item.avatarUrl}}"
+        class="coach-avatar"
+        src="{{item.avatarUrl}}"
+        mode="aspectFill"
+      />
+      <view wx:else class="coach-avatar placeholder">👤</view>
+
+      <view class="coach-info">
+        <view class="coach-name-row">
+          <text class="coach-name">{{item.name}}</text>
+          <text class="badge-admin" wx:if="{{item.isAdmin}}">管理员</text>
+        </view>
+        <view class="coach-meta">
+          <text class="meta-text">
+            学员 {{item.childCount === null ? '…' : item.childCount}} 人
+          </text>
+          <text class="meta-dot">·</text>
+          <text class="meta-text">
+            本周 {{item.weekCount === null ? '…' : item.weekCount}} 节
+          </text>
+        </view>
+      </view>
+
+      <text
+        wx:if="{{item.phone}}"
+        class="coach-call"
+        data-phone="{{item.phone}}"
+        catch:tap="onCallTap"
+      >📞</text>
+
+      <text class="coach-arrow {{item.expanded ? 'open' : ''}}">›</text>
+    </view>
+
+    <!-- 展开：该教练名下的学员 -->
+    <view class="student-panel" wx:if="{{item.expanded}}">
+      <view wx:if="{{item.students && item.students.length}}">
+        <view class="student-row" wx:for="{{item.students}}" wx:key="_id" wx:for-item="stu">
+          <text class="student-name">{{stu.name}}</text>
+          <text class="student-hours {{stu.hours !== null && stu.hours <= 5 ? 'low' : ''}}">
+            {{stu.hours === null ? '课时未录入' : stu.hours + ' 课时'}}
+          </text>
+        </view>
+        <!-- 单次查询上限 20 条，超出部分要说明 -->
+        <text class="student-more" wx:if="{{item.childCount > item.students.length}}">
+          仅显示前 {{item.students.length}} 位，共 {{item.childCount}} 位
+        </text>
+      </view>
+      <text wx:else class="student-empty">该教练暂无名下学员</text>
+    </view>
+
+  </view>
+
+  <view class="loading-hint" wx:if="{{loading}}">加载中…</view>
+
+  <coach-tab-bar current="admin" />
+</view>

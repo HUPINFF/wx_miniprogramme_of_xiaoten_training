@@ -1,4 +1,6 @@
 // pages/coach/children/list/index.js
+const auth = require('../../../../utils/auth');
+
 Page({
 
   /**
@@ -69,32 +71,12 @@ Page({
     db.collection('children').where({
       coachId:coachId
     }).get().then(res => {
-      const children = res.data;
-      this.loadLatestPerformance(children);
+      this.setData({children:res.data,allChildren:res.data,loading:false})
     }).catch(err => {
       this.setData({loading:false});
       console.error('加载学员失败',err);
       this.setData({children:[],allChildren:[]})
     })
-  },
-
-  // ???
-  loadLatestPerformance(children) {
-    const db = wx.cloud.database();
-    const promises = children.map(child => {
-      return db.collection('performance').where({
-        childId:child._id
-      }).orderBy('weekDate','desc').limit(1).get().then(res => {
-        if(res.data.length > 0) {
-          child.latestFifty = res.data[0].fiftyMeter;
-          child.latestPerformance = res.data[0]
-        }
-        return child;
-      })
-    })
-    Promise.all(promises).then(children => {
-      this.setData({children,allChildren:children,loading:false})
-    }).catch(() => this.setData({loading:false}));
   },
 
 
@@ -178,21 +160,25 @@ Page({
       return;
     }
 
+    // 原来是 wx.getStorageSync('coachInfo') || {}——缓存缺失时这里会把
+    // coachId 静默写成 undefined，把学员的归属悄悄弄坏。改成 auth + 空值守卫。
+    const coachId = auth.getCoachId();
+    if (!coachId) {
+      wx.showToast({ title: '登录已失效，请重新登录', icon: 'none' });
+      return;
+    }
+
     this.setData({submitting:true});
 
-    const coachInfo = wx.getStorageSync('coachInfo') || {};
-    console.log('------------------',coachInfo._id);
     const db = wx.cloud.database();
 
-    console.log(this.data.previewChild._id);
     db.collection('children').doc(this.data.previewChild._id).update({
       data:{
-        coachId:coachInfo._id,
+        coachId:coachId,
         updatedAt:new Date()
       }
     }).then(() => {
       wx.showToast({ title: '关联成功', icon: 'success' });
-      console.log('=----------anjffjjk');
       this.setData({ showAddModal: false, submitting: false });
       this.loadChildren();  // 刷新列表
     }).catch(err => {

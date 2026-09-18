@@ -1,4 +1,6 @@
 // pages/coach/change-coach-requests/index.js
+const auth = require('../../../utils/auth');
+
 Page({
   data: {
     requests: [],
@@ -41,17 +43,22 @@ Page({
     });
   },
 
+  // 管理员看全部换教练申请；普通教练只看转给自己的。
+  // 放宽是安全的：同意时写的是 children.coachId = 申请里的 newCoachId（目标教练），
+  // 不是管理员的 id，归属不会错。
   loadRequests() {
-    const coachId = this.data.coachId;
-    if (!coachId) return;
+    const isGlobal = auth.globalScope({ allForAdmin: true });
+    const coachId = auth.getCoachId();
+    if (!isGlobal && !coachId) return;
+
+    // 这个集合的字段叫 newCoachId 而不是 coachId，所以不能直接用 auth.coachScope()
+    const where = isGlobal ? {} : { newCoachId: coachId };
 
     wx.showLoading({ title: '加载中' });
     const db = wx.cloud.database();
 
     db.collection('changeCoachNew')
-      .where({
-        newCoachId: coachId
-      })
+      .where(where)
       .orderBy('createdAt', 'desc')
       .get({
         success: (res) => {

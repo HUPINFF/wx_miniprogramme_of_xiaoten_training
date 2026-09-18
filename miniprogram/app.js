@@ -18,21 +18,12 @@ App({
       });
     }
 
-    // 检查登录状态
-    const token = wx.getStorageSync('token');
-    if(token){
-      // 已登录,获取角色并跳转
-      const role = wx.getStorageSync('userRole') || 'user';
-    }
-
-    const role = wx.getStorageSync('userRole');
-    if(role === 'coach') {
-      this.setCoachTabBar();
-    }
-  },
-  setCoachTabBar() {
-    wx.setTabBarItem({index:0 ,text:"工作台",pagePath:"pages/coach/workbench/index"})
-    wx.setTabBarItem({index:1 ,text:"日程",pagePath:"pages/coach/schedule/index"})
-    wx.setTabBarItem({index:2 ,text:"我的",pagePath:"pages/coach/profile/index"})
+    // 登录态与角色由 pages/common/login/index.js 写入缓存，各端首页自行校验。
+    //
+    // 教练端底部 tab 已改为页面内组件 components/coach-tab-bar：
+    // 原生 tabBar 只有一份且已被家长端 4 个 tab 占满（上限 5 项）。
+    // 旧的 this.setCoachTabBar() 用 wx.setTabBarItem 去改，而该 API 没有 pagePath 参数，
+    // 结果只把「家长端」tab 1-3 的文案改成了 工作台/日程/我的（跳转目标从未改变），
+    // 与教练端页面毫无关系，故删除。
   }
 });

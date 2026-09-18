@@ -1,4 +1,6 @@
 // pages/coach/post-class/index.js
+const auth = require('../../../utils/auth');
+
 Page({
 
   /**
@@ -18,7 +20,10 @@ Page({
       this.setData({ 'training._id': id });
     }
     if (childId) {
-      this.loadChildInfo(childId);
+      // 本页能扣课时、写 hoursRecords，务必先确认这个孩子是当前教练名下的
+      auth.guardChildAccess(childId).then(ok => {
+        if (ok) this.loadChildInfo(childId);
+      });
     }
   },
 

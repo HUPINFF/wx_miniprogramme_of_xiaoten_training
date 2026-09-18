@@ -1,4 +1,6 @@
 // pages/coach/feedback/write/index.js
+const auth = require('../../../../utils/auth');
+
 Page({
 
   /**
@@ -46,8 +48,13 @@ Page({
     this.setWeekRange();
 
     if(childId) {
-      // 传有孩子id，直接加载该孩子
-      this.loadChildInfo(childId);
+      // 传有孩子id，直接加载该孩子。
+      // 先确认归属：本页会写 feedbacks（且 coachId 记成自己），
+      // 从转发链接点进来时 childId 可能根本不是自己的学员。
+      // 下面的 loadChildrenList 分支不用校验，那个查询本来就按 coachId 过滤了。
+      auth.guardChildAccess(childId).then(ok => {
+        if (ok) this.loadChildInfo(childId);
+      });
     }else{
       // 没有传，加载该教练的所有的孩子
         this.loadChildrenList();

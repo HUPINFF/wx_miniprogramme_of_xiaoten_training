@@ -1,4 +1,6 @@
 // pages/coach/appointments/index.js
+const auth = require('../../../utils/auth');
+
 Page({
 
   /**
@@ -62,20 +64,19 @@ Page({
   },
 
   // 加载预约列表
+  // 管理员不按 coachId 过滤，能看到全部家长的预约。
+  // 这一处放宽是安全的：审批只改 appointments.status，
+  // 生成的 training 用的是 appointment.coachId 本身，归属不会记到管理员头上。
   loadAppointments() {
-    const coachInfo = wx.getStorageSync('coachInfo')
-    console.log('-==-=-=-=-=',coachInfo);
-    const coachId = coachInfo._id
-    console.log('-----------',coachId);
-    if(!coachId) {
+    if(!auth.isScopeReady({ allForAdmin: true })) {
       console.error('未获取到教练信息');
       return;
     }
- 
-    const db = wx.cloud.database();  
-    db.collection('appointments').where({
-      coachId:coachId
-    }).orderBy('date','desc').get().then(res => {
+
+    const db = wx.cloud.database();
+    db.collection('appointments').where(
+      auth.coachScope({ allForAdmin: true })
+    ).orderBy('date','desc').get().then(res => {
       this.processAppointments(res.data);
     }).catch(err => {
       console.error('加载预约失败', err);
@@ -327,27 +328,6 @@ Page({
     })
   },
 
-   // 【新增】扣减学员学时
-   deductChildHours(childId, trainingHours) {
-    const db = wx.cloud.database();
-    return db.collection('children').doc(childId).get().then(res => {
-      const child = res.data;
-      const currentHours = child.remainingHours || 0;
-      const newHours = currentHours - trainingHours;
-      
-      if (newHours < 0) {
-        wx.showToast({ title: '学时不足，请及时充值', icon: 'none' });
-      }
-      
-      return db.collection('children').doc(childId).update({
-        data: {
-          remainingHours: newHours,
-          updatedAt: new Date()
-        }
-      });
-    });
-  },
-
   // 【新增】创建训练记录
   async createTrainingRecord(appointment) {
     try {
@@ -406,9 +386,6 @@ Page({
       });
 
       console.log('训练记录创建成功:', result._id);
-
-      // 【新增】扣减学员学时（1小时 = 1课时）
-      // await this.deductChildHours(appointment.childId, trainingHours);
 
       // 更新预约记录，关联训练ID
       await db.collection('appointments').doc(appointment._id).update({

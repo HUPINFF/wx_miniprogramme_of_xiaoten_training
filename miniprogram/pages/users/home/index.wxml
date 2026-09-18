@@ -36,355 +36,147 @@
     <view class="skeleton skeleton-child-tag"></view>
   </view>
 
-  <!-- 快捷入口 -->
-  <view wx:if="{{!loading}}" class="quick-entry fade-in">
-    <view class="entry-item" bind:tap="goToTrainingData">
-      <view class="entry-icon">📊</view>
-      <text class="entry-text">训练数据</text>
-    </view>
+  <!-- 当前情况：正在上课 / 下节课。都没有则整卡隐藏 -->
+  <!-- 整卡可点，进训练详情页；两种状态共用同一个页面 -->
+  <view
+    wx:if="{{!loading && currentMode !== 'none'}}"
+    class="status-card {{currentMode === 'in_class' ? 'status-card-live' : ''}} fade-in"
+    hover-class="status-card-active"
+    bind:tap="goToTrainingDetail"
+    data-id="{{currentTraining._id}}"
+  >
+    <!-- 正在上课：教练点了「开始上课」才会是这个状态。
+         这是首页唯一「此刻正在发生」的事，所以整卡换成暖色渐变 + 大号正计时，
+         和下面「下节课」那张白卡一眼分得开。 -->
+    <block wx:if="{{currentMode === 'in_class'}}">
+      <view class="live-glow"></view>
 
-    <view class="entry-item" bind:tap="goToSchedule">
-      <view class="entry-icon">📅</view>
-      <text class="entry-text">课程表</text>
-    </view>
+      <view class="live-head">
+        <view class="live-badge">
+          <view class="live-dot"></view>
+          <text>正在上课</text>
+        </view>
+        <text class="live-more">查看详情 ›</text>
+      </view>
 
-    <view class="entry-item" bindtap="goToBookClass">
-      <view class="entry-icon">📚</view>
-      <text class="entry-text">预约上课</text>
-    </view>
+      <view class="live-fact">
+        <text class="live-label">正在进行</text>
+        <text class="live-value">{{elapsedText}}</text>
+        <text class="live-sub" wx:if="{{inClassSubText}}">{{inClassSubText}}</text>
+      </view>
 
-    <view class="entry-item" bind:tap="goToClassRecords">
-      <view class="entry-icon">📝</view>
-      <text class="entry-text">上课记录</text>
-    </view>
+      <block wx:if="{{currentTraining.coachContent || currentTraining.focus}}">
+        <view class="live-divider"></view>
+        <view class="live-row" wx:if="{{currentTraining.coachContent}}">
+          <text class="live-key">训练内容</text>
+          <text class="live-val">{{currentTraining.coachContent}}</text>
+        </view>
+        <view class="live-row" wx:if="{{currentTraining.focus}}">
+          <text class="live-key">重点</text>
+          <text class="live-val">{{currentTraining.focus}}</text>
+        </view>
+      </block>
+    </block>
 
-    <view class="entry-item" bind:tap="goToClassComments">
-      <view class="entry-icon">💬</view>
-      <text class="entry-text">课堂点评</text>
-    </view>
+    <!-- 下节课 -->
+    <block wx:else>
+      <view class="status-head">
+        <text class="status-badge upcoming">下节课</text>
+        <text class="status-more">查看详情 ›</text>
+      </view>
+      <view class="status-title">
+        {{upcomingDateText}} {{currentTraining.startTime}}<text wx:if="{{currentTraining.endTime}}">-{{currentTraining.endTime}}</text>
+      </view>
+      <view class="status-row" wx:if="{{currentTraining.location}}">
+        <text class="status-label">地点</text>
+        <text class="status-value">{{currentTraining.location}}</text>
+      </view>
+      <view class="status-row">
+        <text class="status-label">教练</text>
+        <text class="status-value">{{currentTraining.coachName}}</text>
+      </view>
+      <view class="status-row" wx:if="{{currentTraining.focus}}">
+        <text class="status-label">重点</text>
+        <text class="status-value">{{currentTraining.focus}}</text>
+      </view>
 
-    <view class="entry-item" bind:tap="goToFeedback">
-      <view class="entry-icon">⭐</view>
-      <text class="entry-text">我的反馈</text>
-    </view>
+      <!-- 最近进步 + 最近训练反馈 -->
+      <view class="status-divider" wx:if="{{progress || latestFeedback}}"></view>
 
-    <view class="entry-item" bind:tap="goToChildProfile">
-      <view class="entry-icon">👤</view>
-      <text class="entry-text">成长案例</text>
-    </view>
+      <view class="progress-line" wx:if="{{progress}}">
+        <text class="progress-label">{{progressLabel}}</text>
+        <text class="progress-text">{{progressText}}</text>
+      </view>
 
-    <view class="entry-item" bind:tap="contactCoach">
-      <view class="entry-icon">💬</view>
-      <text class="entry-text">联系我们</text>
-    </view>
-  </view>
-
-  <view wx:if="{{loading}}" class="skeleton-quick-entry">
-    <block wx:for="{{8}}" wx:key="*this">
-      <view class="entry-item">
-        <view class="skeleton skeleton-entry-icon"></view>
-        <view class="skeleton skeleton-entry-text"></view>
+      <view class="feedback-line" wx:if="{{latestFeedback}}">
+        <view class="feedback-head">
+          <text class="progress-label">训练反馈</text>
+          <text class="feedback-meta">{{latestFeedback.weekRange}}</text>
+        </view>
+        <text class="feedback-content">{{latestFeedback.content}}</text>
       </view>
     </block>
   </view>
 
-  <!-- 最新动态/公告 -->
-  <view class="section">
-    <view class="section-header">
-      <text class="section-title" wx:if="{{!loading}}">📢 最新动态</text>
-      <view class="skeleton skeleton-section-title" wx:if="{{loading}}"></view>
-      <text class="section-more" wx:if="{{!loading}}" bind:tap="viewAllNews">查看更多</text>
-      <view class="skeleton skeleton-tag" wx:if="{{loading}}" style="width: 120rpx; height: 40rpx; border-radius: 20rpx;"></view>
-    </view>
-
-    <view wx:if="{{!loading}}" class="news-list fade-in">
-      <view class="news-item" wx:for="{{newList}}" wx:key="index" bind:tap="viewNews" data-id="{{item.id}}">
-        <view class="news-dot"></view>
-        <text class="news-title">{{item.title}}</text>
-        <text class="news-time">{{item.time}}</text>
-      </view>
-    </view>
-
-    <view wx:if="{{loading}}" class="news-list">
-      <view class="skeleton-news-item" wx:for="{{3}}" wx:key="*this">
-        <view class="skeleton skeleton-news-dot"></view>
-        <view class="skeleton skeleton-news-title"></view>
-        <view class="skeleton skeleton-news-time"></view>
-      </view>
-    </view>
+  <view wx:if="{{loading}}" class="skeleton-status-card">
+    <view class="skeleton skeleton-status-badge"></view>
+    <view class="skeleton skeleton-status-title"></view>
+    <view class="skeleton skeleton-status-row"></view>
+    <view class="skeleton skeleton-status-row"></view>
   </view>
 
-  <!-- 成长案例 -->
-  <view class="section" wx:if="{{!loading && growthList.length > 0}}">
-    <view class="section-header">
-      <text class="section-title">🌱 成长案例</text>
-      <text class="section-more" bind:tap="viewAllGrowth">查看全部</text>
-    </view>
-    <view class="growth-list fade-in">
-      <view class="growth-item" wx:for="{{growthList}}" wx:key="_id" wx:if="{{index < 5}}" bind:tap="viewGrowthDetail" data-id="{{item._id}}">
-        <view class="growth-cover">
-          <image wx:if="{{item.coverImage}}" class="growth-cover-img" src="{{item.coverImage}}" mode="aspectFill"></image>
-          <view wx:if="{{!item.coverImage}}" class="growth-no-cover">
-            <text>{{item.category === 'height' ? '📈' : '💪'}}</text>
+  <!-- 空闲态：没在上课、也没有下节课 → 成长足迹。
+       今天没课的日子里，让家长也能看见孩子在持续积累：
+       练了多少次 + 最近进步 + 最新反馈；全新用户给一条去预约的引导。 -->
+  <view wx:if="{{!loading && currentMode === 'none' && childInfo}}" class="growth-section fade-in">
+    <view class="growth-card">
+      <view class="growth-head">
+        <text class="growth-title">{{childInfo.name}}的成长足迹</text>
+        <text class="growth-more" bind:tap="goToGrowth">成长档案 ›</text>
+      </view>
+
+      <view class="growth-stats">
+        <view class="growth-stat">
+          <view class="stat-value-row">
+            <text class="stat-value">{{totalTrainings}}</text>
+            <text class="stat-unit">次</text>
           </view>
-          <view class="growth-badge-small {{item.category === 'height' ? 'height' : 'fitness'}}">
-            <text>{{item.category === 'height' ? '追高' : '体适能'}}</text>
+          <text class="stat-label">累计训练</text>
+        </view>
+        <view class="stat-divider"></view>
+        <view class="growth-stat">
+          <view class="stat-value-row">
+            <text class="stat-value">{{monthTrainings}}</text>
+            <text class="stat-unit">次</text>
           </view>
+          <text class="stat-label">本月训练</text>
         </view>
-        <view class="growth-info">
-          <text class="growth-title">{{item.title}}</text>
-          <text class="growth-desc">{{item.description || '暂无描述'}}</text>
-          <view class="growth-meta">
-            <text class="growth-count">📷 {{item.itemCount || 0}}</text>
-            <text class="growth-time">{{item.createdAt}}</text>
+      </view>
+
+      <block wx:if="{{progress || latestFeedback}}">
+        <view class="growth-divider"></view>
+
+        <view class="progress-line" wx:if="{{progress}}">
+          <text class="progress-label">{{progressLabel}}</text>
+          <text class="progress-text">{{progressText}}</text>
+        </view>
+
+        <view class="growth-feedback" wx:if="{{latestFeedback}}" bind:tap="goToFeedback" hover-class="growth-feedback-active">
+          <view class="growth-feedback-head">
+            <text class="growth-feedback-label">最新反馈</text>
+            <text class="growth-feedback-meta">{{latestFeedback.weekRange}}</text>
           </view>
+          <text class="growth-feedback-content">{{latestFeedback.content}}</text>
         </view>
-      </view>
-    </view>
-  </view>
+      </block>
 
-  <!-- 家长点评 -->
-  <view class="section">
-    <view class="section-header">
-      <text class="section-title" wx:if="{{!loading}}">💬 家长点评</text>
-      <view class="skeleton skeleton-section-title" wx:if="{{loading}}"></view>
-      <text class="section-more" wx:if="{{!loading}}" bind:tap="viewAllComments">查看全部</text>
-      <view class="skeleton skeleton-tag" wx:if="{{loading}}" style="width: 120rpx; height: 40rpx; border-radius: 20rpx;"></view>
-    </view>
-
-    <view wx:if="{{!loading && comments.length > 0}}" class="comment-list fade-in">
-      <view class="comment-item" wx:for="{{comments}}" wx:key="_id" bind:tap="viewCommentDetail" data-id="{{item._id}}">
-        <view class="comment-header">
-          <image class="comment-avatar" src="{{item.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"></image>
-          <view class="comment-info">
-            <text class="comment-name">{{item.nickName}}</text>
-            <view class="comment-rating">
-              <text class="star" wx:for="{{5}}" wx:key="*this" wx:for-item="starItem" style="{{starItem < item.rating ? 'color: #ff9500;' : 'color: #ddd;'}}">★</text>
-              <text class="rating-text">{{item.rating}}分</text>
-            </view>
-          </view>
+      <block wx:if="{{isGrowthEmpty}}">
+        <view class="growth-divider"></view>
+        <view class="growth-empty-hint" bind:tap="goToBooking" hover-class="growth-hint-active">
+          <text class="growth-hint-text">还没有训练记录，去预约第一节课吧</text>
+          <text class="growth-hint-arrow">→</text>
         </view>
-        <view class="comment-tags" wx:if="{{item.tags && item.tags.length > 0}}">
-          <text class="tag" wx:for="{{item.tags}}" wx:key="*this">{{item}}</text>
-        </view>
-        <text class="comment-content">{{item.content}}</text>
-        <view class="comment-footer">
-          <text class="comment-time">{{item.createTime}}</text>
-        </view>
-      </view>
-    </view>
-
-    <view wx:if="{{!loading && comments.length === 0}}" class="empty-comments">
-      <text>暂无点评</text>
-    </view>
-
-    <view wx:if="{{loading}}" class="comment-list">
-      <view class="skeleton-comment-item" wx:for="{{2}}" wx:key="*this">
-        <view class="skeleton-comment-header">
-          <view class="skeleton skeleton-comment-avatar"></view>
-          <view>
-            <view class="skeleton skeleton-comment-name"></view>
-            <view class="skeleton skeleton-comment-rating"></view>
-          </view>
-        </view>
-        <view class="skeleton-comment-tags">
-          <view class="skeleton skeleton-tag" wx:for="{{3}}" wx:key="*this" style="width: 100rpx; height: 40rpx; border-radius: 12rpx;"></view>
-        </view>
-        <view class="skeleton skeleton-comment-content"></view>
-        <view class="skeleton skeleton-comment-content"></view>
-        <view class="skeleton skeleton-comment-time"></view>
-      </view>
-    </view>
-  </view>
-
-
-
-  <view class="section" wx:if="{{loading}}">
-    <view class="section-header">
-      <view class="skeleton skeleton-section-title"></view>
-      <view class="skeleton skeleton-tag" style="width: 120rpx; height: 40rpx; border-radius: 20rpx;"></view>
-    </view>
-    <view class="growth-list">
-      <view class="skeleton-growth-item" wx:for="{{2}}" wx:key="*this">
-        <view class="skeleton skeleton-growth-cover"></view>
-        <view class="skeleton-growth-info">
-          <view class="skeleton skeleton-growth-title"></view>
-          <view class="skeleton skeleton-growth-desc"></view>
-          <view class="skeleton skeleton-growth-desc"></view>
-          <view class="skeleton-growth-meta">
-            <view class="skeleton skeleton-growth-meta-text"></view>
-            <view class="skeleton skeleton-growth-meta-text"></view>
-          </view>
-        </view>
-      </view>
-    </view>
-  </view>
-
-  <!-- 精彩瞬间（优化版） -->
-  <view class="section">
-    <view class="section-header">
-      <text class="section-title" wx:if="{{!loading}}">📸 精彩瞬间</text>
-      <view class="skeleton skeleton-section-title" wx:if="{{loading}}"></view>
-      <text class="section-more" wx:if="{{!loading}}" bind:tap="viewMoreMoments">更多</text>
-      <view class="skeleton skeleton-tag" wx:if="{{loading}}" style="width: 100rpx; height: 40rpx; border-radius: 20rpx;"></view>
-    </view>
-
-    <scroll-view wx:if="{{!loading}}" class="moment-scroll" scroll-x="true">
-      <view class="moment-list fade-in">
-        <view class="moment-item" wx:for="{{moments}}" wx:key="index" bind:tap="viewMoment" data-id="{{item._id}}">
-          <view class="moment-image-wrapper">
-            <image wx:if="{{item.mediaType !== 'video'}}" class="moment-image" src="{{item.image}}" mode="aspectFill"></image>
-            <video wx:else class="moment-video" src="{{item.video}}" controls show-center-play-btn show-play-btn enable-progress-gesture object-fit="cover" autoplay="{{false}}" poster=""></video>
-          </view>
-          <view class="moment-info">
-            <text class="moment-title">{{item.title}}</text>
-            <view class="moment-meta">
-              <view class="moment-views">👁️ 查看</view>
-              <text class="moment-date">精彩时刻</text>
-            </view>
-          </view>
-        </view>
-      </view>
-    </scroll-view>
-
-    <scroll-view wx:if="{{loading}}" class="moment-scroll" scroll-x="true">
-      <view class="skeleton-moment-list">
-        <view class="skeleton-moment-item" wx:for="{{4}}" wx:key="*this">
-          <view class="skeleton skeleton-moment-image"></view>
-          <view class="skeleton-moment-info">
-            <view class="skeleton skeleton-moment-title"></view>
-            <view class="skeleton skeleton-moment-meta"></view>
-          </view>
-        </view>
-      </view>
-    </scroll-view>
-  </view>
-
-  <!-- 课程体系 -->
-  <view class="section" wx:if="{{!loading && courseList.length > 0}}">
-    <view class="section-header">
-      <text class="section-title">📚 课程体系</text>
-      <text class="section-more" bind:tap="viewAllCourses">查看全部</text>
-    </view>
-    <scroll-view class="course-scroll" scroll-x="true">
-      <view class="course-list fade-in">
-        <view class="course-card" wx:for="{{courseList}}" wx:key="_id" bind:tap="viewCourseDetail" data-id="{{item._id}}">
-          <view class="course-cover">
-            <image wx:if="{{item.coverImage}}" class="course-cover-img" src="{{item.coverImage}}" mode="aspectFill"></image>
-            <view wx:if="{{!item.coverImage}}" class="course-no-cover">
-              <text>📚</text>
-            </view>
-            <view class="course-tag">热门</view>
-          </view>
-          <view class="course-info">
-            <text class="course-name">{{item.courseName}}</text>
-            <text class="course-desc" wx:if="{{item.description}}">{{item.description}}</text>
-            <text class="course-hours">📅 {{item.trainingHours}}课时</text>
-          </view>
-        </view>
-      </view>
-    </scroll-view>
-  </view>
-
-  <view class="section" wx:if="{{loading}}">
-    <view class="section-header">
-      <view class="skeleton skeleton-section-title"></view>
-      <view class="skeleton skeleton-tag" style="width: 120rpx; height: 40rpx; border-radius: 20rpx;"></view>
-    </view>
-    <scroll-view class="course-scroll" scroll-x="true">
-      <view class="skeleton-course-list">
-        <view class="skeleton-course-card" wx:for="{{3}}" wx:key="*this">
-          <view class="skeleton skeleton-course-cover"></view>
-          <view class="skeleton-course-info">
-            <view class="skeleton skeleton-course-name"></view>
-            <view class="skeleton skeleton-course-desc"></view>
-            <view class="skeleton skeleton-course-desc"></view>
-            <view class="skeleton skeleton-course-hours"></view>
-          </view>
-        </view>
-      </view>
-    </scroll-view>
-  </view>
-
-  <!-- 机构介绍 -->
-  <view class="section">
-    <view class="section-header">
-      <text class="section-title" wx:if="{{!loading}}">🏆 关于我们</text>
-      <view class="skeleton skeleton-section-title" wx:if="{{loading}}"></view>
-      <text class="section-more" wx:if="{{!loading}}" bind:tap="aboutUs">了解更多</text>
-      <view class="skeleton skeleton-tag" wx:if="{{loading}}" style="width: 120rpx; height: 40rpx; border-radius: 20rpx;"></view>
-    </view>
-
-    <view wx:if="{{!loading}}" class="about-content fade-in">
-      <image class="about-logo" src="/images_1/logo_20251126_34991.uugai.com-1764133166493.png" mode="aspectFill"/>
-      <text class="about-text">专业青少年体育训练机构，专注于6-15岁青少年体能训练、专项技能提升。拥有国家级教练团队，科学训练体系，已服务超过5000名学员。</text>
-    </view>
-
-    <view wx:if="{{loading}}" class="skeleton-about-content">
-      <view class="skeleton skeleton-about-logo"></view>
-      <view class="skeleton skeleton-about-text"></view>
-      <view class="skeleton skeleton-about-text"></view>
-      <view class="skeleton skeleton-about-text"></view>
-    </view>
-  </view>
-
-
-  <!-- 加入我们 -->
-  <view wx:if="{{!loading}}" class="join-section fade-in" bind:tap="goToBookCoach">
-    <view class="join-bg">
-      <view class="join-content">
-        <view class="join-icon">
-          <text>👨‍🏫</text>
-        </view>
-        <view class="join-text">
-          <text class="join-title">加入我们</text>
-          <text class="join-desc">联系教练，开启运动之旅</text>
-        </view>
-        <view class="join-arrow">
-          <text>›</text>
-        </view>
-      </view>
-    </view>
-  </view>
-
-  <view wx:if="{{loading}}" class="skeleton-join-section">
-    <view class="skeleton-join-bg">
-      <view class="skeleton skeleton-join-icon"></view>
-      <view class="skeleton-join-text">
-        <view class="skeleton skeleton-join-title"></view>
-        <view class="skeleton skeleton-join-desc"></view>
-      </view>
-      <view class="skeleton skeleton-join-arrow"></view>
-    </view>
-  </view>
-
-  <!-- 联系我们 -->
-  <view class="contact-section">
-    <view class="contact-title" wx:if="{{!loading}}">📞 联系我们</view>
-    <view class="skeleton skeleton-section-title" wx:if="{{loading}}" style="margin: 0 auto 28rpx; display: block;"></view>
-
-    <view wx:if="{{!loading}}" class="contact-info fade-in">
-      <view class="contact-item" bind:tap="callPhone">
-        <text class="contact-icon">📱</text>
-        <text>咨询热线：19212218300</text>
-      </view>
-
-      <view class="contact-item" bind:tap="viewAddress">
-        <text class="contact-icon">📍</text>
-        <text>训练地址:天津师范大学</text>
-      </view>
-
-      <view class="contact-item" bind:tap="viewWechat">
-        <text class="contact-icon">💬</text>
-        <text>官方微信：The120307</text>
-      </view>
-    </view>
-
-    <view wx:if="{{loading}}" class="skeleton-contact-list">
-      <view class="skeleton-contact-item" wx:for="{{3}}" wx:key="*this">
-        <view class="skeleton skeleton-contact-icon"></view>
-        <view class="skeleton skeleton-contact-text"></view>
-      </view>
+      </block>
     </view>
   </view>
 </view>

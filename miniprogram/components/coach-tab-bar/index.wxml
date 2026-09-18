@@ -1,0 +1,20 @@
+<!-- components/coach-tab-bar/index.wxml -->
+<view class="coach-tab-bar">
+  <view
+    class="ctb-item {{current === item.key ? 'active' : ''}}"
+    wx:for="{{tabs}}"
+    wx:key="key"
+    data-key="{{item.key}}"
+    bind:tap="onTap"
+  >
+    <!-- 有图标就用图标；管理端暂无图标，走 emoji 分支 -->
+    <image
+      wx:if="{{item.icon}}"
+      class="ctb-icon"
+      src="{{current === item.key ? item.activeIcon : item.icon}}"
+      mode="aspectFit"
+    />
+    <text wx:else class="ctb-emoji {{current === item.key ? 'active' : ''}}">{{item.emoji}}</text>
+    <text class="ctb-text">{{item.text}}</text>
+  </view>
+</view>

@@ -94,7 +94,8 @@
   width: 75%;
   margin: 0 auto;
   margin-top: 50rpx;
-  gap: 40rpx;
+  /* 两个按钮时是 40rpx，加到三个后总宽会顶到容器边界，收窄一档 */
+  gap: 12rpx;
   margin-bottom: 60rpx;
   display: flex;
   height: 85rpx;
@@ -107,11 +108,12 @@
   /* margin: 20rpx; */
 } 
 
-.role .user,.coach {
+.role .user, .role .coach, .role .admin {
   flex: 1;
   text-align: center;
-  padding: 20rpx 40rpx;
-  font-size: 32rpx;
+  /* 三个按钮挤在同一行里，原来的 40rpx/32rpx 会溢出，收窄一档 */
+  padding: 20rpx 24rpx;
+  font-size: 28rpx;
   border-radius: 50rpx;
   transition: 0.5s all ease;
   cursor: pointer;
@@ -119,7 +121,7 @@
 }
 
 /* 默认未选中状态 */
-.user, .coach {
+.user, .coach, .admin {
   background:transparent;
   color: #999;
   font-weight: normal;
@@ -127,14 +129,16 @@
   outline: none;
 }
 
-.user:active .coach:active {
+/* 原来是 .user:active .coach:active，中间是空格（后代选择器）不是逗号，
+   等价于「.coach:active 的后代 .user:active」，永远不成立，点击无反馈 */
+.user:active, .coach:active, .admin:active {
   transform: scale(0.98);
   background: linear-gradient(135deg, #07c160 0%, #06a34d 100%);
   color: #fff;
   box-shadow: 0 4rpx 12rpx rgba(7, 193, 96, 0.3);
 }
 
-.user.active, .coach.active {
+.user.active, .coach.active, .admin.active {
   background: #07c160;
   font-weight: bold;
   color: #fff;

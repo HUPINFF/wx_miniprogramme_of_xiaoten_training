@@ -48,11 +48,18 @@ Page({
   // 更新训练状态
   updateTrainingStatus(trainingId, status, training = null) {
     const db = wx.cloud.database();
+    const nextData = {
+      status: status,
+      updatedAt: new Date()
+    };
+    // 置为「上课中」时补记实际开课时间，家长端详情页的「开课时间」用这个字段。
+    // 已有值就不覆盖：从工作台/课表点开课时已经写过一次了。
+    if (status === 'in_class' && !(training && training.inClassTime)) {
+      nextData.inClassTime = new Date();
+    }
+
     db.collection('trainings').doc(trainingId).update({
-      data: {
-        status: status,
-        updatedAt: new Date()
-      }
+      data: nextData
     }).then(() => {
       console.log('训练状态已更新为:', status);
       // 更新成功后同步更新页面显示
@@ -96,27 +103,6 @@ Page({
     // 直接跳转至课后记录页面，课时在完成记录时扣除
     wx.navigateTo({
       url: `/pages/coach/post-class/index?id=${training._id}&childId=${training.childId}`
-    });
-  },
-
-  // 扣减学员学时
-  deductHours(childId, hours) {
-    const db = wx.cloud.database();
-    return db.collection('children').doc(childId).get().then(res => {
-      const child = res.data;
-      const currentHours = child.remainingHours || 0;
-      const newHours = currentHours - hours;
-
-      if (newHours < 0) {
-        wx.showToast({ title: '学时不足，请及时充值', icon: 'none' });
-      }
-
-      return db.collection('children').doc(childId).update({
-        data: {
-          remainingHours: newHours,
-          updatedAt: new Date()
-        }
-      });
     });
   },
 

@@ -1,4 +1,6 @@
 // pages/coach/children/detail/index.js
+const auth = require('../../../../utils/auth');
+
 Page({
 
   /**
@@ -16,6 +18,8 @@ Page({
 
   onLoad(options) {
     const { id } = options
+    // 存下来给下拉刷新用：刷新时 this.data.childInfo 可能还是 null
+    this.childId = id;
     if (id) {
       this.loadChildDetail(id);
     }
@@ -26,20 +30,32 @@ Page({
 
     const db = wx.cloud.database();
 
-    Promise.all([
-      db.collection('children').doc(childId).get(),
-      this.loadPerformanceHistory(childId),
-      this.loadTrainingHistory(childId),
-      this.loadFeedbackHistory(childId)
-    ]).then(([childRes, performanceData, trainingData, feedbackData]) => {
-      this.setData({
-        childInfo: childRes,
-        latestPerformance: performanceData.latest,
-        performanceList: performanceData.list,
-        trainingList: trainingData,
-        feedbackList: feedbackData,
-        loading: false
-      })
+    // 先单独取学员记录做归属校验，通过了再去拉成绩/训练/反馈。
+    // 不能把它塞回下面的 Promise.all —— 那样即使校验不过，另外三个集合也已经读出来了。
+    //
+    // 这里直接用 canViewChild + denyAndLeave，而不是 auth.guardChildAccess：
+    // 本页本来就要留这条 children 记录当 childInfo，再让 guardChildAccess 查一遍是白跑一次请求。
+    return db.collection('children').doc(childId).get().then(childRes => {
+      if (!auth.canViewChild(childRes.data, auth.getCoachId())) {
+        console.warn('越权访问学员详情，已拦截', childId);
+        auth.denyAndLeave('无权查看该学员');
+        return null;
+      }
+
+      return Promise.all([
+        this.loadPerformanceHistory(childId),
+        this.loadTrainingHistory(childId),
+        this.loadFeedbackHistory(childId)
+      ]).then(([performanceData, trainingData, feedbackData]) => {
+        this.setData({
+          childInfo: childRes,
+          latestPerformance: performanceData.latest,
+          performanceList: performanceData.list,
+          trainingList: trainingData,
+          feedbackList: feedbackData,
+          loading: false
+        })
+      });
     }).catch(err => {
       console.error('加载孩子详情失败', err);
       wx.showToast({ title: '加载失败', icon: "none" })
@@ -228,15 +244,21 @@ Page({
   },
 
   onPullDownRefresh() {
-    if (this.data.childInfo) {
-      this.loadPerformanceData(this.data.childInfo._id).then(() => {
-        wx.stopPullDownRefresh();
-      });
-    } else {
-      this.loadChildData().then(() => {
-        wx.stopPullDownRefresh();
-      });
+    // 原来调的是 this.loadPerformanceData / this.loadChildData —— 这两个方法在本页
+    // 根本不存在，下拉刷新必抛 TypeError，还得手动把下拉动画收回去。
+    const childId = this.childId;
+
+    if (!childId) {
+      wx.stopPullDownRefresh();
+      return;
     }
+
+    // loadChildDetail 内部是「先校验归属再拉数据」，刷新走同一条路径即可
+    this.loadChildDetail(childId).then(() => {
+      wx.stopPullDownRefresh();
+    }).catch(() => {
+      wx.stopPullDownRefresh();
+    });
   },
 
   onReachBottom() {

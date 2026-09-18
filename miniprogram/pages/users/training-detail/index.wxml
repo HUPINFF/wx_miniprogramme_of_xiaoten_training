@@ -1,0 +1,153 @@
+<!-- pages/users/training-detail/index.wxml -->
+<nav-bar title="训练详情" showBack="{{true}}"></nav-bar>
+
+<view class="container" wx:if="{{training}}">
+
+  <!-- 头图。一条训练只讲一件事：
+       正在上课 → 已经上了多久（活数字）；开课前 → 还有多久；已完成 → 这次练了什么。
+       其余细节全部退到下面的卡片里 -->
+  <view class="hero hero-{{statusKey}}">
+    <view class="hero-head">
+      <text class="hero-name">{{training.name || training.type || '训练'}}</text>
+      <view class="hero-pill">
+        <view class="hero-dot" wx:if="{{isLive}}"></view>
+        <text>{{statusText}}</text>
+      </view>
+    </view>
+
+    <view class="hero-fact">
+      <text class="hero-label">{{heroLabel}}</text>
+      <text class="hero-value {{heroValueCompact ? 'hero-value-compact' : ''}}">{{heroValue}}</text>
+    </view>
+
+    <text class="hero-sub" wx:if="{{heroSub}}">{{heroSub}}</text>
+  </view>
+
+  <view class="body">
+
+    <!-- 上课信息 -->
+    <view class="card">
+      <view class="card-title">上课信息</view>
+      <!-- 实际开课时间：教练没记录时这一行不出现 -->
+      <view class="info-row" wx:if="{{inClassTimeText}}">
+        <text class="label">实际开课</text>
+        <text class="value value-strong">{{inClassTimeText}}</text>
+      </view>
+      <view class="info-row" wx:if="{{planTimeText}}">
+        <text class="label">计划时间</text>
+        <text class="value">{{planTimeText}}</text>
+      </view>
+      <view class="info-row" wx:if="{{training.location}}">
+        <text class="label">上课地点</text>
+        <text class="value">{{training.location}}</text>
+      </view>
+      <view class="info-row" wx:if="{{training.duration}}">
+        <text class="label">训练时长</text>
+        <text class="value">{{training.duration}}</text>
+      </view>
+    </view>
+
+    <!-- 上课教练：这一页家长最可能做的动作就是给教练打电话，按钮做得明确一点 -->
+    <view class="card">
+      <view class="card-title">上课教练</view>
+      <view class="coach-row">
+        <image class="coach-avatar" wx:if="{{coachInfo}}" src="{{coachInfo.avatarUrl}}" mode="aspectFill"></image>
+        <view class="coach-avatar coach-avatar-empty" wx:else></view>
+
+        <view class="coach-meta">
+          <text class="coach-name">{{coachInfo.name || training.coachName || '待安排'}}</text>
+          <text class="coach-role">授课教练</text>
+        </view>
+
+        <view
+          class="call-btn"
+          wx:if="{{coachInfo.phone}}"
+          hover-class="call-btn-active"
+          bind:tap="callCoach"
+        >
+          <text>拨打电话</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 训练内容：预约转来的训练这几项是空的，空的行整行不出现 -->
+    <!-- 教练填的这三项是一整句话，用 info-row-stacked 上下排（见 wxss 里的说明）；
+         下面「训练类型/学员」是短值，维持右对齐的一行式 -->
+    <view class="card">
+      <view class="card-title">训练内容</view>
+      <view class="info-row info-row-stacked" wx:if="{{training.coachContent}}">
+        <text class="label">本次训练内容</text>
+        <text class="value">{{training.coachContent}}</text>
+      </view>
+      <view class="info-row info-row-stacked" wx:if="{{training.focus}}">
+        <text class="label">训练重点</text>
+        <text class="value">{{training.focus}}</text>
+      </view>
+      <view class="info-row info-row-stacked" wx:if="{{training.difficulty}}">
+        <text class="label">训练难点</text>
+        <text class="value">{{training.difficulty}}</text>
+      </view>
+      <view class="info-row" wx:if="{{training.type}}">
+        <text class="label">训练类型</text>
+        <text class="value">{{training.type}}</text>
+      </view>
+      <view class="info-row" wx:if="{{childInfo}}">
+        <text class="label">学员</text>
+        <text class="value">{{childInfo.name || training.childName}}</text>
+      </view>
+    </view>
+
+    <!-- 照片和视频合成一张卡：分成两张的话，没上传时就是两行「暂无」，纯噪音 -->
+    <view class="card">
+      <view class="card-title">训练记录</view>
+
+      <block wx:if="{{hasMedia}}">
+        <view class="media-group" wx:if="{{photos.length}}">
+          <text class="media-caption">照片 · {{photos.length}}</text>
+          <view class="photo-grid">
+            <view
+              class="photo-item"
+              wx:for="{{photos}}"
+              wx:key="index"
+              hover-class="photo-item-active"
+              bind:tap="previewImage"
+              data-url="{{item}}"
+            >
+              <image src="{{item}}" mode="aspectFill" />
+            </view>
+          </view>
+        </view>
+
+        <view class="media-group" wx:if="{{videos.length}}">
+          <text class="media-caption">视频 · {{videos.length}}</text>
+          <view class="video-grid">
+            <view
+              class="video-item"
+              wx:for="{{videos}}"
+              wx:key="index"
+              hover-class="photo-item-active"
+              bind:tap="playVideo"
+              data-url="{{item}}"
+            >
+              <video src="{{item}}"></video>
+              <view class="play-badge"></view>
+            </view>
+          </view>
+        </view>
+      </block>
+
+      <view class="empty-media" wx:else>
+        <text>教练还没有上传照片或视频</text>
+      </view>
+    </view>
+
+  </view>
+</view>
+
+<!-- 加载遮罩 -->
+<view class="loading-cover" wx:if="{{loading}}">
+  <view class="loading-card">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+</view>

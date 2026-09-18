@@ -25,7 +25,12 @@
       </view>
     </view>
 
-    <!-- 训练内容 -->
+    <!-- 本次训练内容：教练在 trainings/edit 页填写，上课时给教练自己看 -->
+    <view class="section" wx:if="{{training.coachContent}}">
+      <view class="section-title">本次训练内容</view>
+      <view class="section-content">{{training.coachContent}}</view>
+    </view>
+
     <view class="section">
       <view class="section-title">训练重点</view>
       <view class="section-content">{{training.focus}}</view>

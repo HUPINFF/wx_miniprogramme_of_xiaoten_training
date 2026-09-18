@@ -1,4 +1,6 @@
 // pages/coach/trainings/edit/index.js
+const auth = require('../../../../utils/auth');
+
 Page({
 
   /**
@@ -23,6 +25,12 @@ Page({
     name: '',
     focus: '',
     difficulty: '',
+    // 【新增】本次训练内容，由教练手填。与已有的 trainingContent 区分开——
+    // 那个字段来自家长预约（book-class → appointments → trainings），本页保存是整条
+    // update，复用同一个键会把家长填的内容覆盖掉。
+    coachContent: '',
+    // 【新增】上课地点，家长端首页「下节课」卡片要展示
+    location: '',
     photoUrls: [], //存储上传的照片临时路径
 
     // 教练信息
@@ -64,8 +72,12 @@ Page({
     }
 
     if (childId) {
-      // 传有孩子ID，直接加载改孩子
-      this.loadChildInfo(childId);
+      // 传有孩子ID，直接加载该孩子。
+      // 本页保存时会写 coachId: 自己，先确认这个孩子是自己名下的。
+      // 下面的 loadChildrenList 分支不用校验，那个查询本来就按 coachId 过滤了。
+      auth.guardChildAccess(childId).then(ok => {
+        if (ok) this.loadChildInfo(childId);
+      });
     } else {
       // 没有传，加载该教练所有孩子
       this.loadChildrenList();
@@ -121,6 +133,16 @@ Page({
     const db = wx.cloud.database();
     db.collection('trainings').doc(this.data.recordId).get().then(res => {
       const record = res.data;
+
+      // 编辑模式是「拿 id 换整条记录」，同样能被改 URL 参数打开别人家的训练，
+      // 保存时会带着 coachId: 自己 覆盖回去。
+      // 训练记录自己存了 coachId，直接比它，不用再查一次 children。
+      if (!record || record.coachId !== auth.getCoachId()) {
+        console.warn('越权编辑训练记录，已拦截 recordId =', this.data.recordId);
+        auth.denyAndLeave('无权编辑该记录');
+        return;
+      }
+
       this.setData({
         childId: record.childId,
         childName: record.childName || '',
@@ -132,6 +154,8 @@ Page({
         name: record.name,
         focus: record.focus,
         difficulty: record.difficulty,
+        coachContent: record.coachContent || '',
+        location: record.location || '',
         photoUrls: record.photos || []
       });
       // 如果有孩子id，加载孩子详细信息
@@ -206,6 +230,16 @@ Page({
     this.setData({ difficulty: e.detail.value });
   },
 
+  // 输入本次训练内容
+  onCoachContentInput(e) {
+    this.setData({ coachContent: e.detail.value });
+  },
+
+  // 输入上课地点
+  onLocationInput(e) {
+    this.setData({ location: e.detail.value });
+  },
+
   // 上传照片
   uploadPhotos() {
     const maxCount = 9 - this.data.photoUrls.length;
@@ -253,27 +287,6 @@ Page({
     return Math.round(hours * 2) / 2;  // 保留0.5的精度
   },
 
-  // 【新增】扣减学员学时
-  deductChildHours(childId, trainingHours) {
-    const db = wx.cloud.database();
-    return db.collection('children').doc(childId).get().then(res => {
-      const child = res.data;
-      const currentHours = child.remainingHours || 0;
-      const newHours = currentHours - trainingHours;
-
-      if (newHours < 0) {
-        wx.showToast({ title: '学时不足，请及时充值', icon: 'none' });
-      }
-
-      return db.collection('children').doc(childId).update({
-        data: {
-          remainingHours: newHours,
-          updatedAt: new Date()
-        }
-      });
-    });
-  },
-
   // 提交保存
   onSubmit() {
     // 验证
@@ -310,6 +323,12 @@ Page({
       return;
     }
 
+    // 上课地点必填：家长端首页「下节课」卡片要显示它
+    if (!this.data.location.trim()) {
+      wx.showToast({ title: '请填写上课地点', icon: 'none' })
+      return;
+    }
+
     this.setData({ submitting: true });
 
     // 计算训练课时
@@ -342,6 +361,8 @@ Page({
         name: this.data.name,
         focus: this.data.focus,
         difficulty: this.data.difficulty,
+        coachContent: this.data.coachContent,
+        location: this.data.location,
         photos: photoUrls,
         photoCount: photoUrls.length,
         trainingHours: trainingHours,           // 【新增】记录本次训练的课时

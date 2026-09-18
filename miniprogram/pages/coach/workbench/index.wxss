@@ -25,7 +25,8 @@ page {
 .container {
   min-height: 100vh;
   background-color: var(--bg);
-  padding-bottom: 40rpx;
+  /* 底部 tab 高度 112rpx + 安全区，再留 28rpx 呼吸位 */
+  padding-bottom: calc(140rpx + env(safe-area-inset-bottom));
 }
 
 /* ==================== 渐变背景 ==================== */

@@ -79,8 +79,28 @@
       />
     </view>
 
+    <!-- 本次训练内容（教练手填，上课时在 in-class 页展示） -->
+    <view class="form-item">
+      <text class="label">本次训练内容</text>
+      <input
+        placeholder="例如：绳梯辅助练习 + 单脚稳定"
+        value="{{coachContent}}"
+        bindinput="onCoachContentInput"
+      />
+    </view>
+
+    <!-- 上课地点 -->
+    <view class="form-item">
+      <text class="label">上课地点</text>
+      <input
+        placeholder="例如：天津师范大学体育馆"
+        value="{{location}}"
+        bindinput="onLocationInput"
+      />
+    </view>
+
     <!-- 上传照片 -->
-    <view class=""form-item>
+    <view class="form-item">
       <text class="label">上课照片</text>
       <view class="photo-upload-area" bind:tap="uploadPhotos">
         <view class="upload-icon">+</view>

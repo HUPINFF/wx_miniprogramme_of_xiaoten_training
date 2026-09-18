@@ -1,4 +1,13 @@
 // pages/coach/performance/weekly/index.js
+const auth = require('../../../../utils/auth');
+const { PERFORMANCE_METRICS, readTouchedField } = require('../../../../utils/helper');
+
+/**
+ * 所有成绩字段。用来判断「这次是不是一项都没填」，不含 childId/周次等元数据。
+ * 直接从 PERFORMANCE_METRICS 派生，以后加指标不用回来改这里。
+ */
+const METRIC_KEYS = PERFORMANCE_METRICS.map(function (meta) { return meta.key; });
+
 Page({
 
   /**
@@ -28,6 +37,12 @@ Page({
       agility: 70,
       coordination: 70
     },
+
+    // 本次会话里教练真正输入/拖动过的字段。
+    // 表单会被上一周的成绩预填（见 loadPreviousData），而表单本身就是提交的数据源，
+    // 没有这个标记的话「打开页面直接保存」会把上周成绩原样存成本周的记录。
+    touched: {},
+
     loading:true
   },
 
@@ -41,7 +56,13 @@ Page({
   },
 
   loadChildren() {
-    const coachId = wx.getStorageSync('coachInfo')._id;
+    // 原来这里裸读 wx.getStorageSync('coachInfo')._id，缓存缺失会直接抛 TypeError。
+    // 冷启动路径「登录 → 工作台 → 录入成绩」在没有缓存时必崩，所以走 auth 并加守卫。
+    const coachId = auth.getCoachId();
+    if (!coachId) {
+      wx.showToast({ title: '登录已失效，请重新登录', icon: 'none' });
+      return;
+    }
     const db = wx.cloud.database();
     db.collection('children').where({
       coachId:coachId
@@ -134,7 +155,9 @@ Page({
           coordination: prev.coordination !== undefined ? prev.coordination : 70
         };
 
-        this.setData({ form });
+        // touched 一并清空：这些值只是填进输入框供教练参照，
+        // 教练不改动就不会被当成本周成绩存下去
+        this.setData({ form, touched: {} });
       } else {
         this.resetForm();
       }
@@ -159,7 +182,8 @@ Page({
         pullUp: '',
         agility: 70,
         coordination: 70
-      }
+      },
+      touched: {}
     });
   },
 
@@ -175,52 +199,58 @@ Page({
   },
 
   // 输入处理方法
+  //
+  // 每个 handler 都顺手把 touched.<字段> 置 true —— 只有这次真正动过的字段才会被保存，
+  // 详见 helper.readTouchedField() 的注释。
   onFiftyInput(e) {
-    this.setData({'form.fiftyMeter': e.detail.value})
+    this.setData({'form.fiftyMeter': e.detail.value, 'touched.fiftyMeter': true})
   },
 
   onThousandInput(e) {
-    this.setData({'form.thousandMeter': e.detail.value})
+    this.setData({'form.thousandMeter': e.detail.value, 'touched.thousandMeter': true})
   },
 
   onEightHundredInput(e) {
-    this.setData({'form.eightHundredMeter': e.detail.value})
+    this.setData({'form.eightHundredMeter': e.detail.value, 'touched.eightHundredMeter': true})
   },
 
   onSitUpInput(e) {
-    this.setData({'form.sitUp': e.detail.value})
+    this.setData({'form.sitUp': e.detail.value, 'touched.sitUp': true})
   },
 
   onRopeSkippingInput(e) {
-    this.setData({'form.ropeSkipping': e.detail.value})
+    this.setData({'form.ropeSkipping': e.detail.value, 'touched.ropeSkipping': true})
   },
 
   onSitAndReachInput(e) {
-    this.setData({'form.sitAndReach': e.detail.value})
+    this.setData({'form.sitAndReach': e.detail.value, 'touched.sitAndReach': true})
   },
 
   onStandingLongJumpInput(e) {
-    this.setData({'form.standingLongJump': e.detail.value})
+    this.setData({'form.standingLongJump': e.detail.value, 'touched.standingLongJump': true})
   },
 
   onVitalCapacityInput(e) {
-    this.setData({'form.vitalCapacity': e.detail.value})
+    this.setData({'form.vitalCapacity': e.detail.value, 'touched.vitalCapacity': true})
   },
 
   onPushUpInput(e) {
-    this.setData({'form.pushUp': e.detail.value})
+    this.setData({'form.pushUp': e.detail.value, 'touched.pushUp': true})
   },
 
   onPullUpInput(e) {
-    this.setData({'form.pullUp': e.detail.value})
+    this.setData({'form.pullUp': e.detail.value, 'touched.pullUp': true})
   },
 
+  // 滑块只有 bindchange（松手才触发），没有 bindinput，所以拖过才会置 true。
+  // 表单默认值是 70，不要求 touched 的话教练一个字没填也会存进 70/70，
+  // 进步卡就会把「敏捷 提升5分」这种假进步报给家长。
   onAgilityChange(e) {
-    this.setData({'form.agility': e.detail.value})
+    this.setData({'form.agility': e.detail.value, 'touched.agility': true})
   },
 
   onCoordinationChange(e) {
-    this.setData({'form.coordination': e.detail.value})
+    this.setData({'form.coordination': e.detail.value, 'touched.coordination': true})
   },
 
   onSubmit() {
@@ -259,71 +289,58 @@ Page({
       weekRange: this.data.weekRange,
       weekStart: this.data.weekStart,
       weekEnd: this.data.weekEnd,
-      month: '',
       updatedAt: new Date()
     };
 
     const formData = this.data.form;
+    const touched = this.data.touched;
     const stage = this.data.selectedStage;
     const gender = this.data.selectedChild.gender;
 
+    // 统一走 readTouchedField()：只有教练这次动过的字段才写入。
+    // 这里全部改成「取值 + 可选转换」的写法，避免 12 个字段各写一遍 if。
+    const assign = (key, parse) => {
+      const raw = readTouchedField(formData, touched, key);
+      if (raw === null) return;
+      data[key] = parse ? parse(raw) : raw;
+    };
+
     // 50米跑（所有阶段都有）
-    if (formData.fiftyMeter && formData.fiftyMeter.trim() !== '') {
-      data.fiftyMeter = parseFloat(formData.fiftyMeter);
-    }
+    assign('fiftyMeter', parseFloat);
 
     // 小学项目
     if (stage === 'primary') {
-      if (formData.vitalCapacity && formData.vitalCapacity.trim() !== '') {
-        data.vitalCapacity = parseInt(formData.vitalCapacity);
-      }
-      if (formData.ropeSkipping && formData.ropeSkipping.trim() !== '') {
-        data.ropeSkipping = parseInt(formData.ropeSkipping);
-      }
-      if (formData.sitAndReach && formData.sitAndReach.trim() !== '') {
-        data.sitAndReach = parseFloat(formData.sitAndReach);
-      }
-      if (formData.sitUp && formData.sitUp.trim() !== '') {
-        data.sitUp = parseInt(formData.sitUp);
-      }
-      if (formData.pushUp && formData.pushUp.trim() !== '') {
-        data.pushUp = parseInt(formData.pushUp);
-      }
+      assign('vitalCapacity', parseInt);
+      assign('ropeSkipping', parseInt);
+      assign('sitAndReach', parseFloat);
+      assign('sitUp', parseInt);
+      assign('pushUp', parseInt);
     }
 
     // 初中项目
     if (stage === 'middle') {
       if (gender === 'male') {
         // 男生：1000米、引体向上、立定跳远
-        if (formData.thousandMeter && formData.thousandMeter.trim() !== '') {
-          data.thousandMeter = formData.thousandMeter;
-        }
-        if (formData.pullUp && formData.pullUp.trim() !== '') {
-          data.pullUp = parseInt(formData.pullUp);
-        }
-        if (formData.standingLongJump && formData.standingLongJump.trim() !== '') {
-          data.standingLongJump = parseInt(formData.standingLongJump);
-        }
+        assign('thousandMeter');
+        assign('pullUp', parseInt);
+        assign('standingLongJump', parseInt);
       } else if (gender === 'female') {
         // 女生：800米、仰卧起坐、立定跳远
-        if (formData.eightHundredMeter && formData.eightHundredMeter.trim() !== '') {
-          data.eightHundredMeter = formData.eightHundredMeter;
-        }
-        if (formData.sitUp && formData.sitUp.trim() !== '') {
-          data.sitUp = parseInt(formData.sitUp);
-        }
-        if (formData.standingLongJump && formData.standingLongJump.trim() !== '') {
-          data.standingLongJump = parseInt(formData.standingLongJump);
-        }
+        assign('eightHundredMeter');
+        assign('sitUp', parseInt);
+        assign('standingLongJump', parseInt);
       }
     }
 
-    // 敏捷性和协调性（始终保存）
-    if (formData.agility !== undefined && formData.agility !== null) {
-      data.agility = formData.agility;
-    }
-    if (formData.coordination !== undefined && formData.coordination !== null) {
-      data.coordination = formData.coordination;
+    // 敏捷性和协调性也是选填，跟其他项目一视同仁（原来这里是无条件写入）
+    assign('agility');
+    assign('coordination');
+
+    // 一项都没填就别建记录：否则库里会多出一条只有孩子/周次的空记录，
+    // 把周次下拉框和图表撑出一堆空周
+    if (!METRIC_KEYS.some(function (key) { return data[key] !== undefined; })) {
+      wx.showToast({ title: '请至少填写一项成绩', icon: 'none' });
+      return;
     }
 
     // 检查是否已存在该周的数据
@@ -354,8 +371,8 @@ Page({
 
         // 1000米跑
         if (data.thousandMeter && existingRecord.thousandMeter) {
-          const newSeconds = this.timeToSeconds(data.thousandMeter);
-          const oldSeconds = this.timeToSeconds(existingRecord.thousandMeter);
+          const newSeconds = this.parseTime(data.thousandMeter);
+          const oldSeconds = this.parseTime(existingRecord.thousandMeter);
           if (newSeconds < oldSeconds) {
             updateData.thousandMeter = data.thousandMeter;
           }
@@ -365,8 +382,8 @@ Page({
 
         // 800米跑
         if (data.eightHundredMeter && existingRecord.eightHundredMeter) {
-          const newSeconds = this.timeToSeconds(data.eightHundredMeter);
-          const oldSeconds = this.timeToSeconds(existingRecord.eightHundredMeter);
+          const newSeconds = this.parseTime(data.eightHundredMeter);
+          const oldSeconds = this.parseTime(existingRecord.eightHundredMeter);
           if (newSeconds < oldSeconds) {
             updateData.eightHundredMeter = data.eightHundredMeter;
           }
@@ -409,8 +426,8 @@ Page({
           updateData.pullUp = data.pullUp;
         }
 
-        // 敏捷性
-        if (data.agility !== undefined && isBetterTime(data.agility, existingRecord.agility)) {
+        // 敏捷性（slider 0-100，越高越好）
+        if (data.agility !== undefined && isBetterNumber(data.agility, existingRecord.agility)) {
           updateData.agility = data.agility;
         }
 
@@ -436,6 +453,16 @@ Page({
       }
     }).then(() => {
       wx.showToast({title:'保存成功',icon:'success'}),
+
+      // 【新增】异步触发月度重算。刻意不 await、不挂进 Promise 链——
+      // 云函数失败绝不能影响教练这条「保存成功」的提示与返回。
+      wx.cloud.callFunction({
+        name: 'generateMonthlyReport',
+        data: { childId: data.childId, weekStart: data.weekStart }
+      }).catch(err => {
+        console.error('月度重算触发失败', err);
+      });
+
       setTimeout(() => {
         wx.navigateBack();
       },1500)
@@ -445,12 +472,23 @@ Page({
     })
   },
 
-  timeToSeconds(timeStr) {
-    if (!timeStr || typeof timeStr !== 'string') return Infinity;
-    const parts = timeStr.split(':');
-    if (parts.length === 2) {
-      return parseInt(parts[0]) * 60 + parseInt(parts[1]);
+  // 解析时间字符串为秒。兼容 "3分20秒"（输入框提示的格式）与 "3:20"。
+  // 无法解析时返回 Infinity，使该值不会在择优比较中胜出。
+  parseTime(str) {
+    if (typeof str === 'number') return str;
+    if (!str || typeof str !== 'string') return Infinity;
+
+    if (str.includes('分')) {
+      const parts = str.replace('秒', '').split('分');
+      return (parseInt(parts[0]) || 0) * 60 + (parseInt(parts[1]) || 0);
     }
-    return Infinity;
+
+    if (str.includes(':')) {
+      const parts = str.split(':');
+      return (parseInt(parts[0]) || 0) * 60 + (parseInt(parts[1]) || 0);
+    }
+
+    const value = parseFloat(str);
+    return Number.isFinite(value) ? value : Infinity;
   }
 })

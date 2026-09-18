@@ -1,0 +1,217 @@
+/* pages/coach/schedule/index.wxss — iOS 风格 */
+
+/* ==================== 全局变量（iOS 化） ==================== */
+page {
+  --bg: #F2F2F7;
+  --primary: #007AFF;
+  --primary-light: rgba(0, 122, 255, 0.1);
+  --card: #ffffff;
+  --text-main: #000000;
+  --text-sub: rgba(60, 60, 67, 0.6);
+  --text-hint: rgba(60, 60, 67, 0.34);
+  --border: rgba(60, 60, 67, 0.1);
+  --radius-sm: 14rpx;
+  --radius-md: 20rpx;
+  --radius-lg: 28rpx;
+  --radius-xl: 32rpx;
+}
+
+/* ==================== 页面容器 ==================== */
+/* 底部 tab = 112rpx + 安全区，再留 28rpx 呼吸位。
+   nav-bar 自带 .navbar-placeholder 占位，这里不用再留顶部间距 */
+.container {
+  min-height: 100vh;
+  background-color: var(--bg);
+  padding: 24rpx 0 calc(140rpx + env(safe-area-inset-bottom));
+}
+
+/* ==================== 概览 ==================== */
+.summary {
+  display: flex;
+  align-items: baseline;
+  gap: 16rpx;
+  padding: 0 32rpx 20rpx;
+}
+
+.summary-date {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.summary-count {
+  font-size: 24rpx;
+  color: var(--text-sub);
+}
+
+/* ==================== 课程卡片 ==================== */
+.card-list {
+  margin: 0 24rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.course-card {
+  display: flex;
+  align-items: center;
+  padding: 24rpx;
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.cc-time {
+  width: 96rpx;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8rpx;
+}
+
+.cc-start {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.cc-dot {
+  width: 8rpx;
+  height: 8rpx;
+  border-radius: 50%;
+}
+.cc-dot.ready { background: #34C759; }
+.cc-dot.wait { background: #C7C7CC; }
+.cc-dot.ongoing { background: #007AFF; }
+.cc-dot.done { background: #8E8E93; }
+
+.cc-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+  padding: 0 16rpx;
+}
+
+.cc-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.cc-child {
+  font-size: 24rpx;
+  color: var(--text-sub);
+}
+
+.cc-meta { display: flex; gap: 8rpx; }
+
+.cc-tag {
+  font-size: 20rpx;
+  color: var(--primary);
+  background: var(--primary-light);
+  padding: 2rpx 12rpx;
+  border-radius: 999rpx;
+}
+
+.cc-btn {
+  flex-shrink: 0;
+  min-width: 128rpx;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999rpx;
+  background: #007AFF;
+  transition: transform 0.15s ease;
+}
+
+.cc-btn text {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.cc-btn.wait { background: #C7C7CC; }
+.cc-btn.ongoing { background: #34C759; }
+.cc-btn.done { background: #8E8E93; }
+
+.cc-btn:active { transform: scale(0.95); opacity: 0.9; }
+
+/* ==================== 空状态 ==================== */
+.empty {
+  margin: 120rpx 24rpx 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.empty-icon { font-size: 96rpx; opacity: 0.35; }
+
+.empty-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--text-sub);
+}
+
+.empty-hint {
+  font-size: 24rpx;
+  color: var(--text-hint);
+}
+
+.empty-btn {
+  margin-top: 24rpx;
+  padding: 20rpx 56rpx;
+  background: var(--primary);
+  border-radius: 999rpx;
+}
+
+.empty-btn text {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.empty-btn:active { transform: scale(0.96); opacity: 0.9; }
+
+/* ==================== 骨架屏 ==================== */
+.skeleton-card {
+  display: flex;
+  align-items: center;
+  padding: 24rpx;
+  background: var(--card);
+  border-radius: var(--radius-lg);
+}
+
+.sk-time {
+  width: 96rpx;
+  height: 32rpx;
+  border-radius: 8rpx;
+  flex-shrink: 0;
+}
+
+.sk-body {
+  flex: 1;
+  padding-left: 16rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.sk-line { height: 24rpx; border-radius: 8rpx; }
+.sk-line-lg { width: 60%; }
+.sk-line-sm { width: 38%; }
+
+.sk-shimmer {
+  background: linear-gradient(90deg, #f2f2f7 25%, #e5e5ea 37%, #f2f2f7 63%);
+  background-size: 400% 100%;
+  animation: sk-shimmer 1.4s ease infinite;
+}
+
+@keyframes sk-shimmer {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}

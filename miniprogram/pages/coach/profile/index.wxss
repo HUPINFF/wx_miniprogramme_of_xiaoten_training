@@ -1,1 +1,99 @@
-/* pages/coach/profile/index.wxss */
+/* pages/coach/profile/index.wxss — iOS 风格 */
+
+/* ==================== 全局变量（iOS 化） ==================== */
+page {
+  --bg: #F2F2F7;
+  --primary: #007AFF;
+  --primary-light: rgba(0, 122, 255, 0.1);
+  --card: #ffffff;
+  --text-main: #000000;
+  --text-sub: rgba(60, 60, 67, 0.6);
+  --text-hint: rgba(60, 60, 67, 0.34);
+  --border: rgba(60, 60, 67, 0.1);
+  --radius-sm: 14rpx;
+  --radius-md: 20rpx;
+  --radius-lg: 28rpx;
+  --radius-xl: 32rpx;
+}
+
+/* ==================== 页面容器 ==================== */
+/* 底部 tab = 112rpx + 安全区，再留 28rpx 呼吸位。
+   nav-bar 自带 .navbar-placeholder 占位，这里不用再留顶部间距 */
+.container {
+  min-height: 100vh;
+  background-color: var(--bg);
+  padding: 24rpx 0 calc(140rpx + env(safe-area-inset-bottom));
+}
+
+/* ==================== 菜单分组 ==================== */
+.menu-group {
+  margin: 0 30rpx 24rpx;
+}
+
+.group-title {
+  display: block;
+  font-size: 26rpx;
+  font-weight: 500;
+  color: var(--text-sub);
+  margin: 0 0 12rpx 8rpx;
+}
+
+.menu-card {
+  background: var(--card);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 30rpx 32rpx;
+  border-bottom: 1rpx solid var(--border);
+  transition: background-color 0.15s ease;
+}
+
+.menu-item:last-child { border-bottom: none; }
+
+.menu-item:active { background-color: rgba(60, 60, 67, 0.04); }
+
+.menu-icon {
+  font-size: 36rpx;
+  width: 56rpx;
+}
+
+.menu-title {
+  flex: 1;
+  font-size: 30rpx;
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.menu-arrow {
+  font-size: 32rpx;
+  font-weight: 300;
+  color: var(--text-hint);
+}
+
+/* ==================== 退出登录 ==================== */
+.logout-btn {
+  width: calc(100% - 60rpx);
+  height: 88rpx;
+  margin: 8rpx auto 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--card);
+  color: #FF3B30;
+  border: 2rpx solid rgba(255, 59, 48, 0.35);
+  border-radius: var(--radius-xl);
+  font-size: 30rpx;
+  font-weight: 600;
+}
+
+.logout-btn::after { border: none; }
+
+.logout-btn:active {
+  background-color: rgba(255, 59, 48, 0.06);
+  transform: scale(0.98);
+}

@@ -327,4 +327,6 @@
   </view>
 
   </view>
+
+  <coach-tab-bar current="workbench" />
 </view>

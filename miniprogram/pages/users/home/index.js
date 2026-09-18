@@ -1,4 +1,22 @@
-// pages/users/profile/index.js
+// pages/users/home/index.js
+//
+// 家长端首页。只回答三个问题：今天干什么、孩子进步了吗、下一步做什么。
+// 内容型版块（最新动态/家长点评/精彩瞬间/课程体系/成长案例/关于我们/加入我们/联系我们）
+// 和八宫格入口都已搬到 pages/users/profile/index。
+// 空闲态（没在上课、也没下节课）补一块「成长足迹」：课次统计 + 最近进步 + 最新反馈。
+const {
+  getTodayString,
+  pickCurrentTraining,
+  pickProgressHighlight,
+  elapsedMinutesOf,
+  formatDurationText,
+  diffInDays
+} = require('../../../utils/helper');
+
+// 「正在上课」的正计时刷新间隔。文案最小单位是分钟，每秒重算纯属白渲染；
+// 30 秒是折中：最坏情况下卡片上的分钟数比真实值慢半分钟，肉眼看不出。
+const ELAPSED_REFRESH_MS = 30000;
+
 Page({
 
   /**
@@ -17,16 +35,25 @@ Page({
 
     // 轮播图数据
     banners: [],
-    // 最新状态
-    newList: [],
-    // 精彩瞬间
-    moments: [],
-    // 家长点评
-    comments: [],
-    // 成长案例
-    growthList: [],
-    // 课程体系
-    courseList: [],
+
+    // 当前情况：'in_class'(正在上课) / 'upcoming'(下节课) / 'none'(整卡隐藏)
+    currentMode: 'none',
+    currentTraining: null,
+    upcomingDateText: '',   // 「下节课」的日期友好文案，如「今天」「9月16日」
+    // 仅「正在上课」状态才有：已进行时长（随定时器走）+ 「开课 14:32 · 王教练」
+    elapsedText: '',
+    inClassSubText: '',
+    // 仅「下节课」状态才有：最近进步 + 最近训练反馈
+    progress: null,
+    progressLabel: '',   // 「首次记录」/「最近进步」/「最近变化」
+    progressText: '',    // 「50米 快0.3秒」这种拼好的文案
+    latestFeedback: null,
+
+    // 仅「空闲」状态才有：成长足迹（课次统计 + 进步/反馈复用上面两个字段）
+    totalTrainings: 0,   // 已完成（finished）课次总数
+    monthTrainings: 0,   // 本月已完成课次
+    isGrowthEmpty: false, // 三块数据全空 → 显示「去预约」引导
+
     // 登录弹窗
     showLoginModal: false,
   },
@@ -35,12 +62,15 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
+    // 「正在上课」的正计时句柄。挂在实例上而不是 data 里，避免无谓渲染
+    this.elapsedTimer = null;
+
     // 初始化导航栏信息
     this.initNavBar();
-    
+
     // 获取家长信息
     this.loadParentInfo();
-    
+
     // 加载首页数据（包含孩子信息）
     this.loadHomeData();
   },
@@ -82,12 +112,12 @@ Page({
    */
   loadChildInfo() {
     const openid = wx.getStorageSync('openid');
-    
+
     if (!openid) {
       console.warn('未获取到 openid');
       return Promise.resolve();
     }
-    
+
     const db = wx.cloud.database();
     return db.collection('children')
       .where({
@@ -96,8 +126,8 @@ Page({
       .get()
       .then(res => {
         if (res.data && res.data.length > 0) {
-          this.setData({ 
-            childInfo: res.data[0] 
+          this.setData({
+            childInfo: res.data[0]
           });
         } else {
           console.log('未找到孩子信息');
@@ -111,6 +141,357 @@ Page({
   },
 
   /**
+   * 加载「当前情况」卡片
+   *
+   * 判定交给 utils/helper 的 pickCurrentTraining（纯函数，有单测）：
+   * 优先「正在上课」（status === 'in_class'，即教练点了开始上课），否则「下节课」。
+   *
+   * 两次查询而不是拉全量：小程序端单次 get() 上限 20 条，
+   * 一个孩子的历史训练轻易就超了，全量拉会漏掉未来的课。
+   */
+  loadCurrentStatus() {
+    const childId = this.data.childInfo && this.data.childInfo._id;
+    if (!childId) {
+      this.setData({
+        currentMode: 'none',
+        currentTraining: null,
+        elapsedText: '',
+        inClassSubText: '',
+        progress: null,
+        progressLabel: '',
+        progressText: '',
+        latestFeedback: null,
+        totalTrainings: 0,
+        monthTrainings: 0,
+        isGrowthEmpty: false
+      });
+      this.stopElapsedTicker();
+      return Promise.resolve();
+    }
+
+    const db = wx.cloud.database();
+    const _ = db.command;
+    const today = getTodayString();
+
+    return Promise.all([
+      // 正在上课的。这里的日期过滤同样只是粗筛（理由见下面的「下节课」查询），
+      // 陈旧的（昨天点了开始上课就没再管的）由 pickCurrentTraining 精确剔掉。
+      //
+      // 故意**不排序也不 limit**：挑哪一节是 pickCurrentTraining 的规则
+      // （多条 in_class 时取开始得最晚的那节），在这里再排一次就是第二套规则，
+      // 两边一旦不一致就会出现「查询挑了一节、判定想的是另一节」。
+      // 带 in_class 且日期没过期的记录本来就极少，直接全取交给它挑。
+      db.collection('trainings')
+        .where({ childId: childId, status: 'in_class', date: _.gte(today) })
+        .get(),
+      // 还没上的，按时间取最近一节。
+      // 这里的 date 过滤只是粗筛（少读几条），**精确判定在 pickCurrentTraining 里**：
+      // 云数据库的字段类型不受控，历史数据里 date 万一是 Date 类型，
+      // `_.gte('YYYY-MM-DD')` 会按 BSON 类型序把所有 Date 都放行。
+      db.collection('trainings')
+        .where({
+          childId: childId,
+          status: _.in(['pending', 'scheduled']),
+          date: _.gte(today)
+        })
+        .orderBy('date', 'asc')
+        .orderBy('startTime', 'asc')
+        .limit(1)
+        .get()
+    ]).then(([inClassRes, upcomingRes]) => {
+      const merged = [...inClassRes.data, ...upcomingRes.data];
+      const { mode, training } = pickCurrentTraining(merged, { today: today });
+
+      const isLive = mode === 'in_class';
+      this.setData({
+        currentMode: mode,
+        currentTraining: training,
+        upcomingDateText: mode === 'upcoming' ? this.formatUpcomingDate(training.date, today) : '',
+        elapsedText: isLive ? this.buildElapsedText(training) : '',
+        inClassSubText: isLive ? this.buildInClassSubText(training) : ''
+      });
+
+      // 非「正在上课」时这个方法自己会先停掉再返回，不必在这里分流
+      this.startElapsedTicker();
+
+      // 最近进步 + 最近反馈：下节课和空闲态都要；正在上课时用不上，清掉
+      if (mode === 'upcoming') {
+        return this.loadProgressAndFeedback(childId);
+      }
+      if (mode === 'none') {
+        return this.loadGrowthHighlights(childId);
+      }
+      this.setData({
+        progress: null,
+        progressLabel: '',
+        progressText: '',
+        latestFeedback: null,
+        totalTrainings: 0,
+        monthTrainings: 0,
+        isGrowthEmpty: false
+      });
+      return Promise.resolve();
+    }).catch(err => {
+      console.error('加载当前情况失败:', err);
+      this.stopElapsedTicker();
+      this.setData({
+        currentMode: 'none',
+        currentTraining: null,
+        elapsedText: '',
+        inClassSubText: '',
+        progress: null,
+        progressLabel: '',
+        progressText: '',
+        latestFeedback: null,
+        totalTrainings: 0,
+        monthTrainings: 0,
+        isGrowthEmpty: false
+      });
+    });
+  },
+
+  /**
+   * 加载最近进步 + 最近训练反馈（「下节课」卡和空闲态「成长足迹」共用）
+   */
+  loadProgressAndFeedback(childId) {
+    const db = wx.cloud.database();
+
+    return Promise.all([
+      // 取最近两条成绩：pickProgressHighlight 要两条才能算环比
+      db.collection('performance')
+        .where({ childId: childId })
+        .orderBy('weekDate', 'desc')
+        .limit(2)
+        .get(),
+      db.collection('feedbacks')
+        .where({ childId: childId })
+        .orderBy('date', 'desc')
+        .limit(1)
+        .get()
+    ]).then(([perfRes, fbRes]) => {
+      // 数据太旧 / 只有一条 / 一条都没动，这个函数会返回 null，卡片自行隐藏该行
+      const progress = pickProgressHighlight(perfRes.data);
+      // 文案在 js 里拼好，wxml 就不必堆嵌套三元
+      // 「首次记录」没有 deltaText（没得比）；退步时不叫「进步」，如实说「最近变化」
+      let progressLabel = '';
+      let progressText = '';
+      if (progress) {
+        if (progress.mode === 'first') {
+          progressLabel = '首次记录';
+          progressText = `${progress.metricName} ${progress.currentText}`;
+        } else {
+          progressLabel = progress.isImprovement ? '最近进步' : '最近变化';
+          progressText = `${progress.metricName} ${progress.deltaText}`;
+        }
+      }
+
+      this.setData({
+        progress,
+        progressLabel,
+        progressText,
+        latestFeedback: fbRes.data.length ? fbRes.data[0] : null
+      });
+    }).catch(err => {
+      // 进步和反馈是锦上添花，失败不该把「下节课」本身也弄没
+      console.error('加载进步/反馈失败:', err);
+      this.setData({ progress: null, progressLabel: '', progressText: '', latestFeedback: null });
+    });
+  },
+
+  /**
+   * 空闲态「成长足迹」：累计/本月课次 + 最近进步 + 最新反馈
+   *
+   * 只在没课的今天才有这块版面（正在上课/下节课时整卡隐藏，数据也清掉）。
+   * 进步和反馈直接复用 loadProgressAndFeedback——和「下节课」卡是同一套
+   * 判定、同一套文案，家长在两张卡里看到的必须是同一个数字。
+   * 这里只额外数两个数：count() 不受单次 get() 20 条上限约束，正适合数历史课次。
+   *
+   * date 过滤和「下节课」查询一样是粗筛：date 字段类型不受控，历史数据
+   * 万一是 Date 类型，_.gte('YYYY-MM-DD') 会把所有 Date 都放行——
+   * 最坏情况是「本月」等于「累计」，宁可多报也不会漏报。
+   */
+  loadGrowthHighlights(childId) {
+    const db = wx.cloud.database();
+    const _ = db.command;
+    const today = getTodayString();
+    const monthStart = `${today.slice(0, 7)}-01`;
+
+    const countFinished = (extraWhere) => db.collection('trainings')
+      .where(Object.assign({ childId: childId, status: 'finished' }, extraWhere || {}))
+      .count()
+      .then((res) => (res && res.total) || 0);
+
+    // loadProgressAndFeedback 自己 catch 了（失败只丢锦上添花的数据），
+    // 所以 Promise.all 只可能被两个 count 打穿——那也只损失数字，不炸页面
+    return Promise.all([
+      countFinished(),
+      countFinished({ date: _.gte(monthStart) }),
+      this.loadProgressAndFeedback(childId)
+    ]).then(([total, month]) => {
+      this.setData({ totalTrainings: total, monthTrainings: month });
+      this.refreshGrowthEmptyFlag();
+    }).catch(err => {
+      console.error('加载成长足迹失败:', err);
+      this.setData({ totalTrainings: 0, monthTrainings: 0 });
+    });
+  },
+
+  /**
+   * 进步 / 反馈 / 课次三块全空 → 新家长的首页不该只剩「0次」，
+   * 给一条去预约的引导。只在数据真正加载成功后判定，加载失败不误报。
+   */
+  refreshGrowthEmptyFlag() {
+    this.setData({
+      isGrowthEmpty: !this.data.progress && !this.data.latestFeedback && this.data.totalTrainings === 0
+    });
+  },
+
+  /** 成长足迹 → 蜕变（成长档案）tab */
+  goToGrowth() {
+    wx.switchTab({ url: '/pages/users/growth/index' });
+  },
+
+  /** 最新反馈 → 我的反馈列表 */
+  goToFeedback() {
+    wx.navigateTo({ url: '/pages/users/my-feedback/index' });
+  },
+
+  /** 新用户引导 → 预约 tab */
+  goToBooking() {
+    wx.switchTab({ url: '/pages/users/orders/index' });
+  },
+
+  /**
+   * 「下节课」的日期文案：今天 / 明天 / 9月16日
+   *
+   * ⚠️ 入参先过 getTodayString 归一化。date 万一是 Date 类型的历史数据，
+   *    String() 会得到 "Mon Sep 14 2026 ..."，split('-') 直接解析出 NaN。
+   */
+  formatUpcomingDate(date, today) {
+    const dateText = getTodayString(date);
+    if (!dateText) return '';
+    if (dateText === today) return '今天';
+
+    const nextDay = new Date(`${today}T00:00:00`);
+    nextDay.setDate(nextDay.getDate() + 1);
+    const tomorrow = `${nextDay.getFullYear()}-${String(nextDay.getMonth() + 1).padStart(2, '0')}-${String(nextDay.getDate()).padStart(2, '0')}`;
+    if (dateText === tomorrow) return '明天';
+
+    const parts = dateText.split('-');
+    return `${Number(parts[1])}月${Number(parts[2])}日`;
+  },
+
+  /**
+   * 「正在上课」的大号数字：已进行多久
+   *
+   * 和详情页头图共用 helper 的 elapsedMinutesOf / formatDurationText，
+   * 两处算出来的分钟数必须一致——卡片写「32分钟」，点进去头图也应当是「32分钟」。
+   * 教练既没记实际开课时间、又缺计划开始时刻的老数据，如实说「上课中」。
+   */
+  buildElapsedText(training) {
+    const minutes = elapsedMinutesOf(training);
+    return minutes === null ? '上课中' : formatDurationText(minutes);
+  },
+
+  /**
+   * 「正在上课」的副标题：`体能训练 · 开课 14:32 · 王教练`
+   *
+   * 三段都可能缺，所以拼到哪算哪；一段都没有时给一句兜底，别留一行空白。
+   */
+  buildInClassSubText(training) {
+    const record = training || {};
+    const parts = [];
+    if (record.name) parts.push(record.name);
+
+    const clock = this.formatInClassClock(record.inClassTime);
+    if (clock) parts.push(`开课 ${clock}`);
+    if (record.coachName) parts.push(record.coachName);
+
+    return parts.length ? parts.join(' · ') : '教练已开始本次训练';
+  },
+
+  /**
+   * inClassTime → '14:32'
+   *
+   * 默认不给日期：同一节课几乎总是当天开的，带上「9月15日」反而占地方。
+   * 真跨天了（教练下课忘了点时，首页会一直停在「正在上课」）才补日期，
+   * 否则家长会误以为课是今天开的。
+   *
+   * ⚠️ 字符串只认带时分的 'YYYY-MM-DD HH:mm' / 'YYYY-MM-DDTHH:mm'：
+   *    纯日期串会被当 UTC 午夜解析（见 helper 的 toLocalDate 注释），
+   *    解析不出来就不显示时间，宁缺毋错。
+   */
+  formatInClassClock(input) {
+    let date = null;
+    if (input instanceof Date) {
+      date = input;
+    } else if (typeof input === 'number') {
+      date = new Date(input);
+    } else if (typeof input === 'string' && input) {
+      const matched = input.match(/^(\d{4})-(\d{1,2})-(\d{1,2})[T ](\d{1,2}):(\d{2})/);
+      date = matched
+        ? new Date(
+            parseInt(matched[1], 10), parseInt(matched[2], 10) - 1, parseInt(matched[3], 10),
+            parseInt(matched[4], 10), parseInt(matched[5], 10)
+          )
+        : new Date(input);
+    }
+    if (!date || isNaN(date.getTime())) return '';
+
+    const pad = n => String(n).padStart(2, '0');
+    const clock = `${pad(date.getHours())}:${pad(date.getMinutes())}`;
+    return diffInDays(getTodayString(), date) === 0
+      ? clock
+      : `${date.getMonth() + 1}月${date.getDate()}日 ${clock}`;
+  },
+
+  // ==================== 「正在上课」正计时 ====================
+
+  /**
+   * 只在「正在上课」时开定时器。非该状态会先停掉再直接返回，
+   * 所以调用方不需要自己判断该不该开。
+   */
+  startElapsedTicker() {
+    this.stopElapsedTicker();
+    if (this.data.currentMode !== 'in_class' || !this.data.currentTraining) return;
+
+    this.elapsedTimer = setInterval(() => { this.refreshElapsed(); }, ELAPSED_REFRESH_MS);
+  },
+
+  stopElapsedTicker() {
+    if (this.elapsedTimer) {
+      clearInterval(this.elapsedTimer);
+      this.elapsedTimer = null;
+    }
+  },
+
+  refreshElapsed() {
+    const training = this.data.currentTraining;
+    if (!training) {
+      this.stopElapsedTicker();
+      return;
+    }
+
+    const elapsedText = this.buildElapsedText(training);
+    // 分钟数没变就别 setData —— 半分钟一次的空渲染没必要
+    if (elapsedText === this.data.elapsedText) return;
+
+    this.setData({ elapsedText });
+  },
+
+  /**
+   * 「当前情况」卡片点击 → 训练详情页
+   * 「正在上课」和「下节课」共用这一个入口，页面自己按 status 决定显示什么
+   */
+  goToTrainingDetail(e) {
+    const id = (e && e.currentTarget && e.currentTarget.dataset.id)
+      || (this.data.currentTraining && this.data.currentTraining._id);
+    if (!id) return;
+
+    wx.navigateTo({ url: `/pages/users/training-detail/index?id=${id}` });
+  },
+
+  /**
    * 加载首页数据
    */
   loadHomeData() {
@@ -118,32 +499,32 @@ Page({
     this.setData({ loading: true });
 
     // 使用 Promise.allSettled 确保即使部分请求失败也能正常显示
-    Promise.allSettled([
+    return Promise.allSettled([
       this.loadBanners(),
-      this.loadNews(),
-      this.loadMoments(),
-      this.loadComments(),
-      this.loadGrowthList(),
-      this.loadCourseList(),
-      this.loadChildInfo()  // 包含孩子信息加载
+      this.loadChildInfo()
     ]).then((results) => {
       // 检查是否所有请求都失败了
       const allFailed = results.every(result => result.status === 'rejected');
-      
+
       if (allFailed) {
         console.warn('所有数据加载失败，使用默认数据');
         this.loadDefaultData();
       }
-      
+
+      const successCount = results.filter(r => r.status === 'fulfilled').length;
+      console.log(`首页数据加载完成: ${successCount}/${results.length} 成功`);
+
+      // 孩子信息就绪后才能判断「当前情况」
+      return this.loadCurrentStatus();
+    }).then(() => {
       // 无论成功失败，都隐藏骨架屏
       this.setData({ loading: false });
 
       // 数据加载完成后，检查登录状态，未登录则弹出登录提醒
       this.checkShowLoginModal();
-
-      // 打印加载结果统计
-      const successCount = results.filter(r => r.status === 'fulfilled').length;
-      console.log(`首页数据加载完成: ${successCount}/${results.length} 成功`);
+    }).catch(err => {
+      console.error('首页数据加载失败:', err);
+      this.setData({ loading: false });
     });
   },
 
@@ -175,187 +556,6 @@ Page({
   },
 
   /**
-   * 加载最新动态
-   */
-  loadNews() {
-    const db = wx.cloud.database();
-    return db.collection('news')
-      .where({
-        status: true
-      })
-      .orderBy('sort', 'asc')
-      .orderBy('time', 'desc')
-      .limit(5)
-      .get()
-      .then(res => {
-        if (res.data && res.data.length > 0) {
-          this.setData({ newList: res.data });
-          console.log('最新动态加载成功:', res.data.length, '条');
-        } else {
-          console.log('暂无最新动态');
-          this.setData({ newList: [] });
-        }
-      })
-      .catch(err => {
-        console.error('加载最新动态失败:', err);
-        this.setData({ newList: [] });
-        throw err;
-      });
-  },
-
-  /**
-   * 加载精彩瞬间
-   */
-  loadMoments() {
-    const db = wx.cloud.database();
-    return db.collection("moments")
-      .where({
-        status: true
-      })
-      .orderBy('sort', 'asc')
-      .limit(10)
-      .get()
-      .then(res => {
-        if (res.data && res.data.length > 0) {
-          this.setData({ moments: res.data });
-          console.log('精彩瞬间加载成功:', res.data.length, '条');
-        } else {
-          console.log('暂无精彩瞬间');
-          this.setData({ moments: [] });
-        }
-      })
-      .catch(err => {
-        console.error('加载精彩瞬间失败:', err);
-        this.setData({ moments: [] });
-        throw err;
-      });
-  },
-
-  /**
-   * 加载家长点评
-   */
-  loadComments() {
-    const db = wx.cloud.database();
-    return db.collection('comment')
-      .orderBy('createdAt', 'desc')
-      .limit(5)
-      .get()
-      .then(res => {
-        if (res.data && res.data.length > 0) {
-          // 格式化时间
-          const comments = res.data.map(item => ({
-            ...item,
-            createTime: item.createdAt ? this.formatTime(item.createdAt) : ''
-          }));
-          this.setData({ comments });
-          console.log('家长点评加载成功:', comments.length, '条');
-        } else {
-          console.log('暂无家长点评');
-          this.setData({ comments: [] });
-        }
-      })
-      .catch(err => {
-        console.error('加载点评失败:', err);
-        this.setData({ comments: [] });
-        throw err;
-      });
-  },
-
-  /**
-   * 加载成长案例
-   */
-  loadGrowthList() {
-    const db = wx.cloud.database();
-    return db.collection('growth_exp')
-      .where({ status: true })
-      .orderBy('sort', 'asc')
-      .limit(5)
-      .get()
-      .then(res => {
-        if (res.data && res.data.length > 0) {
-          const growthList = res.data.map(item => {
-            // 计算案例数量
-            let itemCount = 0;
-            let coverImage = '';
-            
-            if (item.items && item.items.length > 0) {
-              itemCount = item.items.length;
-              coverImage = item.items[0].url || '';
-            }
-            
-            // 格式化创建时间
-            let createdAt = '';
-            if (item.createdAt) {
-              createdAt = this.formatTime(item.createdAt);
-            }
-            
-            return {
-              ...item,
-              itemCount,
-              coverImage,
-              createdAt
-            };
-          });
-          
-          this.setData({ growthList });
-          console.log('成长案例加载成功:', growthList.length, '条');
-        } else {
-          console.log('暂无成长案例');
-          this.setData({ growthList: [] });
-        }
-      })
-      .catch(err => {
-        console.error('加载成长案例失败:', err);
-        this.setData({ growthList: [] });
-        throw err;
-      });
-  },
-
-  /**
-   * 加载课程列表
-   */
-  loadCourseList() {
-    const db = wx.cloud.database();
-    return db.collection('course')
-      .where({ status: true })
-      .orderBy('sort', 'asc')
-      .limit(10)
-      .get()
-      .then(res => {
-        if (res.data && res.data.length > 0) {
-          this.setData({ courseList: res.data });
-          console.log('课程列表加载成功:', res.data.length, '条');
-        } else {
-          console.log('暂无课程数据');
-          this.setData({ courseList: [] });
-        }
-      })
-      .catch(err => {
-        console.error('加载课程列表失败:', err);
-        this.setData({ courseList: [] });
-        throw err;
-      });
-  },
-
-  /**
-   * 格式化时间
-   */
-  formatTime(date) {
-    if (!date) return '';
-    
-    try {
-      const d = new Date(date);
-      const year = d.getFullYear();
-      const month = String(d.getMonth() + 1).padStart(2, '0');
-      const day = String(d.getDate()).padStart(2, '0');
-      return `${year}-${month}-${day}`;
-    } catch (error) {
-      console.error('时间格式化失败:', error);
-      return '';
-    }
-  },
-
-  /**
    * 默认数据（当数据库无数据或加载失败时显示）
    */
   loadDefaultData() {
@@ -365,18 +565,6 @@ Page({
         { image: '/images_2/1.jpg', text: '暑期训练营火热招生中' },
         { image: '/images_2/2.jpg', text: '国家级教练团队' },
         { image: '/images_2/3.jpg', text: '科学训练体系' }
-      ],
-      newList: [
-        { id: 1, title: '暑期集训营开始报名啦！', time: '2024-03-28' },
-        { id: 2, title: '3月优秀学员表彰名单', time: '2024-03-25' },
-        { id: 3, title: '本周六举行亲子运动会', time: '2024-03-22' },
-        { id: 4, title: '新开设体适能课程', time: '2024-03-20' }
-      ],
-      moments: [
-        { id: 1, image: '/images_2/1.jpg', title: '速度训练' },
-        { id: 2, image: '/images_2/2.jpg', title: '耐力训练' },
-        { id: 3, image: '/images_2/3.jpg', title: '协调训练' },
-        { id: 4, image: '/images_2/4.jpg', title: '团队协作' }
       ]
     });
   },
@@ -419,248 +607,6 @@ Page({
   /** 阻止冒泡 */
   stopPropagation() {},
 
-  // ==================== 快捷入口 ====================
-
-  /**
-   * 快捷入口 - 训练数据
-   */
-  goToTrainingData() {
-    if (!this.checkLogin()) return;
-    wx.navigateTo({ url: "/pages/users/children/index" });
-  },
-
-  /**
-   * 快捷入口 - 课程表
-   */
-  goToSchedule() {
-    if (!this.checkLogin()) return;
-    const childId = this.data.childInfo?._id;
-    if (!childId) {
-      wx.showToast({ title: '请先添加孩子信息', icon: 'none' });
-      return;
-    }
-    wx.navigateTo({ url: `/pages/users/trainings/index?childId=${childId}` });
-  },
-
-  /**
-   * 快捷入口 - 预约上课
-   */
-  goToBookClass() {
-    if (!this.checkLogin()) return;
-    wx.switchTab({ url: "/pages/users/orders/index" });
-  },
-
-  /**
-   * 快捷入口 - 上课记录
-   */
-  goToClassRecords() {
-    if (!this.checkLogin()) return;
-    wx.navigateTo({ url: '/pages/users/class-records/index' });
-  },
-
-  /**
-   * 快捷入口 - 课堂点评
-   */
-  goToClassComments() {
-    if (!this.checkLogin()) return;
-    wx.navigateTo({ url: '/pages/users/class-comments/index' });
-  },
-
-  /**
-   * 快捷入口 - 成长案例
-   */
-  goToChildProfile() {
-    wx.navigateTo({ url: "/pages/users/all-growth/index" });
-  },
-
-  /**
-   * 快捷入口 - 联系教练
-   */
-  contactCoach() {
-    wx.navigateTo({ url: "/pages/users/coach-list/index" });
-  },
-
-  /**
-   * 快捷入口 - 我的反馈
-   */
-  goToFeedback() {
-    if (!this.checkLogin()) return;
-    const childId = this.data.childInfo?._id;
-    if (!childId) {
-      wx.showToast({ title: '请先添加孩子信息', icon: 'none' });
-      return;
-    }
-    wx.navigateTo({ url: `/pages/users/my-feedback/index?childId=${childId}` });
-  },
-
-  /**
-   * 加入我们 - 预约教练
-   */
-  goToBookCoach() {
-    if (!this.checkLogin()) return;
-    wx.navigateTo({ url: '/pages/users/book-coach/index' });
-  },
-
-  // ==================== 查看详情 ====================
-
-  /**
-   * 查看全部动态
-   */
-  viewAllNews() {
-    wx.navigateTo({ url: "/pages/users/news/index" });
-  },
-
-  /**
-   * 查看动态详情
-   */
-  viewNews(e) {
-    const { id } = e.currentTarget.dataset;
-    if (id) {
-      wx.navigateTo({ url: `/pages/users/news-detail/index?id=${id}` });
-    }
-  },
-
-  /**
-   * 查看全部点评
-   */
-  viewAllComments() {
-    wx.navigateTo({ url: '/pages/coach/all-comments/index' });
-  },
-
-  /**
-   * 查看点评详情
-   */
-  viewCommentDetail(e) {
-    const { id } = e.currentTarget.dataset;
-    if (id) {
-      wx.navigateTo({ url: `/pages/coach/comment-detail/index?id=${id}` });
-    }
-  },
-
-  /**
-   * 查看全部成长案例
-   */
-  viewAllGrowth() {
-    wx.navigateTo({ url: '/pages/users/all-growth/index' });
-  },
-
-  /**
-   * 查看成长案例详情
-   */
-  viewGrowthDetail(e) {
-    const { id } = e.currentTarget.dataset;
-    if (id) {
-      wx.navigateTo({ url: `/pages/users/growth-detail/index?id=${id}` });
-    }
-  },
-
-  /**
-   * 查看全部课程
-   */
-  viewAllCourses() {
-    wx.navigateTo({ url: '/pages/users/all-courses/index' });
-  },
-
-  /**
-   * 查看课程详情
-   */
-  viewCourseDetail(e) {
-    const { id } = e.currentTarget.dataset;
-    if (id) {
-      wx.navigateTo({ url: `/pages/users/course-detail/index?id=${id}` });
-    }
-  },
-
-  /**
-   * 查看更多精彩瞬间
-   */
-  viewMoreMoments() {
-    wx.navigateTo({ url: "/pages/users/moments/index" });
-  },
-
-  /**
-   * 查看精彩瞬间详情
-   */
-  viewMoment(e) {
-    const { id } = e.currentTarget.dataset;
-    if (id) {
-      wx.navigateTo({ url: `/pages/users/moment-detail/index?id=${id}` });
-    } else {
-      console.warn('精彩瞬间 ID 为空');
-    }
-  },
-
-  /**
-   * 关于我们
-   */
-  aboutUs() {
-    wx.navigateTo({ url: "/pages/users/coach-list/index" });
-  },
-
-  // ==================== 联系功能 ====================
-
-  /**
-   * 拨打电话
-   */
-  callPhone() {
-    wx.makePhoneCall({
-      phoneNumber: "19212218300",
-      fail(err) {
-        console.error('拨打电话失败:', err);
-        wx.showToast({ title: '拨号失败', icon: 'none' });
-      }
-    });
-  },
-
-  /**
-   * 查看地址
-   */
-  viewAddress() {
-    wx.openLocation({
-      latitude: 39.1024,   // 天津师范大学纬度
-      longitude: 117.1256, // 天津师范大学经度
-      name: '天津师范大学',
-      address: '天津市西青区宾水西道393号',
-      scale: 15,
-      fail(err) {
-        console.error('打开地图失败:', err);
-        wx.showToast({ title: '打开地图失败', icon: 'none' });
-      }
-    });
-  },
-
-  /**
-   * 查看微信
-   */
-  viewWechat() {
-    wx.showModal({
-      title: '官方微信',
-      content: '微信号：The120307\n\n请添加微信了解更多详情',
-      confirmText: '复制微信号',
-      cancelText: '取消',
-      success(res) {
-        if (res.confirm) {
-          wx.setClipboardData({
-            data: 'The120307',
-            success() {
-              wx.showToast({
-                title: '已复制微信号',
-                icon: 'success',
-                duration: 2000
-              });
-            },
-            fail() {
-              wx.showToast({
-                title: '复制失败',
-                icon: 'none'
-              });
-            }
-          });
-        }
-      }
-    });
-  },
-
   // ==================== 生命周期 ====================
 
   /**
@@ -674,32 +620,30 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
-    console.log('🏠 首页 onShow 触发 - 时间:', new Date().toLocaleTimeString());
-    
-    // 每次显示页面时刷新孩子信息和点评数据
-    this.loadChildInfo();
-    this.loadComments();
+    // 每次显示都刷新：孩子信息变了、「当前情况」也会变（教练可能刚点了开始上课）。
+    // 正计时由 loadCurrentStatus 顺带续上（onHide 时被停过）
+    this.loadChildInfo().then(() => this.loadCurrentStatus());
   },
 
   /**
    * 生命周期函数--监听页面隐藏
    */
   onHide() {
-    console.log('首页隐藏');
+    // 页面在后台还留着实例，定时器不停会一直空转
+    this.stopElapsedTicker();
   },
 
   /**
    * 生命周期函数--监听页面卸载
    */
   onUnload() {
-    console.log('首页卸载');
+    this.stopElapsedTicker();
   },
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh() {
-    console.log('下拉刷新');
     this.loadHomeData().then(() => {
       wx.stopPullDownRefresh();
       wx.showToast({
@@ -720,18 +664,15 @@ Page({
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom() {
-    // 可以在这里实现加载更多功能
-    console.log('触底');
-  },
+  onReachBottom() {},
 
   /**
    * 用户点击右上角分享
    */
   onShareAppMessage() {
     return {
-      title: '腾讯体育 - 记录每一次进步',
-      path: '/pages/users/profile/index',
+      title: '腾鑫体育 - 记录每一次进步',
+      path: '/pages/users/home/index',
       imageUrl: '/images_1/logo_20251126_34991.uugai.com-1764133166493.png'
     };
   }

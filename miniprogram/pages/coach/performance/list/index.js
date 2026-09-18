@@ -1,4 +1,6 @@
 // pages/coach/performance/list/index.js
+const auth = require('../../../../utils/auth');
+
 Page({
 
   /**
@@ -33,8 +35,22 @@ Page({
         title: `${childName}的表现历史`
       });
     }
-    this.loadPerformanceList();
-  },  
+
+    this.assertChildAccess().then(ok => {
+      if (ok) this.loadPerformanceList();
+      else this.setData({ loading: false });
+    });
+  },
+
+  /**
+   * 归属校验
+   *
+   * childId 直接来自 URL 参数，不校验的话任何教练把参数一改就能看别人家孩子的成绩。
+   * childId 缺失也一并拦下 —— 原代码在没有 childId 时会不加 where 地全表查 performance。
+   */
+  assertChildAccess() {
+    return auth.guardChildAccess(this.data.childId);
+  },
 
   // 加载表现列表
   loadPerformanceList(isLoadMore = false) {
@@ -75,7 +91,9 @@ Page({
       query = query.orderBy('weekDate','desc').limit(this.data.pageSize)
     }
 
-    query.get().then((res) => {
+    // 返回这个 promise：onPullDownRefresh 里是 loadPerformanceList().then(...)，
+    // 不 return 的话拿到的是 undefined，下拉刷新直接抛 TypeError
+    return query.get().then((res) => {
       const newList = res.data;
 
       const processedList = newList.map((item,index) => {

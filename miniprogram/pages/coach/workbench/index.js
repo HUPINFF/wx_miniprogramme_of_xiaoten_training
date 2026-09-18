@@ -1,4 +1,7 @@
 // pages/coach/workbench/index.js
+// workbench 在 pages/coach/ 下一层，到 miniprogram/ 只要三级
+const { fetchAll } = require('../../../utils/db');
+
 Page({
   data: {
     coachInfo: {},
@@ -133,11 +136,13 @@ Page({
 
     const now = new Date();
     const weekRange = this.getCurrentWeekRange(now);
+    const weekStart = weekRange.start;
 
-    db.collection('children').where({
+    // 学员必须分页拉全：小程序端单次 get() 上限 20 条，
+    // 原来直接 .get() 的话，带 30 个学员的教练只拿到 20 个，待办数静默算少。
+    fetchAll(db.collection('children').where({
       coachId: coachId
-    }).get().then(res => {
-      const children = res.data;
+    })).then(children => {
       const childIds = children.map(child => child._id);
 
       if (childIds.length === 0) {
@@ -148,26 +153,27 @@ Page({
         return;
       }
 
-      return db.collection('performance').where({
-        childId: _.in(childIds),
-        weekRange: weekRange.start
-      }).get().then(perfRes => {
-        const hasPerformanceChildIds = perfRes.data.map(item => item.childId);
-
-        return db.collection('feedbacks').where({
+      // 用 count() 而不是 get()：count 不受 20 条限制，且这里只要「有多少人交了」，
+      // 不需要明细。performance 每周每学员至多一条（录入页按 childId + weekStart
+      // 查重后走 update），所以记录数 == 已录入的学员数。
+      return Promise.all([
+        db.collection('performance').where({
           childId: _.in(childIds),
-          weekStart: weekRange.start
-        }).get().then(feedbackRes => {
-          const hasFeedbackChildIds = feedbackRes.data.map(item => item.childId);
-
-          const noPerformanceCount = childIds.filter(id => !hasPerformanceChildIds.includes(id)).length;
-          const noFeedbackCount = childIds.filter(id => !hasFeedbackChildIds.includes(id)).length;
-
-          this.setData({
-            'todo.weeklyPerformance': noPerformanceCount,
-            'todo.feedback': noFeedbackCount
-          });
-        })
+          // 这里原来是 weekRange，但录入页写进 weekRange 的是「9月14日-9月20日」
+          // 这种展示文案，拿 'YYYY-MM-DD' 去比永远不相等 —— 待办数一直是「全部学员」。
+          // 存日期的是 weekStart。
+          weekStart: weekStart
+        }).count(),
+        db.collection('feedbacks').where({
+          childId: _.in(childIds),
+          weekStart: weekStart
+        }).count()
+      ]).then(([perfRes, feedbackRes]) => {
+        // 兜底 max(0)：万一历史数据里同一个孩子本周有多条记录，减出来会是负数
+        this.setData({
+          'todo.weeklyPerformance': Math.max(0, childIds.length - perfRes.total),
+          'todo.feedback': Math.max(0, childIds.length - feedbackRes.total)
+        });
       })
     }).catch(err => {
       console.error('统计待办事项失败', err);

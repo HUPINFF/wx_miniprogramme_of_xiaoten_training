@@ -1,4 +1,6 @@
 // pages/coach/assessment/edit/index.js
+const auth = require('../../../../utils/auth');
+
 Page({
 
   /**
@@ -59,16 +61,25 @@ Page({
   onLoad(options) {
     const {childId,childName,childAge,childAvatar } = options;
     this.setData({
-      childId: childId || '',
+      // childId 刻意先不写进 data —— 它只是未经校验的 URL 参数，
+      // 而保存时读的是 this.data.childId。先落进去就等于给退回前那 1.5s 留了个绕过窗口。
+      // 校验通过后才认这个 id（见下面 setData）。
       childName: childName || '',
       childAge: childAge || '',
       childAvatar: childAvatar || ''
     });
 
-     // 加载孩子信息获取性别
-     this.loadChildInfo(childId);
+    // 本页会写 assessments（coachId 记成自己），先确认这个孩子是自己名下的。
+    // 校验不通过就别拉数据了——省得界面上先闪出别人家孩子的体检数据。
+    auth.guardChildAccess(childId).then(ok => {
+      if (!ok) return;
+
+      this.setData({ childId: childId });
+      // 加载孩子信息获取性别
+      this.loadChildInfo(childId);
       // 加载历史测评数据
-    this.loadHistoryAssessment(childId);
+      this.loadHistoryAssessment(childId);
+    });
   },
 
   //  加载孩子信息
