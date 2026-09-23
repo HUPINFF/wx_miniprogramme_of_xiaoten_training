@@ -45,7 +45,7 @@ Page({
     });
   },
 
-  // 加载课程表(只显示未来的)
+  // 加载课程表(只显示未来的)。返回 promise：下拉刷新要等查询结束再 stopPullDownRefresh
   loadSchedule() {
     this.setData({loading:true});
 
@@ -53,8 +53,8 @@ Page({
     const _ = db.command;
     const today = this.getTodayString();
 
-    // // 查询未来的训练记录（date >= 今天）
-    db.collection('trainings').where({
+    // 查询未来的训练记录（date >= 今天）
+    return db.collection('trainings').where({
       childId:this.data.childId,
       date:_.gte(today)
     }).orderBy('date','asc').get().then(res => {
@@ -74,53 +74,61 @@ Page({
     // 按日期分组
     groupByDate(trainings) {
       const grouped = {};
-      
+      const today = this.getTodayString();
+
       trainings.forEach(item => {
         const date = item.date;
         if (!grouped[date]) {
           grouped[date] = [];
         }
 
-        let displayTime = '';
-        if(item.startTime) {
-          displayTime = item.startTime;
-          if(item.endTime) {
-            displayTime = `${item.startTime} - ${item.endTime}`;
-          }
-        }else if(item.time) {
-           // 兼容旧数据
-           displayTime = item.time;
-        }
+        // 主时间行：开始时间（旧数据只有 time 字段也兜住）
+        const startTime = item.startTime || item.time || '';
+        // 次行：结束时间 + 时长拼一句（「– 11:00 · 60分钟」），没有就空串隐藏
+        const subParts = [];
+        if (item.startTime && item.endTime) subParts.push('– ' + item.endTime);
+        if (item.duration) subParts.push(item.duration);
 
         grouped[date].push({
-          startTime: item.startTime,     // 【新增】开始时间
-          endTime: item.endTime,         // 【新增】结束时间
-          duration: item.duration,       // 【新增】时长
-          time: item.time,
+          startTime: startTime,
+          subTime: subParts.join(' · '),
           name: item.name,
           coach: item.coachName,
-          id:item._id 
+          id: item._id
         });
       });
-      
+
       // 转换为数组格式
       const result = Object.keys(grouped).map(date => {
         const weekday = this.getWeekday(date);
-        // 修改 ，按开始时间排序课程
+        // 按开始时间排序课程
         const courses = grouped[date].sort((a,b) => {
           return (a.startTime || '00:00').localeCompare(b.startTime || '00:00');
         })
         return {
           date: date,
           weekday: weekday,
+          dateText: this.formatDayLabel(date, today),  // 今天/明天/9月24日
+          isToday: date === today,
           count: grouped[date].length,
           courses: courses
         };
       });
-       // 按日期排序
+      // 按日期排序
       result.sort((a, b) => a.date.localeCompare(b.date));
-      
+
       return result;
+    },
+
+    // 日期友好文案：今天/明天，其余「M月D日」——替代冷冰冰的 2026-09-24
+    formatDayLabel(dateStr, todayStr) {
+      const diffDays = Math.round(
+        (new Date(dateStr).getTime() - new Date(todayStr).getTime()) / 86400000
+      );
+      if (diffDays === 0) return '今天';
+      if (diffDays === 1) return '明天';
+      const d = new Date(dateStr);
+      return (d.getMonth() + 1) + '月' + d.getDate() + '日';
     },
 
      // 获取星期几
@@ -128,6 +136,21 @@ Page({
     const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
     const date = new Date(dateStr);
     return weekdays[date.getDay()];
+  },
+
+  // 自定义头部的返回键：栈里有上一页就返回，否则回首页（分享/扫码直接进来的场景）
+  goBack() {
+    if (getCurrentPages().length > 1) {
+      wx.navigateBack();
+    } else {
+      wx.switchTab({ url: '/pages/users/home/index' });
+    }
+  },
+
+  /** 课程项 → 训练详情（与首页「当前情况」卡同一目的地） */
+  goToDetail(e) {
+    const id = e.currentTarget.dataset.id;
+    if (id) wx.navigateTo({ url: '/pages/users/training-detail/index?id=' + id });
   },
 
   // 获取今天的日期字符串

@@ -1,9 +1,10 @@
-<!--pages/coach/post-class/index.wxml-->
+<!--pages/coach/post-class/index.wxml — 课后记录：课次信息 + 课后反馈版块 + 本次可选录入
+    课后反馈版式语言与 reports/edit 同族（iOS 蓝 + 卡片），复用本页原有底部操作栏。 -->
 <view class="container">
   <nav-bar title="课后记录" showBack="{{true}}"></nav-bar>
 
   <view class="content">
-    <!-- 课程信息卡片 -->
+    <!-- 课程信息卡片（保持原样） -->
     <view class="course-card">
       <view class="course-header">
         <text class="course-name">{{childInfo.name}}</text>
@@ -21,81 +22,176 @@
       </view>
     </view>
 
-    <!-- 课后记录选项 -->
-    <view class="section-title">请选择要记录的内容</view>
+    <!-- 课后反馈版块（蓝图 C06：评分 + 标签 + 一句话 + 照片视频 + 双版文案） -->
+    <block wx:if="{{!loading}}">
+      <!-- 训练项目完成情况：上课时逐项打卡的结果，可补勾，勾选即同步课次文档 -->
+      <view class="card" wx:if="{{items.length}}">
+        <view class="card-title">训练项目完成情况 <text class="title-hint">点按可补勾</text></view>
+        <view class="check-row" wx:for="{{items}}" wx:key="index"
+              bind:tap="onToggleItem" data-index="{{index}}">
+          <view class="check-circle {{item.done ? 'done' : ''}}">{{item.done ? '✓' : ''}}</view>
+          <text class="check-name {{item.done ? 'done' : ''}}">{{item.name}}</text>
+          <text class="check-amount" wx:if="{{item.amount}}">{{item.amount}}</text>
+        </view>
+        <view class="items-summary">已完成 {{doneCount}}/{{items.length}}</view>
+      </view>
 
-    <view class="option-list">
-      <view class="option-item" bind:tap="gotoPerformance">
-        <view class="option-icon">
-          <text class="iconfont icon-luruchengji"></text>
+      <view class="section-title">课后反馈 <text class="section-date">{{dateText}}</text></view>
+      <view class="fb-focus" wx:if="{{focus}}">训练重点：{{focus}}</view>
+
+      <view class="card">
+        <view class="card-title">一句话记录 <text class="title-hint">说关键事实就好，AI 写文案以它为准</text></view>
+        <textarea
+          class="note-textarea"
+          value="{{note}}"
+          maxlength="{{noteMax}}"
+          placeholder="例：落地稳定性比上次明显提高"
+          placeholder-class="ph"
+          bindinput="onNoteInput"
+          bindblur="onNoteBlur"
+        ></textarea>
+        <view class="char-count">{{note.length}}/{{noteMax}}</view>
+      </view>
+
+      <view class="card">
+        <view class="card-title">表现评分</view>
+        <view class="stars">
+          <text
+            class="star {{rating >= item ? 'on' : ''}}"
+            wx:for="{{[1, 2, 3, 4, 5]}}"
+            wx:for-item="item"
+            wx:key="*this"
+            bind:tap="onRatingTap"
+            data-score="{{item}}"
+          >★</text>
         </view>
-        <view class="option-info">
-          <text class="option-name">录入成绩</text>
-          <text class="option-desc">记录本次训练的运动成绩</text>
-        </view>
-        <view class="option-arrow">
-          <text class="iconfont icon-xiangyou"></text>
+        <view class="rating-word {{rating ? '' : 'dim'}}">{{ratingWord || '点星星打分'}}</view>
+      </view>
+
+      <view class="card">
+        <view class="card-title">进步标签 <text class="title-hint">最多 {{tagCap}} 个</text></view>
+        <view class="chip-row">
+          <text
+            class="chip {{tagMap[item] ? 'on' : ''}}"
+            wx:for="{{tagPresets}}"
+            wx:for-item="item"
+            wx:key="*this"
+            bind:tap="onTagToggle"
+            data-tag="{{item}}"
+          >{{item}}</text>
         </view>
       </view>
 
-      <view class="option-item" bind:tap="gotoFeedback">
-        <view class="option-icon">
-          <text class="iconfont icon-tianxiefankui"></text>
+      <view class="card">
+        <view class="card-head-row">
+          <view class="card-title">家长版反馈</view>
+          <view class="head-actions">
+            <!-- 家长版 AI 入口：只填家长版栏（朋友圈版有自己的入口），AI 角标标识 -->
+            <view class="action-link ai-link {{aiLoading ? 'ai-busy' : ''}}"
+                  bind:tap="onAIGenerate" data-scope="parent">
+              <text class="ai-badge">AI</text>
+              <text>{{aiLoading ? '生成中…' : '生成'}}</text>
+            </view>
+            <text class="action-link" bind:tap="regenParent">重新生成</text>
+            <text class="action-link" bind:tap="onSaveTemplate">存为模板</text>
+          </view>
         </view>
-        <view class="option-info">
-          <text class="option-name">写反馈</text>
-          <text class="option-desc">记录本次训练的表现和建议</text>
+        <view class="template-row" wx:if="{{templates.length}}">
+          <text class="tpl-label">我的模板</text>
+          <scroll-view class="tpl-scroll" scroll-x enable-flex>
+            <text
+              class="chip tpl-chip"
+              wx:for="{{templates}}"
+              wx:key="*this"
+              bind:tap="onTemplateTap"
+              data-text="{{item}}"
+            >{{item}}</text>
+          </scroll-view>
         </view>
-        <view class="option-arrow">
-          <text class="iconfont icon-xiangyou"></text>
-        </view>
+        <textarea
+          class="version-textarea"
+          value="{{parentVersion}}"
+          maxlength="500"
+          placeholder-class="ph"
+          bindinput="onParentInput"
+        ></textarea>
+        <view class="regen-hint">改动评分 / 标签 / 一句话，或补勾训练项目后，会自动重写本栏（AI 文案同理）</view>
       </view>
 
-      <view class="option-item" bind:tap="gotoUploadPhotos">
-        <view class="option-icon">
-          <text class="iconfont icon-tupian"></text>
+      <view class="card">
+        <view class="card-head-row">
+          <view class="card-title">朋友圈版</view>
+          <view class="head-actions">
+            <!-- 朋友圈版自己的 AI 入口：只填本栏（接口仍一次回两版，家长版那栏不动） -->
+            <view class="action-link ai-link {{aiLoading ? 'ai-busy' : ''}}"
+                  bind:tap="onAIGenerate" data-scope="moments">
+              <text class="ai-badge">AI</text>
+              <text>{{aiLoading ? '生成中…' : '生成'}}</text>
+            </view>
+            <text class="action-link" bind:tap="regenMoments">重新生成</text>
+            <text class="action-link" bind:tap="onSaveMomentsTemplate">存为模板</text>
+          </view>
         </view>
-        <view class="option-info">
-          <text class="option-name">上传照片</text>
-          <text class="option-desc">上传本次训练的照片</text>
+        <view class="template-row" wx:if="{{momentsTemplates.length}}">
+          <text class="tpl-label">我的模板</text>
+          <scroll-view class="tpl-scroll" scroll-x enable-flex>
+            <text
+              class="chip tpl-chip"
+              wx:for="{{momentsTemplates}}"
+              wx:key="*this"
+              bind:tap="onMomentsTemplateTap"
+              data-text="{{item}}"
+            >{{item}}</text>
+          </scroll-view>
         </view>
-        <view class="option-arrow">
-          <text class="iconfont icon-xiangyou"></text>
-        </view>
+        <textarea
+          class="version-textarea"
+          value="{{momentsVersion}}"
+          maxlength="500"
+          placeholder-class="ph"
+          bindinput="onMomentsInput"
+        ></textarea>
+        <view class="regen-hint">改动评分 / 标签 / 一句话，或补勾训练项目后，会自动重写本栏（AI 文案同理）</view>
       </view>
+    </block>
 
-      <view class="option-item" bind:tap="gotoUploadVideos">
-        <view class="option-icon">
-          <text class="iconfont icon-shipin"></text>
+    <!-- 本次可选录入 -->
+    <block wx:if="{{!isEdit}}">
+      <view class="section-title">本次可选录入</view>
+      <view class="option-list">
+        <view class="option-item" bind:tap="gotoPerformance">
+          <view class="option-icon">
+            <text class="iconfont icon-luruchengji"></text>
+          </view>
+          <view class="option-info">
+            <text class="option-name">录入成绩</text>
+            <text class="option-desc">记录本次训练的运动成绩</text>
+          </view>
+          <view class="option-arrow">
+            <text class="iconfont icon-xiangyou"></text>
+          </view>
         </view>
-        <view class="option-info">
-          <text class="option-name">上传视频</text>
-          <text class="option-desc">上传本次训练的视频</text>
-        </view>
-        <view class="option-arrow">
-          <text class="iconfont icon-xiangyou"></text>
-        </view>
-      </view>
 
-      <view class="option-item" bind:tap="gotoAssessment">
-        <view class="option-icon">
-          <text class="iconfont icon-tiziceping"></text>
-        </view>
-        <view class="option-info">
-          <text class="option-name">体质测评</text>
-          <text class="option-desc">录入学员的体质测试成绩</text>
-        </view>
-        <view class="option-arrow">
-          <text class="iconfont icon-xiangyou"></text>
+        <view class="option-item" bind:tap="gotoAssessment">
+          <view class="option-icon">
+            <text class="iconfont icon-tiziceping"></text>
+          </view>
+          <view class="option-info">
+            <text class="option-name">体质测评</text>
+            <text class="option-desc">录入学员的体质测试成绩</text>
+          </view>
+          <view class="option-arrow">
+            <text class="iconfont icon-xiangyou"></text>
+          </view>
         </view>
       </view>
-    </view>
+    </block>
+  </view>
 
-    <!-- 完成按钮 -->
-    <view class="bottom-area">
-      <view class="finish-btn" bind:tap="finishRecord">
-        <text>完成记录</text>
-      </view>
+  <!-- 底部操作：完成记录（创建态） / 保存反馈（编辑态） -->
+  <view class="bottom-area" wx:if="{{!loading}}">
+    <view class="finish-btn {{saving ? 'disabled' : ''}}" bind:tap="onPrimaryAction">
+      <text>{{saving ? (isEdit ? '保存中...' : '提交中...') : (isEdit ? '保存反馈' : '完成记录')}}</text>
     </view>
   </view>
 </view>

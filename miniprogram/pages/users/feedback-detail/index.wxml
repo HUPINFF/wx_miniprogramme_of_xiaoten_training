@@ -1,0 +1,119 @@
+<!-- pages/users/feedback-detail/index.wxml — 家长端反馈详情：一次课的评分/标签/文案/照片/视频 -->
+<view class="container">
+  <nav-bar title="反馈详情" showBack="{{true}}"></nav-bar>
+
+  <view class="loading" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text>加载中...</text>
+  </view>
+
+  <view class="fail-box" wx:elif="{{loadFail}}">
+    <text class="fail-text">反馈加载失败，请检查网络后重试</text>
+    <view class="retry-btn" bind:tap="retry">重新加载</view>
+  </view>
+
+  <view class="page-body" wx:elif="{{feedback}}">
+    <!-- 头部：学员 / 课程 / 日期 / 评分 -->
+    <view class="card head-card">
+      <view class="fb-head-row">
+        <text class="fb-child">{{childName || feedback.childName}}</text>
+        <text class="fb-date">{{feedback.date}}</text>
+      </view>
+      <view class="fb-course">{{feedback.courseName || feedback.type || '训练反馈'}}</view>
+      <view class="stars">
+        <text
+          class="star {{sIndex < feedback.rating ? 'on' : ''}}"
+          wx:for="{{[1,2,3,4,5]}}"
+          wx:for-item="star"
+          wx:for-index="sIndex"
+          wx:key="sIndex"
+        >★</text>
+        <text class="rating-num" wx:if="{{feedback.rating}}">{{feedback.rating}} 分</text>
+      </view>
+      <view class="fb-week" wx:if="{{feedback.weekRange}}">📅 反馈周期：{{feedback.weekRange}}</view>
+    </view>
+
+    <!-- 进步表现 -->
+    <view class="card" wx:if="{{feedback.tags && feedback.tags.length > 0}}">
+      <view class="card-title">进步表现</view>
+      <view class="tags">
+        <text class="tag" wx:for="{{feedback.tags}}" wx:for-item="tag" wx:key="*this">{{tag}}</text>
+      </view>
+    </view>
+
+    <!-- 教练反馈：一封来自教练的信（本页核心卡片） -->
+    <view class="card fb-hero">
+      <view class="fb-letter-head">
+        <view class="fb-coach-id">
+          <image wx:if="{{feedback.coachAvatar}}" class="fb-avatar" src="{{feedback.coachAvatar}}" mode="aspectFill" />
+          <view wx:else class="fb-avatar fb-avatar-fb">{{feedback.coachName ? feedback.coachName[0] : '教'}}</view>
+          <view class="fb-coach-meta">
+            <text class="fb-coach-name">{{feedback.coachName ? feedback.coachName + '教练' : '课程教练'}}</text>
+            <text class="fb-coach-role">腾鑫体育 · 本次课反馈</text>
+          </view>
+        </view>
+        <text class="fb-quote-mark">“</text>
+      </view>
+
+      <view class="fb-letter-body">
+        <text wx:if="{{feedback.content}}">{{feedback.content}}</text>
+        <view wx:else class="fb-empty-hint">教练正在用心记录本次课的表现，敬请期待…</view>
+      </view>
+
+      <block wx:if="{{feedback.content}}">
+        <view class="fb-tear-line"></view>
+        <view class="fb-sign-row">
+          <text class="fb-sign-date">{{feedback.date}}</text>
+          <view class="fb-sign-right">
+            <text class="fb-sign-name">—— {{feedback.coachName ? feedback.coachName + '教练' : '教练'}}</text>
+            <view class="fb-seal"><text>腾</text><text>鑫</text></view>
+          </view>
+        </view>
+      </block>
+    </view>
+
+    <!-- 课堂照片 -->
+    <view class="card" wx:if="{{feedback.photos && feedback.photos.length > 0}}">
+      <view class="card-title">课堂照片</view>
+      <view class="photo-grid">
+        <image
+          class="photo-thumb"
+          wx:for="{{feedback.photos}}"
+          wx:for-item="url"
+          wx:key="*this"
+          src="{{url}}"
+          mode="aspectFill"
+          data-urls="{{feedback.photos}}"
+          data-url="{{url}}"
+          bind:tap="previewPhoto"
+        />
+      </view>
+    </view>
+
+    <!-- 课堂视频 -->
+    <view class="card" wx:if="{{feedback.videos && feedback.videos.length > 0}}">
+      <view class="card-title">课堂视频</view>
+      <video
+        class="fb-video"
+        wx:for="{{feedback.videos}}"
+        wx:for-item="url"
+        wx:key="*this"
+        src="{{url}}"
+        controls
+        object-fit="contain"
+      ></video>
+    </view>
+
+    <!-- 朋友圈分享文案（每课反馈自动生成，家长一键复制去发朋友圈） -->
+    <view class="card moments-card" wx:if="{{feedback.momentsVersion}}">
+      <view class="card-head-row">
+        <view class="card-title">朋友圈分享文案</view>
+        <text class="copy-link" bind:tap="copyMoments">复制文案</text>
+      </view>
+      <view class="moments-quote">
+        <text>{{feedback.momentsVersion}}</text>
+      </view>
+      <view class="moments-hint">复制后可直接粘贴到朋友圈，搭配上方照片发布</view>
+    </view>
+  </view>
+</view>

@@ -27,6 +27,16 @@ Page({
     this.loadCoachInfo();
   },
 
+  // 返回键：导航栈里有上一页就返回，否则兜底回工作台（与学员详情页同款）
+  goBack() {
+    const pages = getCurrentPages();
+    if (pages.length > 1) {
+      wx.navigateBack();
+    } else {
+      wx.reLaunch({ url: '/pages/coach/workbench/index' });
+    }
+  },
+
   // 获取教练信息，从数据库查询
   loadCoachInfo() {
     // const coachInfo = wx.getStorageSync('userInfo') || {};

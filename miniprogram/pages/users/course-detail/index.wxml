@@ -1,5 +1,11 @@
 <view class="container">
-  <nav-bar title="课程详情" showBack="{{true}}"></nav-bar>
+  <!-- 渐变头部（首页同款配方）：封面区就在下方且自带课程名，头部走紧凑款不带副标题 -->
+  <view class="gradient-bg"></view>
+
+  <view class="header-area">
+    <view class="back-btn" hover-class="back-btn-active" bind:tap="goBack">‹</view>
+    <text class="header-title">课程详情</text>
+  </view>
 
   <view class="page-content" wx:if="{{courseDetail}}">
     <!-- 封面区域 -->

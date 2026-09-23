@@ -1,106 +1,134 @@
-<!-- pages/admin/dashboard/index.wxml — 经营驾驶舱 -->
-<nav-bar title="经营驾驶舱" showBack="{{false}}"></nav-bar>
-
+<!-- pages/admin/dashboard/index.wxml — 经营驾驶舱：品牌绿渐变头部 + 白卡数据面板 -->
 <view class="container">
+  <view class="gradient-bg"></view>
 
-  <!-- ① 今日课次 -->
-  <view class="section">
-    <text class="section-title">今日课程</text>
-    <view class="stat-row">
-      <view class="stat-cell">
-        <text class="stat-num">{{today.total}}</text>
-        <text class="stat-label">总课次</text>
-      </view>
-      <view class="stat-cell">
-        <text class="stat-num ok">{{today.finished}}</text>
-        <text class="stat-label">已完成</text>
-      </view>
-      <view class="stat-cell">
-        <text class="stat-num running">{{today.inClass}}</text>
-        <text class="stat-label">进行中</text>
-      </view>
-      <view class="stat-cell">
-        <text class="stat-num">{{today.waiting}}</text>
-        <text class="stat-label">待开始</text>
-      </view>
-    </view>
+  <!-- 顶部标题区：白字标题 + 日期胶囊，压在渐变上（管理 tab 无返回键） -->
+  <view class="header-area">
+    <text class="header-title">经营驾驶舱</text>
+    <text class="header-subtitle">{{heroDate}}</text>
   </view>
 
-  <!-- ② 全局概览 -->
-  <view class="section">
-    <text class="section-title">全局概览</text>
-    <view class="stat-row">
-      <view class="stat-cell" bind:tap="onCoachesTap">
-        <text class="stat-num">{{overview.students}}</text>
-        <text class="stat-label">在册学员</text>
-      </view>
-      <view class="stat-cell" bind:tap="onCoachesTap">
-        <text class="stat-num {{overview.lowHours > 0 ? 'warn' : ''}}">{{overview.lowHours}}</text>
-        <text class="stat-label">课时不足</text>
-      </view>
-      <view class="stat-cell" bind:tap="onCoachesTap">
-        <text class="stat-num">{{overview.pendingFeedback}}</text>
-        <text class="stat-label">本周待反馈</text>
-      </view>
-      <view class="stat-cell">
-        <text class="stat-num {{overview.pendingAppointments > 0 ? 'warn' : ''}}">{{overview.pendingAppointments}}</text>
-        <text class="stat-label">待审批预约</text>
-      </view>
-    </view>
-  </view>
+  <view class="page-body">
 
-  <!-- ③ 本月（课时口径） -->
-  <view class="section">
-    <text class="section-title">本月课时</text>
-    <view class="month-card">
-      <view class="month-cell">
-        <text class="month-num">{{month.consumed}}</text>
-        <text class="month-label">已消课（课时）</text>
-      </view>
-      <view class="month-divider"></view>
-      <view class="month-cell">
-        <text class="month-num income">{{month.recharged}}</text>
-        <text class="month-label">已充值（课时）</text>
-      </view>
-    </view>
-    <text class="section-hint">课时流水不含金额，营收需先配置课时单价</text>
-  </view>
-
-  <!-- ④ 今日需要处理 -->
-  <view class="section">
-    <text class="section-title">今日需要处理</text>
-    <view class="todo-card">
-      <view
-        class="todo-item"
-        wx:for="{{todoItems}}"
-        wx:key="key"
-        data-url="{{item.url}}"
-        data-count="{{item.count}}"
-        bind:tap="onTodoTap"
-      >
-        <text class="todo-icon">{{item.icon}}</text>
-        <text class="todo-title">{{item.title}}</text>
-        <text class="todo-count {{item.count > 0 ? 'has' : ''}}">{{item.count}}</text>
-        <text class="todo-arrow">›</text>
-      </view>
-    </view>
-  </view>
-
-  <!-- ⑤ 本周趋势 -->
-  <view class="section">
-    <text class="section-title">本周课次</text>
-    <view class="trend-card">
-      <view class="trend-chart">
-        <view class="trend-col" wx:for="{{trend}}" wx:key="date">
-          <text class="trend-value">{{item.count}}</text>
-          <view class="trend-track">
-            <view class="trend-bar" style="height: {{item.percent}}%"></view>
+    <!-- ① 今日课次：大数字 + 三态小指标，卡片上探进渐变 -->
+    <view class="section section-first">
+      <view class="stat-hero">
+        <view class="stat-hero-main">
+          <view class="stat-hero-num-wrap">
+            <text class="stat-hero-num">{{today.total}}</text>
+            <text class="stat-hero-unit">节</text>
           </view>
-          <text class="trend-label">{{item.label}}</text>
+          <text class="stat-hero-label">今日总课次</text>
+        </view>
+        <view class="stat-hero-sub">
+          <view class="stat-mini">
+            <view class="mini-dot dot-green"></view>
+            <text class="stat-mini-num ok">{{today.finished}}</text>
+            <text class="stat-mini-label">已完成</text>
+          </view>
+          <view class="stat-mini">
+            <view class="mini-dot dot-blue"></view>
+            <text class="stat-mini-num running">{{today.inClass}}</text>
+            <text class="stat-mini-label">进行中</text>
+          </view>
+          <view class="stat-mini">
+            <view class="mini-dot dot-gray"></view>
+            <text class="stat-mini-num">{{today.waiting}}</text>
+            <text class="stat-mini-label">待开始</text>
+          </view>
         </view>
       </view>
-      <view wx:if="{{!trend.length}}" class="trend-empty">加载中…</view>
     </view>
+
+    <!-- ①½ 排课调度中心入口（蓝图第10页：时间轴在独立子页 pages/admin/schedule） -->
+    <view class="section">
+      <view class="sched-entry" bind:tap="onScheduleCenterTap">
+        <view class="sched-entry-icon">🗓</view>
+        <view class="sched-entry-info">
+          <text class="sched-entry-title">排课调度中心</text>
+          <text class="sched-entry-sub">今日 {{today.total}} 节课 · 时间轴排课 / 新建 / 改课</text>
+        </view>
+        <text class="sched-entry-arrow">›</text>
+      </view>
+    </view>
+
+    <!-- ② 全局概览 -->
+    <view class="section">
+      <view class="section-title"><view class="title-accent"></view><text>全局概览</text></view>
+      <view class="stat-row">
+        <view class="stat-cell" bind:tap="onCoachesTap">
+          <text class="stat-num">{{overview.students}}</text>
+          <text class="stat-label">在册学员</text>
+        </view>
+        <view class="stat-cell" bind:tap="onCoachesTap">
+          <text class="stat-num {{overview.lowHours > 0 ? 'warn' : ''}}">{{overview.lowHours}}</text>
+          <text class="stat-label">课时不足</text>
+        </view>
+        <view class="stat-cell" bind:tap="onCoachesTap">
+          <text class="stat-num">{{overview.pendingFeedback}}</text>
+          <text class="stat-label">本周待反馈</text>
+        </view>
+        <view class="stat-cell">
+          <text class="stat-num {{overview.pendingAppointments > 0 ? 'warn' : ''}}">{{overview.pendingAppointments}}</text>
+          <text class="stat-label">待审批预约</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- ③ 本月（课时口径） -->
+    <view class="section">
+      <view class="section-title"><view class="title-accent"></view><text>本月课时</text></view>
+      <view class="month-card">
+        <view class="month-cell">
+          <text class="month-num">{{month.consumed}}</text>
+          <text class="month-label">已消课（课时）</text>
+        </view>
+        <view class="month-divider"></view>
+        <view class="month-cell">
+          <text class="month-num income">{{month.recharged}}</text>
+          <text class="month-label">已充值（课时）</text>
+        </view>
+      </view>
+      <text class="section-hint">课时流水不含金额，营收需先配置课时单价</text>
+    </view>
+
+    <!-- ④ 今日需要处理 -->
+    <view class="section">
+      <view class="section-title"><view class="title-accent"></view><text>今日需要处理</text></view>
+      <view class="todo-card">
+        <view
+          class="todo-item"
+          wx:for="{{todoItems}}"
+          wx:key="key"
+          data-url="{{item.url}}"
+          data-count="{{item.count}}"
+          bind:tap="onTodoTap"
+        >
+          <view class="todo-icon">{{item.icon}}</view>
+          <text class="todo-title">{{item.title}}</text>
+          <text class="todo-count {{item.count > 0 ? 'has' : ''}}">{{item.count}}</text>
+          <text class="todo-arrow">›</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- ⑤ 本周趋势 -->
+    <view class="section">
+      <view class="section-title"><view class="title-accent"></view><text>本周课次</text></view>
+      <view class="trend-card">
+        <view class="trend-chart">
+          <view class="trend-col" wx:for="{{trend}}" wx:key="date">
+            <text class="trend-value {{item.count === 0 ? 'zero' : ''}}">{{item.count}}</text>
+            <view class="trend-track">
+              <view class="trend-bar {{item.isToday ? 'is-today' : ''}}" style="height: {{item.percent}}%"></view>
+            </view>
+            <text class="trend-label {{item.isToday ? 'is-today' : ''}}">{{item.label}}</text>
+          </view>
+        </view>
+        <view wx:if="{{!trend.length}}" class="trend-empty">加载中…</view>
+      </view>
+    </view>
+
   </view>
 
   <coach-tab-bar current="admin" />

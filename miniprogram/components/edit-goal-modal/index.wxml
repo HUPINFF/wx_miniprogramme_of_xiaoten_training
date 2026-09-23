@@ -1,0 +1,45 @@
+<!-- components/edit-goal-modal/index.wxml -->
+<view class="modal-mask" wx:if="{{show}}" bindtap="close">
+  <view class="modal-container" catchtap="stopPropagation">
+    <view class="modal-header">
+      <text class="modal-title">编辑本阶段目标</text>
+      <text class="modal-close" bindtap="close">✕</text>
+    </view>
+
+    <view class="modal-body">
+      <textarea
+        class="goal-textarea {{focused ? 'focused' : ''}}"
+        value="{{tempGoal}}"
+        maxlength="60"
+        placeholder="例如：长高、提高体能、备战体考"
+        placeholder-style="color: rgba(60, 60, 67, 0.34)"
+        show-confirm-bar="{{false}}"
+        disable-default-padding="{{true}}"
+        bindinput="onGoalInput"
+        bindfocus="onGoalFocus"
+        bindblur="onGoalBlur"
+      ></textarea>
+
+      <view class="char-counter">
+        <text class="char-num {{charCount >= 55 ? 'warm' : ''}}">{{charCount}}</text>
+        <text class="char-total">/60</text>
+      </view>
+
+      <view class="goal-chips">
+        <text class="chip-title">常用</text>
+        <view
+          class="chip"
+          wx:for="{{suggestions}}"
+          wx:key="*this"
+          bind:tap="onChipTap"
+          data-text="{{item}}"
+        >{{item}}</view>
+      </view>
+    </view>
+
+    <view class="modal-footer">
+      <button class="cancel-btn" bindtap="close">取消</button>
+      <button class="confirm-btn" bindtap="confirm" loading="{{submitting}}">保存</button>
+    </view>
+  </view>
+</view>

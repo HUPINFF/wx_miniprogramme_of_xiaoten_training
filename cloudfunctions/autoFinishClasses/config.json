@@ -1,0 +1,10 @@
+{
+  "permissions": {},
+  "triggers": [
+    {
+      "name": "autoFinishTimer",
+      "type": "timer",
+      "config": "0 20 * * * *"
+    }
+  ]
+}

@@ -1,6 +1,16 @@
 <view class="container">
+  <view class="gradient-bg"></view>
 
-  <nav-bar title='学员详情'></nav-bar>
+  <!-- 顶部标题区：白字标题 + 副标题胶囊 + 返回按钮，压在渐变上 -->
+  <view class="header-area">
+    <view class="back-btn" hover-class="back-btn-active" bind:tap="goBack">‹</view>
+    <text class="header-title">学员详情</text>
+    <text class="header-sub">训练记录 · 成长档案</text>
+  </view>
+
+  <!-- 内容层（z-index:1，卡片压在渐变上） -->
+  <view class="page-content">
+
   <!-- 加载状态 -->
   <view class="loading" wx:if="{{loading}}">
     <view class="loading-spinner"></view>
@@ -9,7 +19,7 @@
 
   <block wx:else>
     <!-- 学员信息卡片 -->
-    <view class="child-header">
+    <view class="child-header fade-in">
       <image class="avatar-large" src="{{'cloud://hupin255-5gfbw856b1c861ef.6875-hupin255-5gfbw856b1c861ef-1410552194/default_avatar/6756593ba0eb6a537f7060da8ede3ca8.jpeg'}}" mode="aspectFill" bind:tap="viewAlbum"></image>
       <view class="child-basic">
         <text class="name">{{childInfo.data.name}}</text>
@@ -25,111 +35,163 @@
         <text class="edit-icon">✏️编辑学时</text>
       </view>
       </view>
-    </view>
 
-    <!-- 快捷操作按钮 -->
-    <view class="quick-actions">
-      <view class="action-btn" bind:tap="addPerformance">
-        <text class="icon iconfont icon-luruchengji"></text>
-        <text>录入成绩</text>
-      </view>
-
-      <view class="action-btn" bind:tap="writeFeedback">
-        <text class="icon iconfont icon-tianxiefankui"></text>
-        <text>写反馈</text>
-      </view>
-
-      <view class="action-btn" bind:tap="addTraining">
-        <text class="icon iconfont icon-tianjiaxunlian"></text>
-        <text>添加训练</text>
-      </view>
-
-       <!-- 【新增】体质测评按钮 -->
-       <view class="action-btn" bindtap="goToAssessment">
-        <text class="icon iconfont icon-zhihuitizhiceping"></text>
-        <text>体质测评</text>
+      <!-- 快捷入口：右栏 2×2 宫格（原独立快捷卡并入卡片右侧空白，整页更短） -->
+      <view class="child-actions">
+        <view class="action-btn" bind:tap="addPerformance">
+          <text class="icon iconfont icon-luruchengji"></text>
+          <text>录入成绩</text>
+        </view>
+        <view class="action-btn" bind:tap="writeFeedback">
+          <text class="icon iconfont icon-tianxiefankui"></text>
+          <text>写反馈</text>
+        </view>
+        <view class="action-btn" bind:tap="addTraining">
+          <text class="icon iconfont icon-tianjiaxunlian"></text>
+          <text>添加训练</text>
+        </view>
+        <view class="action-btn" bindtap="goToAssessment">
+          <text class="icon iconfont icon-zhihuitizhiceping"></text>
+          <text>体质测评</text>
+        </view>
       </view>
     </view>
 
-     <!-- 最新表现 -->
+    <!-- 学员档案卡：左栏基本信息（年龄/身高/体重/目标），右栏训练数据（基础能力/专项成绩）。
+         身高体重来自最近一次体质测评；目标是 children.goal（新字段，无值显示「暂无」） -->
+    <view class="info-card fade-in">
+      <!-- 左栏：基本信息 -->
+      <view class="info-left">
+        <view class="info-block-title">基本信息</view>
+        <view class="basic-row" wx:for="{{basicRows}}" wx:key="label">
+          <text class="basic-label">{{item.label}}</text>
+          <text class="basic-value">{{item.value}}</text>
+        </view>
+      </view>
+
+      <view class="info-divider"></view>
+
+      <!-- 右栏：训练数据 -->
+      <view class="info-right">
+        <!-- 基础能力：最近两次周测评按能力域归组，只展示速度/耐力/力量，每组取代表指标。
+             整块可点跳成绩明细列表——原「最新表现」卡的详情收在那里 -->
+        <view class="info-block" bind:tap="viewAllPerformance" hover-class="info-block-hover">
+          <view class="info-block-head">
+            <text class="info-block-title">基础能力</text>
+            <text class="info-block-more">成绩明细 ›</text>
+          </view>
+          <view class="ability-row" wx:for="{{abilityRows}}" wx:key="key">
+            <text class="ability-icon">{{item.icon}}</text>
+            <text class="ability-name">{{item.name}}</text>
+            <text class="ability-value {{item.empty ? 'empty' : ''}}">{{item.empty ? '未测' : item.metricName + ' ' + item.valueText}}</text>
+            <text
+              class="ability-delta {{item.isImprovement === false ? 'down' : 'up'}}"
+              wx:if="{{item.deltaText}}"
+            >{{item.isImprovement === false ? '↓' : '↑'}}{{item.deltaText}}</text>
+          </view>
+          <view class="info-empty" wx:if="{{abilityRows.length === 0}}">暂无测评数据</view>
+        </view>
+
+        <!-- 专项成绩：最近一次体质测评的专项动作模式 强/中/弱 统计，点击进测评页 -->
+        <view class="info-block" bind:tap="goToAssessment" hover-class="info-block-hover">
+          <view class="info-block-head">
+            <text class="info-block-title">专项成绩</text>
+            <text class="info-block-more">体质测评 ›</text>
+          </view>
+          <block wx:if="{{specialty}}">
+            <view class="specialty-line">
+              <text class="specialty-month" wx:if="{{specialty.month}}">{{specialty.month}}</text>
+              <text class="specialty-rating" wx:if="{{specialty.rating}}">{{specialty.rating}}</text>
+            </view>
+            <view class="specialty-counts">
+              <text class="specialty-count strong">强 {{specialty.strong}}</text>
+              <text class="specialty-count mid">中 {{specialty.mid}}</text>
+              <text class="specialty-count weak">弱 {{specialty.weak}}</text>
+            </view>
+          </block>
+          <view class="info-empty" wx:else>暂无体质测评，去录入 ›</view>
+        </view>
+      </view>
+
+      <!-- 本阶段目标：横贯整卡的一行（左右两栏下方），标签+内容同行，整行可点编辑 -->
+      <view class="goal-row" bind:tap="editGoal" hover-class="goal-hover">
+        <text class="goal-label">本阶段目标</text>
+        <view class="goal-value-wrap">
+          <text class="goal-value {{goalText === '暂无' ? 'placeholder' : ''}}">{{goalText}}</text>
+        </view>
+        <text class="goal-tip" wx:if="{{goalText === '暂无'}}">可填入</text>
+        <text class="goal-edit-icon">✏️</text>
+      </view>
+    </view>
+
+    <!-- 近期有课提醒：该学员未来还有没上的课才显示；循环呼吸光晕 + 摇铃动画做提醒。
+         点行进训练详情，提醒的是 trainings 里 date>=今天 且未 finished 的课 -->
+    <view class="upcoming-card" wx:if="{{upcomingTrainings.length > 0}}">
+      <view class="upcoming-head">
+        <view class="upcoming-title-group">
+          <text class="upcoming-bell">🔔</text>
+          <text class="upcoming-title">近期有课</text>
+        </view>
+        <text class="upcoming-count">待上 {{upcomingTotal}} 节</text>
+      </view>
+      <view
+        class="upcoming-item"
+        wx:for="{{upcomingTrainings}}"
+        wx:key="_id"
+        bind:tap="viewTrainingDetail"
+        data-id="{{item._id}}"
+        hover-class="upcoming-item-hover"
+      >
+        <view class="upcoming-date-chip">{{item.dateLabel}}</view>
+        <view class="upcoming-info">
+          <text class="upcoming-name">{{item.name}}</text>
+          <text class="upcoming-time" wx:if="{{item.startTime}}">{{item.startTime}}</text>
+        </view>
+        <text class="upcoming-type" wx:if="{{item.type}}">{{item.type}}</text>
+      </view>
+    </view>
+
+    <!-- 成长报告版块：数据打底的月/季报（教练改完再发布），点行看成品 -->
+    <view class="section report-card">
+      <view class="section-header">
+        <text class="section-title">📊 成长报告</text>
+      </view>
+      <view class="report-entries">
+        <view class="report-entry" bind:tap="goCreateReport" data-type="monthly" hover-class="report-entry-hover">
+          <text class="report-entry-title">生成月报</text>
+          <text class="report-entry-sub">本月训练与变化</text>
+        </view>
+        <view class="report-entry" bind:tap="goCreateReport" data-type="quarterly" hover-class="report-entry-hover">
+          <text class="report-entry-title">生成季报</text>
+          <text class="report-entry-sub">本季度整体成长</text>
+        </view>
+      </view>
+      <view class="report-list" wx:if="{{recentReports.length > 0}}">
+        <view class="report-item" wx:for="{{recentReports}}" wx:key="_id" bind:tap="viewReport" data-id="{{item._id}}" hover-class="report-item-hover">
+          <text class="report-item-title">{{item.title}}</text>
+          <text class="report-badge {{item.status === 'published' ? 'published' : 'draft'}}">{{item.status === 'published' ? '已发布' : '草稿'}}</text>
+          <text class="report-item-date" wx:if="{{item.updatedText}}">{{item.updatedText}}</text>
+          <text class="report-arrow">›</text>
+        </view>
+      </view>
+      <view class="empty report-empty" wx:else>还没有报告，点上方入口生成</view>
+    </view>
+
+     <!-- 表现历史：双展示层切换（与家长端成长页同款交互）
+          体测成绩 = performance 固定指标周记录；训练项目 = trainings.items 教练自定义项目聚合 -->
      <view class="section">
       <view class="section-header">
-        <text class="title">📊 最新表现</text>
-        <text class="section-date">{{latestPerformance.weekDate}}</text>
+        <text class="section-title">📈 近期表现</text>
+        <text class="section-more" wx:if="{{perfMode === 'metrics'}}" bind:tap="viewAllPerformance">查看全部</text>
       </view>
 
-      <view class="performance-grid" wx:if="latestPerformance !== null">
-        <view class="performance-item" wx:if="{{latestPerformance.fiftyMeter !==NAN}}">
-          <text class="label">50米跑</text>
-          <text class="value">{{latestPerformance.fiftyMeter || '暂无'}}{{latestPerformance.fiftyMeter ? '秒' : ''}}</text>
-        </view>
-
-        <view class="performance-item" wx:if="{{latestPerformance.thousandMeter !== NAN}}">
-          <text class="label">1000米跑</text>
-          <text class="value">{{latestPerformance.thousandMeter || '暂无'}}</text>
-        </view>
-
-        <!-- 800米跑 - 始终显示 -->
-        <view class="performance-item" wx:if="{{latestPerformance.eightHundredMeter !==NAN}}">
-          <text class="label">800米跑</text>
-          <text class="value">{{latestPerformance.eightHundredMeter || '暂无'}}</text>
-        </view>
-
-        <!-- 仰卧起坐 - 始终显示 -->
-        <view class="performance-item" wx:if="{{latestPerformance.sitUp !==NAN}}">
-          <text class="label">仰卧起坐</text>
-          <text class="value">{{latestPerformance.sitUp || '暂无'}}{{latestPerformance.sitUp ? '个/分' : ''}}</text>
-        </view>
-
-        <!-- 跳绳 - 始终显示 -->
-        <view class="performance-item" wx:if="{{latestPerformance.ropeSkipping !==NAN}}">
-          <text class="label">跳绳</text>
-          <text class="value">{{latestPerformance.ropeSkipping || '暂无'}}{{latestPerformance.ropeSkipping ? '个/分' : ''}}</text>
-        </view>
-
-          <!-- 坐位体前屈 - 始终显示 -->
-          <view class="performance-item" wx:if="{{latestPerformance.sitAndReach !==NAN}}">
-          <text class="label">坐位体前屈</text>
-          <text class="value">{{latestPerformance.sitAndReach || '暂无'}}{{latestPerformance.sitAndReach ? '厘米' : ''}}</text>
-        </view>
-
-        <!-- 立定跳远 - 始终显示 -->
-        <view class="performance-item" wx:if="{{latestPerformance.standingLongJump !==NAN}}">
-          <text class="label">立定跳远</text>
-          <text class="value">{{latestPerformance.standingLongJump || '暂无'}}{{latestPerformance.standingLongJump ? '厘米' : ''}}</text>
-        </view>
-
-         <!-- 肺活量测试 - 始终显示 -->
-         <view class="performance-item" wx:if="{{latestPerformance.vitalCapacity!==NAN}}">
-          <text class="label">肺活量</text>
-          <text class="value">{{latestPerformance.vitalCapacity || '暂无'}}{{latestPerformance.vitalCapacity ? '毫升' : ''}}</text>
-        </view>
-
-        <view class="performance-item" wx:if="{{latestPerformance.coordination !==NAN}}">
-          <text class="label">协调性</text>
-          <text class="value">{{latestPerformance.coordination}}分</text>
-        </view>
-
-        <view class="performance-item" wx:if="{{latestPerformance.agility!==NAN}}">
-          <text class="label">敏捷性</text>
-          <text class="value">{{latestPerformance.agility}}分</text>
-        </view>
+      <!-- 切换条：体测成绩 ⇄ 训练项目 -->
+      <view class="data-toggle">
+        <view class="data-toggle-item {{perfMode === 'metrics' ? 'active' : ''}}" bind:tap="switchPerfMode" data-mode="metrics">体测成绩</view>
+        <view class="data-toggle-item {{perfMode === 'items' ? 'active' : ''}}" bind:tap="switchPerfMode" data-mode="items">训练项目</view>
       </view>
 
-      <view class="emp-grips" wx:if="{{latestPerformance === null}}">
-          <text class="emp-txt">暂无最新表现数据</text>
-      </view>
-
-     </view>
-
-     <!-- 表现历史 -->
-     <view class="section">
-      <view class="section-header">
-        <text class="section-title">📈 表现历史</text>
-        <text class="section-more" bind:tap="viewAllPerformance">查看全部</text>
-      </view>
-
-      <view class="history-list">
+      <view class="history-list" wx:if="{{perfMode === 'metrics'}}">
         <view class="history-item" wx:for="{{performanceList}}" wx:key="_id" bind:tap="viewPerformanceDetail" data-id="{{item._id}}">
           <text class="date">{{item.weekDate}}</text>
           <view class="scores">
@@ -140,6 +202,35 @@
         </view>
 
         <view wx:if="{{performanceList.length ===0}}" class="empty">暂无表现记录</view>
+      </view>
+
+      <!-- 训练项目层：教练排课自定义项目按名聚合（练几次/最近量/上次是否完成）。
+           默认只展示前 5 个，其余点「查看全部」就地展开 -->
+      <view class="ci-list" wx:else>
+        <block wx:for="{{customItems}}" wx:key="name">
+          <view class="ci-row" wx:if="{{index < 5 || showAllCustomItems}}">
+            <view class="ci-main">
+              <text class="ci-name">{{item.name}}</text>
+              <text class="ci-sub" wx:if="{{item.lastSub}}">{{item.lastSub}}</text>
+              <!-- 上课填的本次表现（最近一条非空）+ 两次成绩的进步对比 -->
+              <text class="ci-perf" wx:if="{{item.lastPerf}}">「{{item.lastPerf}}」</text>
+              <text class="ci-delta {{item.lastDelta.better === false ? 'down' : (item.lastDelta.better ? 'up' : '')}}" wx:if="{{item.lastDelta}}">{{item.lastDelta.text}}</text>
+            </view>
+            <view class="ci-right">
+              <text class="ci-times">{{item.timesText}}</text>
+              <text class="ci-done" wx:if="{{!item.lastDone}}">上次未完成</text>
+            </view>
+          </view>
+        </block>
+
+        <view class="ci-more" wx:if="{{customItems.length > 5 && !showAllCustomItems}}" bind:tap="toggleShowAllItems">
+          查看全部 {{customItems.length}} 个项目 ›
+        </view>
+        <view class="ci-more" wx:elif="{{showAllCustomItems && customItems.length > 5}}" bind:tap="toggleShowAllItems">
+          收起 ⌃
+        </view>
+
+        <view wx:if="{{customItems.length === 0}}" class="empty">近12周暂无自定义训练项目</view>
       </view>
      </view>
 
@@ -164,7 +255,7 @@
           </view>
         </view>
 
-        <view class="empty" wx:if="{{training.length === 0}}">暂无训练记录</view>
+        <view class="empty" wx:if="{{trainingList.length === 0}}">暂无训练记录</view>
       </view>
      </view>
 
@@ -188,6 +279,7 @@
       </view>
      </view>
   </block>
+  </view>
 </view>
 
 <!-- 学时编辑弹窗组件 -->
@@ -198,4 +290,12 @@
   currentHours="{{childInfo.data.remainingHours}}"
   bind:close="closeHoursModal"
   bind:confirm="onConfirmHours"
+/>
+
+<!-- 目标编辑弹窗：原生 showModal 输入框太粗糙，换成自建弹窗（多行输入/常用标签/字数统计） -->
+<edit-goal-modal
+  show="{{showGoalModal}}"
+  currentGoal="{{childInfo.data.goal}}"
+  bind:close="closeGoalModal"
+  bind:confirm="onGoalConfirm"
 />

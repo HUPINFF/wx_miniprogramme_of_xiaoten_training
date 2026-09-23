@@ -30,6 +30,16 @@ Page({
     this.loadCourses();
   },
 
+  /** 返回上一页；直接打开本页（无上一页）时回教练工作台（教练端 tab 页靠 reLaunch 清栈） */
+  goBack() {
+    const pages = getCurrentPages();
+    if (pages.length > 1) {
+      wx.navigateBack();
+    } else {
+      wx.reLaunch({ url: '/pages/coach/workbench/index' });
+    }
+  },
+
   loadCourses() {
     const db = wx.cloud.database();
     db.collection('course').orderBy('sort', 'asc').get().then(res => {

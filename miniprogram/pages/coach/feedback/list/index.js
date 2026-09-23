@@ -1,4 +1,6 @@
 // pages/coach/feedback/list/index.js
+const auth = require('../../../../utils/auth');
+
 Page({
 
   /**
@@ -30,6 +32,8 @@ Page({
     if(childName) {
       wx.setNavigationBarTitle({title:`${childName}的反馈记录`})
     }
+    // 未带 childId 的入口（我的 → 训练反馈）按当前教练过滤，口径同训练记录页
+    this.coachId = auth.getCoachId() || '';
     this.loadFeedbackList();
   },
 
@@ -46,9 +50,17 @@ Page({
 
     // 构建查询条件
     let query = db.collection('feedbacks');
-    // 根据孩子ID筛选
+    // 根据孩子ID筛选（学员详情进入）
     if(this.data.childId) {
       query = query.where({childId:this.data.childId});
+    } else if(this.coachId) {
+      // 未带 childId 的入口只看自己写的反馈，否则会把所有教练的反馈都拉出来
+      query = query.where({coachId: this.coachId});
+    } else {
+      // 连教练身份都没有：宁可空列表也不能把全部反馈亮出来
+      wx.showToast({ title: '未获取到教练身份', icon: 'none' });
+      this.setData({ feedbackList: [], loading: false, hasMore: false });
+      return;
     }
 
     // 根据时间筛选
@@ -71,9 +83,13 @@ Page({
       query = query.orderBy('date','desc').limit(this.data.pageSize)
     }
 
-    query.get().then(res => {
+    query.get().then(async res => {
       const newList = res.data;
-      
+
+      // 先核对课次是否还在：课次被删（如清理学员数据后遗留的反馈）时
+      // 「编辑」进课后记录只会报「课次加载失败」，这里提前标记、拦在列表页
+      await this.markMissingTrainings(newList);
+
       if(isLoadMore) {
         this.setData({
           feedbackList:[...this.data.feedbackList,...newList],
@@ -96,6 +112,29 @@ Page({
       console.error('加载反馈列表失败', err);
       wx.showToast({ title: '加载失败', icon: 'none' });
       this.setData({ loading: false, loadingMore: false });
+    });
+  },
+
+  // 标记 trainingId 指向的课次已不存在的反馈（孤儿反馈）。
+  // 一页最多 10 条反馈、去重后的 id 数不会超过单次 get 的 20 条上限；
+  // 核对查询本身失败时不标记（fail-open，保持原跳转行为）。
+  async markMissingTrainings(list) {
+    const db = wx.cloud.database();
+    const _ = db.command;
+    const trainingIds = Array.from(new Set(list.map(f => f.trainingId).filter(Boolean)));
+    if (!trainingIds.length) return;
+
+    const alive = new Set();
+    try {
+      const res = await db.collection('trainings').where({ _id: _.in(trainingIds) }).get();
+      res.data.forEach(t => alive.add(t._id));
+    } catch (err) {
+      console.error('核对课次存在性失败', err);
+      return;
+    }
+
+    list.forEach(f => {
+      if (f.trainingId && !alive.has(f.trainingId)) f.trainingMissing = true;
     });
   },
 
@@ -186,10 +225,24 @@ Page({
     });
   },
 
-  // 编辑反馈
+  // 编辑反馈：每课反馈（带 trainingId）进结构化编辑器，旧的周反馈留在原编辑器；
+  // 课次已被删除的孤儿反馈不再跳转（跳过去只会「课次加载失败」），直接给提示
   editFeedback(e) {
     const {id} = e.currentTarget.dataset;
     // e.stopPropagation();// 阻止冒泡，避免触发卡片点击
+    const item = (this.data.feedbackList || []).find(f => f._id === id);
+    if (!item) return;
+
+    if (item.trainingId) {
+      if (item.trainingMissing) {
+        wx.showToast({ title: '原课次已删除，无法编辑', icon: 'none' });
+        return;
+      }
+      wx.navigateTo({
+        url: `/pages/coach/post-class/index?id=${item.trainingId}&childId=${item.childId}&mode=edit`,
+      });
+      return;
+    }
 
     wx.navigateTo({
       url: `/pages/coach/feedback/write/index?childId=${this.data.childId}&id=${id}`,

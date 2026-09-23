@@ -89,7 +89,8 @@
        骨架屏由 data.loading 控制（见 loadContentSections）。
        ====================================================================== -->
 
-  <!-- 快捷入口 -->
+  <!-- 快捷入口（2026-09-22 用户精简为五个：训练数据/课程表/课堂点评/我的反馈/成长案例；
+       网格改 5 列，正好一行） -->
   <view wx:if="{{!loading}}" class="quick-entry fade-in">
     <view class="entry-item" bind:tap="goToTrainingData">
       <view class="entry-icon">📊</view>
@@ -99,16 +100,6 @@
     <view class="entry-item" bind:tap="goToSchedule">
       <view class="entry-icon">📅</view>
       <text class="entry-text">课程表</text>
-    </view>
-
-    <view class="entry-item" bindtap="goToBookClass">
-      <view class="entry-icon">📚</view>
-      <text class="entry-text">预约上课</text>
-    </view>
-
-    <view class="entry-item" bind:tap="goToClassRecords">
-      <view class="entry-icon">📝</view>
-      <text class="entry-text">上课记录</text>
     </view>
 
     <view class="entry-item" bind:tap="goToClassComments">
@@ -125,15 +116,10 @@
       <view class="entry-icon">👤</view>
       <text class="entry-text">成长案例</text>
     </view>
-
-    <view class="entry-item" bind:tap="contactCoach">
-      <view class="entry-icon">💬</view>
-      <text class="entry-text">联系我们</text>
-    </view>
   </view>
 
   <view wx:if="{{loading}}" class="skeleton-quick-entry">
-    <block wx:for="{{8}}" wx:key="*this">
+    <block wx:for="{{5}}" wx:key="*this">
       <view class="entry-item">
         <view class="skeleton skeleton-entry-icon"></view>
         <view class="skeleton skeleton-entry-text"></view>
@@ -285,7 +271,8 @@
         <view class="moment-item" wx:for="{{moments}}" wx:key="index" bind:tap="viewMoment" data-id="{{item._id}}">
           <view class="moment-image-wrapper">
             <image wx:if="{{item.mediaType !== 'video'}}" class="moment-image" src="{{item.image}}" mode="aspectFill"></image>
-            <video wx:else class="moment-video" src="{{item.video}}" controls show-center-play-btn show-play-btn enable-progress-gesture object-fit="cover" autoplay="{{false}}" poster=""></video>
+            <!-- catch:tap 挂住冒泡，否则点视频想播放却被整卡的「跳详情」劫持 -->
+            <video wx:else catch:tap="stopPropagation" class="moment-video" src="{{item.video}}" controls show-center-play-btn show-play-btn enable-progress-gesture object-fit="cover" autoplay="{{false}}" poster=""></video>
           </view>
           <view class="moment-info">
             <text class="moment-title">{{item.title}}</text>

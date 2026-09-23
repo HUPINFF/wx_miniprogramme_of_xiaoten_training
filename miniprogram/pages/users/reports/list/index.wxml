@@ -1,0 +1,53 @@
+<!-- pages/users/reports/list/index.wxml — 家长端成长报告列表 -->
+<view class="container">
+  <!-- 渐变背景层：与首页/蜕变页同一家族的绿色渐变 -->
+  <view class="gradient-bg"></view>
+
+  <!-- 顶部标题区：白字标题 + 返回按钮，压在渐变上 -->
+  <view class="page-top">
+    <view class="status-bar" style="height: {{statusBarHeight}}px;"></view>
+    <view class="header-row">
+      <view class="back-btn" hover-class="back-btn-hover" bind:tap="goBack">
+        <text class="back-icon">←</text>
+      </view>
+      <text class="header-title">成长报告</text>
+    </view>
+  </view>
+
+  <!-- 页面内容层（z-index:1，保证卡片压在渐变背景之上） -->
+  <view class="page-content">
+    <view class="list-card">
+      <view class="list-tip">{{childName ? childName + '的成长报告' : '成长报告'}}</view>
+
+      <view class="loading-tip" wx:if="{{listLoading}}">加载中...</view>
+
+      <view class="fail-box" wx:elif="{{loadFail}}">
+        <text class="fail-text">报告加载失败，请检查网络后重试</text>
+        <view class="retry-btn" hover-class="retry-btn-hover" bind:tap="retry">重新加载</view>
+      </view>
+
+      <block wx:elif="{{reports.length > 0}}">
+        <view
+          class="report-item"
+          hover-class="report-item-hover"
+          wx:for="{{reports}}"
+          wx:key="_id"
+          bind:tap="viewReport"
+          data-id="{{item._id}}"
+        >
+          <text class="report-item-title">{{item.title}}</text>
+          <text class="report-item-date" wx:if="{{item.dateText}}">{{item.dateText}}</text>
+          <text class="report-arrow">›</text>
+        </view>
+      </block>
+
+      <view class="empty-box" wx:else>
+        <text class="empty-icon">📄</text>
+        <text class="empty-title">还没有报告</text>
+        <text class="empty-desc">教练发布月报/季报后，会第一时间出现在这里</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="safe-area"></view>
+</view>

@@ -1,65 +1,153 @@
-/* pages/coach/assessment/history/index.wxss — iOS 风格 */
+/* pages/coach/assessment/history/index.wxss 体质测评历史：首页同款渐变头部 + 白卡记录流。
+   变量与首页同源（page 级 wxss 每页独立，要在这份里再声明一遍）；
+   原 iOS 灰底样式整体重写为一层，配色统一品牌绿 */
 page {
-  background-color: #f2f2f7;
+  --primary: #07c160;
+  --primary-dark: #05a350;
+  --primary-light: #e8f5e9;
+  --bg: #f5f7fa;
+  --card: #ffffff;
+  --text-main: #1a1a2e;
+  --text-sub: #6b7280;
+  --text-hint: #9ca3af;
+  --radius-lg: 28rpx;
+  --radius-xl: 32rpx;
+  --shadow-card: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.fade-in {
+  animation: fadeIn 0.4s ease-out both;
+}
+
+/* ==================== 渐变背景（首页同一配方） ==================== */
+.gradient-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 460rpx;
+  background: linear-gradient(135deg, #07c160 0%, #00d68f 30%, #e8f5e9 80%, rgba(245, 247, 250, 0) 100%);
+  z-index: 0;
+}
+
+.gradient-bg::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80rpx;
+  background: linear-gradient(180deg, transparent 0%, var(--bg) 100%);
+}
+
+/* ==================== 页面容器 ==================== */
 .container {
   min-height: 100vh;
-  background-color: #f2f2f7;
-  padding: 24rpx 24rpx 40rpx;
-  box-sizing: border-box;
+  background: var(--bg);
+  position: relative;
 }
 
-/* 孩子信息头部 */
-.child-header {
-  background: #ffffff;
-  margin-bottom: 24rpx;
-  padding: 40rpx 30rpx;
-  border-radius: 28rpx;
-  text-align: center;
+/* ==================== 顶部标题区 ==================== */
+.header-area {
+  position: relative;
+  z-index: 1;
+  padding: 92rpx 40rpx 40rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.child-name {
+.header-title {
+  font-size: 48rpx;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
+  letter-spacing: 2rpx;
+}
+
+/* 副标题胶囊：孩子名，半透明白底 */
+.header-sub {
+  margin-top: 16rpx;
+  font-size: 24rpx;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.22);
+  padding: 8rpx 28rpx;
+  border-radius: 999rpx;
+  backdrop-filter: blur(10rpx);
+}
+
+/* 返回键：白透圆钮浮在标题行左侧 */
+.back-btn {
+  position: absolute;
+  left: 30rpx;
+  top: 96rpx;
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
   font-size: 40rpx;
-  font-weight: 700;
-  color: #000;
-  display: block;
-  margin-bottom: 8rpx;
+  line-height: 60rpx;
+  text-align: center;
+  backdrop-filter: blur(10rpx);
 }
 
-.child-tip {
-  font-size: 26rpx;
-  color: rgba(60, 60, 67, 0.6);
+.back-btn-active {
+  background: rgba(255, 255, 255, 0.32);
 }
 
-/* 测评列表 */
-.assessment-list {
-  padding-bottom: 8rpx;
+/* ==================== 内容流 ==================== */
+.page-content {
+  position: relative;
+  z-index: 1;
+  padding: 8rpx 24rpx 60rpx;
 }
 
+/* ==================== 测评卡 ==================== */
 .assessment-card {
-  background-color: #ffffff;
-  border-radius: 28rpx;
-  padding: 28rpx;
-  margin-bottom: 20rpx;
+  background: var(--card);
+  border-radius: var(--radius-xl);
+  padding: 30rpx;
+  margin-bottom: 24rpx;
+  box-shadow: var(--shadow-card);
 }
 
-/* 卡片头部 */
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding-bottom: 20rpx;
   margin-bottom: 24rpx;
-  padding-bottom: 16rpx;
-  border-bottom: 1rpx solid rgba(60, 60, 67, 0.1);
+  border-bottom: 1rpx solid rgba(60, 60, 67, 0.08);
+}
+
+.month-wrap {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+}
+
+/* 月份左侧的品牌绿短竖条，是整页绿色的锚 */
+.month-accent {
+  width: 8rpx;
+  height: 32rpx;
+  border-radius: 4rpx;
+  background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
 }
 
 .month {
-  font-size: 32rpx;
-  font-weight: 700;
-  color: #000;
+  font-size: 34rpx;
+  font-weight: 800;
+  color: var(--text-main);
+  font-variant-numeric: tabular-nums;
 }
 
+/* 综合等级：语义淡底 + 同色文字（优秀绿 / 良好蓝 / 一般橙 / 待加强红） */
 .rating {
   padding: 8rpx 24rpx;
   border-radius: 999rpx;
@@ -69,8 +157,8 @@ page {
 }
 
 .rating.excellent {
-  background-color: rgba(52, 199, 89, 0.14);
-  color: #34c759;
+  background-color: rgba(7, 193, 96, 0.12);
+  color: var(--primary);
 }
 
 .rating.good {
@@ -79,7 +167,7 @@ page {
 }
 
 .rating.normal {
-  background-color: rgba(255, 149, 0, 0.14);
+  background-color: rgba(255, 149, 0, 0.12);
   color: #ff9500;
 }
 
@@ -88,119 +176,145 @@ page {
   color: #ff3b30;
 }
 
-/* 通用区块 */
+/* ==================== 区块 ==================== */
 .section {
-  margin-bottom: 24rpx;
-  padding-bottom: 16rpx;
-  border-bottom: 1rpx solid rgba(60, 60, 67, 0.1);
+  margin-bottom: 26rpx;
 }
 
 .section:last-child {
-  border-bottom: none;
   margin-bottom: 0;
-  padding-bottom: 0;
 }
 
 .section-title {
-  font-size: 28rpx;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  font-size: 26rpx;
   font-weight: 700;
-  color: #000;
+  color: var(--text-main);
   margin-bottom: 16rpx;
 }
 
-/* 信息网格 */
+.title-dot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  background: var(--primary);
+  opacity: 0.85;
+}
+
+/* ==================== 基础信息（胶囊行） ==================== */
 .info-grid {
   display: flex;
-  gap: 16rpx;
+  gap: 14rpx;
   flex-wrap: wrap;
 }
 
 .info-item {
-  font-size: 26rpx;
-  color: rgba(60, 60, 67, 0.6);
-  background-color: #f2f2f7;
-  padding: 10rpx 20rpx;
+  font-size: 24rpx;
+  color: var(--text-sub);
+  background: #f7f8fa;
+  padding: 12rpx 22rpx;
   border-radius: 999rpx;
 }
 
-/* 核心力量 */
+/* ==================== 核心力量（品牌绿块） ==================== */
 .core-value {
-  font-size: 28rpx;
-  color: #34c759;
-  background-color: rgba(52, 199, 89, 0.14);
-  padding: 12rpx 24rpx;
-  border-radius: 999rpx;
-  display: inline-block;
-  font-weight: 600;
-}
-
-/* 身体素质网格 */
-.fitness-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16rpx;
-}
-
-.fitness-item {
   font-size: 26rpx;
-  color: rgba(60, 60, 67, 0.6);
-  background-color: #f2f2f7;
-  padding: 14rpx 16rpx;
-  border-radius: 16rpx;
+  font-weight: 700;
+  color: var(--primary);
+  background: var(--primary-light);
+  padding: 14rpx 24rpx;
+  border-radius: 14rpx;
+  display: inline-block;
 }
 
-/* 动作模式网格 */
+/* ==================== 身体素质 / 动作模式（标签+数值 两列格） ==================== */
+.fitness-grid,
 .action-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 16rpx;
+  gap: 14rpx;
 }
 
+.fitness-item,
 .action-item {
-  font-size: 26rpx;
-  color: rgba(60, 60, 67, 0.6);
-  background-color: #f2f2f7;
-  padding: 14rpx 16rpx;
-  border-radius: 16rpx;
+  background: #f7f8fa;
+  border-radius: 14rpx;
+  padding: 16rpx 18rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
 }
 
-/* 综合评价 */
-.comment-text {
+.fi-label {
+  font-size: 22rpx;
+  color: var(--text-hint);
+}
+
+.fi-value {
   font-size: 28rpx;
-  color: rgba(60, 60, 67, 0.6);
-  line-height: 1.6;
-  display: block;
-  background-color: #f2f2f7;
-  padding: 20rpx;
-  border-radius: 16rpx;
+  font-weight: 700;
+  color: var(--text-main);
+  font-variant-numeric: tabular-nums;
 }
 
-/* 底部时间 */
+.fi-value.empty {
+  color: var(--text-hint);
+  font-weight: 400;
+  font-size: 26rpx;
+}
+
+/* ==================== 综合评价（浅绿底，全页唯一的大段文字） ==================== */
+.comment-text {
+  font-size: 26rpx;
+  color: var(--text-sub);
+  line-height: 1.7;
+  display: block;
+  background: var(--primary-light);
+  padding: 20rpx;
+  border-radius: 14rpx;
+}
+
+/* ==================== 底部时间 ==================== */
 .footer-time {
-  margin-top: 20rpx;
+  margin-top: 24rpx;
   padding-top: 16rpx;
-  border-top: 1rpx solid rgba(60, 60, 67, 0.1);
+  border-top: 1rpx solid rgba(60, 60, 67, 0.08);
   text-align: right;
   font-size: 24rpx;
-  color: rgba(60, 60, 67, 0.34);
+  color: var(--text-hint);
 }
 
-/* 空状态 */
+/* ==================== 空状态 ==================== */
 .empty {
   text-align: center;
-  padding: 120rpx 0;
-  color: rgba(60, 60, 67, 0.34);
-  font-size: 28rpx;
+  padding: 120rpx 40rpx;
+  background: var(--card);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+}
+
+.empty-icon {
+  font-size: 96rpx;
+  margin-bottom: 20rpx;
+}
+
+.empty-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--text-main);
 }
 
 .empty-hint {
   display: block;
   font-size: 24rpx;
-  color: rgba(60, 60, 67, 0.25);
+  color: var(--text-hint);
   margin-top: 12rpx;
 }
 
-/* 加载 HUD */
+/* ==================== 加载 HUD ==================== */
 .loading {
   position: fixed;
   top: 50%;

@@ -2,5 +2,7 @@
   "usingComponents": {
     "nav-bar":"/components/nav-bar/nav-bar"
   },
-  "navigationStyle": "custom"
+  "navigationStyle": "custom",
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "dark"
 }

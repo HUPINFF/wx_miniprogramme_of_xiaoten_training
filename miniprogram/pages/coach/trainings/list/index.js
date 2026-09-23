@@ -1,4 +1,6 @@
 // pages/coach/trainings/list/index.js
+const auth = require('../../../../utils/auth');
+
 Page({
 
   /**
@@ -31,6 +33,9 @@ Page({
         title: `${childName}的训练记录`
       });
     }
+    // 未带 childId 的入口（我的 → 训练记录）按当前教练过滤；
+    // 带 childId 的（学员详情进入）看该学员全部记录（含换教练前的历史课次）
+    this.coachId = auth.getCoachId() || '';
     this.loadTrainingList();
   },
 
@@ -39,7 +44,7 @@ Page({
     if(isLoadMore){
       this.setData({loadingMore:true});
     }else {
-      this.setData({loading:true, trainingListL:[],lastDoc:null,hasMore:true})
+      this.setData({loading:true, trainingList:[],lastDoc:null,hasMore:true})
     }
 
     const db = wx.cloud.database();
@@ -47,9 +52,17 @@ Page({
     
     // 构建查询条件
     let query = db.collection('trainings'); 
-    // 根据孩子ID筛选
+    // 根据孩子ID筛选（学员详情进入）
     if(this.data.childId) {
       query = query.where({childId:this.data.childId});
+    } else if(this.coachId) {
+      // 未带 childId 的入口只看自己名下的课次，否则会把所有学员/所有教练的记录都拉出来
+      query = query.where({coachId: this.coachId});
+    } else {
+      // 连教练身份都没有：宁可空列表也不能把全部记录亮出来
+      wx.showToast({ title: '未获取到教练身份', icon: 'none' });
+      this.setData({ trainingList: [], loading: false, hasMore: false });
+      return;
     }
 
     // 根据训练类型筛选
@@ -82,7 +95,8 @@ Page({
       query = query.orderBy('date','desc').limit(this.data.PageSize);
     }
 
-    query.get().then(res => {
+    // 返回 promise：下拉刷新要在加载完成后才收起动画
+    return query.get().then(res => {
       const newList = res.data;
 
       // 处理训练类型样式

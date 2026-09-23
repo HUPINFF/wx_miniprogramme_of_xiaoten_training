@@ -185,3 +185,109 @@ input {
   background-color: #e5e5ea;
   color: rgba(60, 60, 67, 0.3);
 }
+
+/* 训练项目构建器 */
+.label-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 16rpx;
+}
+
+.label-row .label {
+  margin-bottom: 0;
+}
+
+.label-hint {
+  font-size: 22rpx;
+  color: rgba(60, 60, 67, 0.34);
+}
+
+.item-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.item-row .item-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.item-del {
+  width: 56rpx;
+  height: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  color: rgba(60, 60, 67, 0.4);
+  flex-shrink: 0;
+}
+
+.item-add {
+  margin-top: 8rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2rpx dashed rgba(0, 122, 255, 0.4);
+  border-radius: 20rpx;
+  font-size: 28rpx;
+  color: #007aff;
+}
+
+.item-add:active {
+  background: rgba(0, 122, 255, 0.06);
+}
+
+/* 项目行：名称输入容器（纵向 flex，历史结构保留） */
+.item-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+/* 名称行不再需要 flex:1（改在 item-main 内纵向排布） */
+.item-main .item-input {
+  flex: none;
+  width: 100%;
+}
+
+/* 常用项目点选条：该学员近期用过的项目，点一下填入，避免重复手打名字 */
+.item-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 16rpx;
+}
+
+.chips-label {
+  flex-shrink: 0;
+  font-size: 22rpx;
+  color: rgba(60, 60, 67, 0.4);
+}
+
+.chip {
+  font-size: 22rpx;
+  line-height: 1;
+  color: #1a1a2e;
+  background: rgba(60, 60, 67, 0.06);
+  border-radius: 999rpx;
+  padding: 12rpx 20rpx;
+}
+
+.chip-hover {
+  background: rgba(60, 60, 67, 0.12);
+}
+
+/* 管理员调度：课时余额不足提示 */
+.balance-warn {
+  color: #FA5151;
+  font-weight: 500;
+}
+

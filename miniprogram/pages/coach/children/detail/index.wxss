@@ -1,36 +1,121 @@
-/* pages/coach/children/detail/index.wxss */
-
-/* ==================== 全局变量（iOS 化） ==================== */
+/* pages/coach/children/detail/index.wxss 学员详情：首页同款渐变头部 + 白卡档案流。
+   变量与首页同源（page 级 wxss 每页独立，要在这份里再声明一遍）；
+   原 iOS 蓝双层覆盖样式合并重写为一层，配色统一品牌绿。
+   布局（档案卡两栏、目标行横贯、宫格、呼吸光晕）保持原样没动 */
 page {
-  --bg: #F2F2F7;
-  --primary: #007AFF;
-  --primary-dark: #0056CF;
-  --primary-light: rgba(0, 122, 255, 0.1);
+  --primary: #07c160;
+  --primary-dark: #05a350;
+  --primary-light: #e8f5e9;
+  --bg: #f5f7fa;
   --card: #ffffff;
-  --text-main: #000000;
-  --text-sub: rgba(60, 60, 67, 0.6);
-  --text-hint: rgba(60, 60, 67, 0.34);
-  --border: rgba(60, 60, 67, 0.1);
-  --radius-sm: 14rpx;
-  --radius-md: 20rpx;
-  --radius-lg: 28rpx;
+  --text-main: #1a1a2e;
+  --text-sub: #6b7280;
+  --text-hint: #9ca3af;
   --radius-xl: 32rpx;
+  --shadow-card: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.fade-in {
+  animation: fadeIn 0.4s ease-out both;
+}
+
+/* ==================== 渐变背景（首页同一配方） ==================== */
+.gradient-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 460rpx;
+  background: linear-gradient(135deg, #07c160 0%, #00d68f 30%, #e8f5e9 80%, rgba(245, 247, 250, 0) 100%);
+  z-index: 0;
+}
+
+.gradient-bg::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80rpx;
+  background: linear-gradient(180deg, transparent 0%, var(--bg) 100%);
+}
+
+/* ==================== 页面容器 ==================== */
 .container {
   min-height: 100vh;
-  background-color: #f5f7fa;
-  padding: 24rpx;
+  background: var(--bg);
+  position: relative;
 }
 
-/* 加载状态 */
+/* ==================== 顶部标题区 ==================== */
+.header-area {
+  position: relative;
+  z-index: 1;
+  padding: 92rpx 40rpx 30rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.header-title {
+  font-size: 48rpx;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
+  letter-spacing: 2rpx;
+}
+
+/* 副标题胶囊：半透明白底 */
+.header-sub {
+  margin-top: 16rpx;
+  font-size: 24rpx;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.22);
+  padding: 8rpx 28rpx;
+  border-radius: 999rpx;
+  backdrop-filter: blur(10rpx);
+}
+
+/* 返回键：白透圆钮浮在标题行左侧 */
+.back-btn {
+  position: absolute;
+  left: 30rpx;
+  top: 96rpx;
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 40rpx;
+  line-height: 60rpx;
+  text-align: center;
+  backdrop-filter: blur(10rpx);
+}
+
+.back-btn-active {
+  background: rgba(255, 255, 255, 0.32);
+}
+
+/* ==================== 内容层 ==================== */
+.page-content {
+  position: relative;
+  z-index: 1;
+  padding: 8rpx 24rpx 40rpx;
+}
+
+/* ==================== 加载状态 ==================== */
 .loading {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 120rpx 0;
-  color: #999;
+  color: var(--text-hint);
   font-size: 28rpx;
 }
 
@@ -38,7 +123,7 @@ page {
   width: 60rpx;
   height: 60rpx;
   border: 4rpx solid #f0f0f0;
-  border-top-color: #07c160;
+  border-top-color: var(--primary);
   border-radius: 50%;
   margin-bottom: 20rpx;
   animation: spin 1s linear infinite;
@@ -49,16 +134,16 @@ page {
   100% { transform: rotate(360deg); }
 }
 
-/* 学员信息卡片 */
+/* ==================== 学员信息卡片 ==================== */
 .child-header {
-  width: 90%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 24rpx;
-  padding: 40rpx;
-  margin-bottom: 24rpx;
+  width: auto;
+  margin: 0 0 24rpx;
+  background: var(--card);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+  padding: 32rpx;
   display: flex;
   align-items: center;
-  color: #fff;
 }
 
 .avatar-large {
@@ -66,67 +151,84 @@ page {
   height: 120rpx;
   border-radius: 50%;
   margin-right: 24rpx;
-  border: 4rpx solid rgba(255, 255, 255, 0.3);
-  background-color: #fff;
+  border: 3rpx solid #ffffff;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.08);
+  background-color: #f2f2f7;
+}
+
+/* 中间信息列弹性占位：右侧宫格定宽后，长名字在这里截断省略，不挤压宫格 */
+.child-basic {
+  flex: 1;
+  min-width: 0;
 }
 
 .child-basic .name {
   font-size: 40rpx;
-  font-weight: 600;
+  font-weight: 700;
+  color: var(--text-main);
   display: block;
   margin-bottom: 8rpx;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .child-basic .info {
   font-size: 28rpx;
-  opacity: 0.9;
+  color: var(--text-sub);
   display: block;
   margin-top: 6rpx;
 }
 
-/* 快捷操作按钮 */
-.quick-actions {
-  width: 95%;
+/* 快捷入口：学员卡右栏 2×2 宫格（替代原独立快捷卡，整页更短）。
+   flex-wrap 定宽换行成两行两列，不用 grid 兼容性更稳 */
+.child-actions {
+  margin-left: auto;
+  flex-shrink: 0;
+  width: 216rpx;
   display: flex;
-  justify-content: space-around;
-  background-color: #fff;
-  border-radius: 24rpx;
-  padding: 24rpx;
-  margin-bottom: 24rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.02);
+  flex-wrap: wrap;
+  gap: 12rpx;
+  align-content: center;
 }
 
 .action-btn {
+  width: 102rpx;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12rpx;
-  padding: 16rpx 24rpx;
+  gap: 6rpx;
+  padding: 14rpx 4rpx;
+  background: #f7f8fa;
+  border-radius: 16rpx;
+  transition: all 0.2s ease;
 }
 
 .action-btn .icon {
-  font-size: 48rpx;
+  font-size: 36rpx;
+  color: var(--primary);
 }
 
 .action-btn text:last-child {
-  font-size: 26rpx;
-  color: #666;
+  font-size: 22rpx;
+  color: var(--text-sub);
+  white-space: nowrap;
 }
 
 .action-btn:active {
-  background-color: #f5f7fa;
-  border-radius: 16rpx;
+  background-color: var(--primary-light);
+  transform: scale(0.95);
 }
 
-/* 通用区块 */
+/* ==================== 通用区块 ==================== */
 .section {
   width: 90%;
-  background-color: #fff;
-  border-radius: 24rpx;
-  margin: 0 auto;
+  background: var(--card);
+  border-radius: var(--radius-xl);
+  margin: 0 auto 24rpx;
   padding: 32rpx;
-  margin-bottom: 24rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.02);
+  box-shadow: var(--shadow-card);
 }
 
 .section-header {
@@ -134,52 +236,152 @@ page {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 1rpx solid rgba(60, 60, 67, 0.08);
 }
 
 .section-title {
   font-size: 34rpx;
-  font-weight: 600;
-  color: #1a1a1a;
-}
-
-.section-date {
-  font-size: 24rpx;
-  color: #999;
+  font-weight: 700;
+  color: var(--text-main);
 }
 
 .section-more {
   font-size: 26rpx;
-  color: #07c160;
+  color: var(--primary);
+  font-weight: 600;
 }
 
-/* 表现网格 */
-.performance-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 24rpx;
+/* ==================== 近期有课提醒卡（未来有课才显示） ==================== */
+.upcoming-card {
+  width: auto;
+  margin: 0 0 24rpx;
+  background: var(--card);
+  border: 1rpx solid rgba(7, 193, 96, 0.35);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+  padding: 24rpx;
+  /* 循环呼吸光晕：绿描边周期性变亮 + 光圈向外扩散，提醒教练有课要上 */
+  animation: upcoming-glow 2s ease-in-out infinite;
 }
 
-.performance-item {
-  background-color: #f8f9fc;
-  border-radius: 16rpx;
-  padding: 20rpx;
-  text-align: center;
+@keyframes upcoming-glow {
+  0%, 100% {
+    border-color: rgba(7, 193, 96, 0.35);
+    box-shadow: 0 0 0 0 rgba(7, 193, 96, 0.28);
+  }
+  50% {
+    border-color: rgba(7, 193, 96, 0.75);
+    box-shadow: 0 0 0 14rpx rgba(7, 193, 96, 0);
+  }
 }
 
-.performance-item .label {
-  font-size: 26rpx;
-  color: #999;
-  display: block;
+.upcoming-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 8rpx;
 }
 
-.performance-item .value {
-  font-size: 40rpx;
-  font-weight: 600;
-  color: #333;
+.upcoming-title-group {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
 }
 
-/* 表现历史列表 */
+/* 铃铛跟着光晕同节奏摇摆 */
+.upcoming-bell {
+  display: inline-block;
+  font-size: 32rpx;
+  transform-origin: top center;
+  animation: bell-swing 2s ease-in-out infinite;
+}
+
+@keyframes bell-swing {
+  0%, 100% { transform: rotate(0deg); }
+  15% { transform: rotate(14deg); }
+  35% { transform: rotate(-10deg); }
+  55% { transform: rotate(6deg); }
+  75% { transform: rotate(-3deg); }
+}
+
+.upcoming-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.upcoming-count {
+  font-size: 22rpx;
+  font-weight: 600;
+  color: var(--primary);
+  background: rgba(7, 193, 96, 0.1);
+  padding: 4rpx 16rpx;
+  border-radius: 999rpx;
+}
+
+.upcoming-item {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 14rpx 8rpx;
+  border-radius: 12rpx;
+}
+
+.upcoming-item + .upcoming-item {
+  border-top: 1rpx solid rgba(60, 60, 67, 0.08);
+}
+
+.upcoming-item-hover {
+  background: rgba(7, 193, 96, 0.06);
+}
+
+.upcoming-date-chip {
+  flex-shrink: 0;
+  min-width: 96rpx;
+  text-align: center;
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #ffffff;
+  background: var(--primary);
+  padding: 6rpx 18rpx;
+  border-radius: 999rpx;
+}
+
+.upcoming-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 12rpx;
+}
+
+.upcoming-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.upcoming-time {
+  flex-shrink: 0;
+  font-size: 24rpx;
+  color: var(--text-sub);
+  font-variant-numeric: tabular-nums;
+}
+
+.upcoming-type {
+  flex-shrink: 0;
+  font-size: 22rpx;
+  color: var(--primary);
+  background: rgba(7, 193, 96, 0.12);
+  padding: 4rpx 14rpx;
+  border-radius: 999rpx;
+}
+
+/* ==================== 表现历史列表 ==================== */
 .history-list {
   display: flex;
   flex-direction: column;
@@ -191,14 +393,14 @@ page {
   align-items: center;
   justify-content: space-between;
   padding: 20rpx;
-  background-color: #f8f9fc;
+  background-color: #f7f8fa;
   border-radius: 16rpx;
 }
 
 .history-item .date {
   font-size: 28rpx;
   font-weight: 500;
-  color: #07c160;
+  color: var(--primary);
   width: 180rpx;
 }
 
@@ -210,15 +412,15 @@ page {
 
 .history-item .score {
   font-size: 26rpx;
-  color: #666;
+  color: var(--text-sub);
 }
 
 .history-item .arrow {
   font-size: 28rpx;
-  color: #ccc;
+  color: rgba(60, 60, 67, 0.25);
 }
 
-/* 训练列表 */
+/* ==================== 训练列表 ==================== */
 .training-list {
   display: flex;
   flex-direction: column;
@@ -226,7 +428,7 @@ page {
 }
 
 .training-item {
-  background-color: #f8f9fc;
+  background-color: #f7f8fa;
   border-radius: 16rpx;
   padding: 20rpx;
 }
@@ -241,21 +443,21 @@ page {
 .training-header .date {
   font-size: 28rpx;
   font-weight: 500;
-  color: #07c160;
+  color: var(--primary);
 }
 
 .training-header .type {
   font-size: 24rpx;
-  color: #fff;
-  background-color: #07c160;
+  color: var(--primary);
+  background-color: rgba(7, 193, 96, 0.12);
   padding: 4rpx 16rpx;
-  border-radius: 20rpx;
+  border-radius: 999rpx;
 }
 
 .training-item .name {
   font-size: 30rpx;
   font-weight: 500;
-  color: #333;
+  color: var(--text-main);
   display: block;
   margin-bottom: 12rpx;
 }
@@ -268,15 +470,15 @@ page {
 
 .training-footer .focus {
   font-size: 26rpx;
-  color: #999;
+  color: var(--text-hint);
 }
 
 .training-footer .photo-count {
   font-size: 24rpx;
-  color: #07c160;
+  color: var(--primary);
 }
 
-/* 反馈列表 */
+/* ==================== 反馈列表 ==================== */
 .feedback-list {
   display: flex;
   flex-direction: column;
@@ -284,7 +486,7 @@ page {
 }
 
 .feedback-item {
-  background-color: #f8f9fc;
+  background-color: #f7f8fa;
   border-radius: 16rpx;
   padding: 20rpx;
 }
@@ -299,17 +501,17 @@ page {
 .feedback-header .date {
   font-size: 26rpx;
   font-weight: 500;
-  color: #07c160;
+  color: var(--primary);
 }
 
 .feedback-header .week {
   font-size: 24rpx;
-  color: #999;
+  color: var(--text-hint);
 }
 
 .feedback-item .content {
   font-size: 28rpx;
-  color: #666;
+  color: var(--text-sub);
   line-height: 1.5;
 }
 
@@ -317,12 +519,141 @@ page {
 .empty {
   text-align: center;
   padding: 40rpx 0;
-  color: #999;
+  color: var(--text-hint);
   font-size: 28rpx;
 }
 
+/* ==================== 近期表现切换条（体测成绩 ⇄ 训练项目，与家长端成长页同语言） ==================== */
+.data-toggle {
+  display: flex;
+  background: #f2f3f5;
+  border-radius: 999rpx;
+  padding: 6rpx;
+  margin-bottom: 24rpx;
+}
 
-/* 学时信息 */
+.data-toggle-item {
+  flex: 1;
+  text-align: center;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--text-sub);
+  padding: 12rpx 0;
+  border-radius: 999rpx;
+  transition: all 0.2s ease;
+}
+
+/* 选中段：白底浮起 + 品牌绿字 */
+.data-toggle-item.active {
+  background: #fff;
+  color: var(--primary);
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.08);
+}
+
+/* ==================== 训练项目层（自定义项目聚合行） ==================== */
+.ci-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.ci-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 12rpx;
+  margin: 0 -12rpx;
+  border-bottom: 1rpx solid #eef0f3;
+}
+
+.ci-row:last-child {
+  border-bottom: none;
+}
+
+.ci-main {
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+  min-width: 0;
+}
+
+.ci-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.ci-sub {
+  font-size: 22rpx;
+  color: var(--text-hint);
+}
+
+.ci-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6rpx;
+  flex-shrink: 0;
+}
+
+.ci-times {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: var(--primary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 上次未完成：琥珀小标（与家长端成长页同色） */
+.ci-done {
+  font-size: 20rpx;
+  color: #e8820c;
+  background: rgba(255, 149, 0, 0.12);
+  padding: 2rpx 12rpx;
+  border-radius: 999rpx;
+}
+
+/* 本次表现引述：教练上课填的文字（最近一条非空），浅绿底让它像「教练的话」 */
+.ci-perf {
+  margin-top: 10rpx;
+  font-size: 22rpx;
+  line-height: 1.5;
+  color: var(--primary-dark);
+  background: var(--primary-light);
+  border-radius: 8rpx;
+  padding: 6rpx 14rpx;
+  align-self: flex-start;
+}
+
+/* 两次成绩的进步对比：进步绿、退步橙（count 升/time 降都算进步），持平灰 */
+.ci-delta {
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: var(--text-hint);
+}
+
+.ci-delta.up {
+  color: var(--primary-dark);
+  font-weight: 600;
+}
+
+.ci-delta.down {
+  color: #e8820c;
+}
+
+/* 查看（更多）项目 / 收起：绿字文本钮 */
+.ci-more {
+  margin-top: 16rpx;
+  text-align: center;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--primary);
+  padding: 10rpx 0;
+}
+
+.ci-more:active {
+  opacity: 0.7;
+}
+
+/* ==================== 学时信息 ==================== */
 .class-hours {
   margin-top: 12rpx;
   display: flex;
@@ -333,53 +664,39 @@ page {
 
 .hours-label {
   font-size: 26rpx;
-  opacity: 0.9;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--text-sub);
 }
 
 .hours-value {
   font-size: 34rpx;
   font-weight: 600;
-  color: #ffd700;
+  color: var(--primary);
+  font-variant-numeric: tabular-nums;
 }
 
 .hours-value.warning {
-  color: #ff6b6b;
+  color: #ff3b30;
 }
 
-.emp-grips {
-  width: 100%;
-  margin-top: 20rpx;  /* 可选，增加上边距 */
-}
-
-.emp-txt {
-  width: 220rpx;
-  display: block;
-  margin: 0 auto;
-  font-size: 27rpx;
-  color: #999;
-}
-
-
-/* 编辑学时按钮 - 完整美化版 */
+/* 编辑学时按钮：白卡上的品牌绿 CTA */
 .edit-hours-btn {
   margin-top: 16rpx;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 10rpx;
-  background: linear-gradient(135deg, #07c160 0%, #06a34d 100%);
-  border-radius: 48rpx;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  border-radius: 999rpx;
   padding: 14rpx 32rpx;
-  box-shadow: 0 6rpx 16rpx rgba(7, 193, 96, 0.35);
+  box-shadow: 0 6rpx 16rpx rgba(7, 193, 96, 0.3);
   transition: all 0.25s ease;
   width: fit-content;
-  border: 1rpx solid rgba(255, 255, 255, 0.2);
 }
 
 .edit-hours-btn:active {
   transform: scale(0.96);
-  box-shadow: 0 2rpx 8rpx rgba(7, 193, 96, 0.3);
+  opacity: 0.9;
+  box-shadow: 0 2rpx 8rpx rgba(7, 193, 96, 0.25);
 }
 
 .edit-icon {
@@ -394,153 +711,367 @@ page {
   letter-spacing: 1rpx;
 }
 
-/* ==================== iOS 精修（追加覆盖，后面规则优先） ==================== */
-
-/* 容器灰底 */
-.container {
-  background-color: #f2f2f7;
-}
-
-/* 加载 */
-.loading-spinner {
-  border-top-color: #007aff;
-}
-
-/* 学员信息卡 → 纯白卡，深色文字可读 */
-.child-header {
+/* ==================== 学员档案卡（学员卡片下方，左右两栏）==================== */
+.info-card {
   width: auto;
-  margin: 0 8rpx 24rpx;
-  background: #ffffff;
-  border: 1rpx solid rgba(60, 60, 67, 0.08);
-  border-radius: 28rpx;
-  box-shadow: none;
-  padding: 32rpx;
+  margin: 0 0 24rpx;
+  background: var(--card);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+  padding: 28rpx 24rpx;
+  display: flex;
+  flex-wrap: wrap; /* 本阶段目标行靠换行落到两栏下方，横贯整卡 */
+  align-items: stretch;
 }
-.avatar-large {
-  border: 3rpx solid #ffffff;
-  background-color: #f2f2f7;
+
+/* 左栏：基本信息 */
+.info-left {
+  width: 250rpx;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
 }
-.child-basic .name {
-  color: #000000;
-  font-weight: 700;
+
+.info-divider {
+  width: 1rpx;
+  background: rgba(60, 60, 67, 0.1);
+  margin: 8rpx 20rpx;
 }
-.child-basic .info {
-  color: rgba(60, 60, 67, 0.6);
-  opacity: 1;
+
+/* 右栏：训练数据 */
+.info-right {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
 }
-.hours-label {
-  color: rgba(60, 60, 67, 0.6);
-  opacity: 1;
+
+/* 基础能力和专项成绩之间一条虚线分隔（与左栏目标行的虚线同语言） */
+.info-block + .info-block {
+  padding-top: 16rpx;
+  border-top: 1rpx dashed rgba(60, 60, 67, 0.12);
 }
-.hours-value {
-  color: #007aff;
+
+.info-block-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--text-main);
 }
-.hours-value.warning {
-  color: #ff3b30;
+
+.basic-row {
+  display: flex;
+  align-items: baseline;
+  padding: 12rpx 0 0;
 }
-.edit-hours-btn {
-  background: #007aff;
-  border: none;
+
+.basic-label {
+  flex-shrink: 0;
+  width: 72rpx;
+  font-size: 24rpx;
+  color: var(--text-sub);
+}
+
+.basic-value {
+  flex: 1;
+  min-width: 0;
+  font-size: 24rpx;
+  font-weight: 500;
+  color: var(--text-main);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 本阶段目标：横贯整卡的一行（flex-wrap 换到左右两栏下方）。
+   标签+内容同行；内容是一句话，用包裹 view 做收缩项（多行截断的 text
+   直接当 flex 项会被当块级挤下去），3 行封顶；整行可点编辑 */
+.goal-row {
+  width: 100%;
+  margin-top: 20rpx;
+  padding: 16rpx 4rpx 4rpx;
+  border-top: 1rpx dashed rgba(60, 60, 67, 0.12);
+  border-radius: 8rpx;
+  display: flex;
+  align-items: baseline;
+  box-sizing: border-box;
+}
+
+.goal-label {
+  flex-shrink: 0;
+  margin-right: 16rpx;
+  font-size: 24rpx;
+  color: var(--text-sub);
+}
+
+.goal-value-wrap {
+  flex: 1;
+  min-width: 0;
+}
+
+.goal-hover {
+  background: rgba(7, 193, 96, 0.06);
+}
+
+.goal-edit-icon {
+  flex-shrink: 0;
+  margin-left: 12rpx;
+  font-size: 22rpx;
+  opacity: 0.7;
+}
+
+/* 「可填入」提示：只在还没填目标时出现（填了之后信息重复），绿色小胶囊 */
+.goal-tip {
+  flex-shrink: 0;
+  margin-left: 12rpx;
+  font-size: 20rpx;
+  font-weight: 500;
+  color: var(--primary);
+  background: rgba(7, 193, 96, 0.1);
+  padding: 4rpx 14rpx;
   border-radius: 999rpx;
-  box-shadow: none;
-}
-.edit-hours-btn:active {
-  transform: scale(0.96);
-  opacity: 0.9;
-  box-shadow: none;
 }
 
-/* 快捷操作：去投影，图标浅灰衬底 */
-.quick-actions {
-  background-color: #ffffff;
-  border-radius: 28rpx;
-  box-shadow: none;
-  padding: 16rpx 8rpx;
-}
-.action-btn text:last-child {
-  color: rgba(60, 60, 67, 0.6);
-}
-.action-btn:active {
-  background-color: rgba(60, 60, 67, 0.04);
+.goal-value {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  line-height: 1.5;
+  /* 本阶段目标是档案卡的重点：加大加粗 + 品牌绿，和剩余学时同一套强调语言 */
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--primary);
 }
 
-/* 分组卡：去投影 + hairline 标题分隔 */
-.section {
-  background-color: #ffffff;
-  border-radius: 28rpx;
-  box-shadow: none;
-}
-.section-header {
-  padding-bottom: 20rpx;
-  border-bottom: 1rpx solid rgba(60, 60, 67, 0.1);
-}
-.section-title,
-.title {
-  color: #000000;
-}
-.section-date {
-  color: rgba(60, 60, 67, 0.34);
-}
-.section-more {
-  color: #007aff;
+.goal-value.placeholder {
+  color: var(--text-hint);
+  font-weight: 400;
 }
 
-/* 表现网格 / 历史 / 训练 / 反馈：中性浅底行，语义色改系统蓝 */
-.performance-item {
-  background-color: #f7f7fa;
+.info-block-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 10rpx;
 }
-.performance-item .label {
-  color: rgba(60, 60, 67, 0.34);
+
+.info-block-more {
+  font-size: 22rpx;
+  color: var(--primary);
 }
-.performance-item .value {
-  color: #000000;
+
+.info-block-hover {
+  opacity: 0.7;
 }
-.history-item {
-  background-color: #f7f7fa;
+
+/* 基础能力行：图标 + 能力域 + 代表指标值 + 变化 */
+.ability-row {
+  display: flex;
+  align-items: baseline;
+  padding: 7rpx 0;
 }
-.history-item .date {
-  color: #007aff;
+
+.ability-icon {
+  flex-shrink: 0;
+  font-size: 22rpx;
+  margin-right: 8rpx;
 }
-.history-item .score {
-  color: rgba(60, 60, 67, 0.6);
+
+.ability-name {
+  flex-shrink: 0;
+  font-size: 24rpx;
+  color: var(--text-sub);
 }
-.history-item .arrow {
+
+.ability-value {
+  flex: 1;
+  min-width: 0;
+  margin-left: 12rpx;
+  font-size: 24rpx;
+  font-weight: 500;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-variant-numeric: tabular-nums;
+}
+
+.ability-value.empty {
+  color: var(--text-hint);
+  font-weight: 400;
+}
+
+.ability-delta {
+  flex-shrink: 0;
+  margin-left: 8rpx;
+  font-size: 20rpx;
+  font-weight: 600;
+}
+
+.ability-delta.up {
+  color: var(--primary);
+}
+
+.ability-delta.down {
+  color: #ff9500;
+}
+
+/* 专项成绩：月份 + 综合评定 + 强/中/弱统计 */
+.specialty-line {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.specialty-month {
+  font-size: 22rpx;
+  color: var(--text-sub);
+}
+
+.specialty-rating {
+  font-size: 20rpx;
+  font-weight: 600;
+  color: var(--primary);
+  background: rgba(7, 193, 96, 0.1);
+  padding: 2rpx 14rpx;
+  border-radius: 999rpx;
+}
+
+.specialty-counts {
+  display: flex;
+  gap: 12rpx;
+  margin-top: 12rpx;
+}
+
+.specialty-count {
+  font-size: 22rpx;
+  font-weight: 600;
+  padding: 4rpx 16rpx;
+  border-radius: 999rpx;
+}
+
+.specialty-count.strong {
+  color: var(--primary);
+  background: rgba(7, 193, 96, 0.12);
+}
+
+.specialty-count.mid {
+  color: #ff9500;
+  background: rgba(255, 149, 0, 0.12);
+}
+
+.specialty-count.weak {
+  color: #ff3b30;
+  background: rgba(255, 59, 48, 0.1);
+}
+
+.info-empty {
+  padding: 8rpx 0 0;
+  font-size: 24rpx;
+  color: var(--text-hint);
+}
+
+/* ==================== 成长报告版块（月/季报入口 + 最近报告） ==================== */
+.report-card .section-header {
+  margin-bottom: 20rpx;
+}
+
+/* 两个生成入口：轻绿底块 */
+.report-entries {
+  display: flex;
+  gap: 16rpx;
+}
+
+.report-entry {
+  flex: 1;
+  background: rgba(7, 193, 96, 0.06);
+  border: 1rpx solid rgba(7, 193, 96, 0.16);
+  border-radius: 20rpx;
+  padding: 22rpx 24rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+  transition: all 0.2s ease;
+}
+
+.report-entry-hover {
+  background: rgba(7, 193, 96, 0.12);
+}
+
+.report-entry-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.report-entry-sub {
+  font-size: 22rpx;
+  color: var(--text-sub);
+}
+
+/* 最近报告行：标题 + 状态角标 + 更新时间 */
+.report-list {
+  margin-top: 20rpx;
+  border-top: 1rpx dashed rgba(60, 60, 67, 0.12);
+}
+
+.report-item {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 20rpx 4rpx;
+}
+
+.report-item + .report-item {
+  border-top: 1rpx dashed rgba(60, 60, 67, 0.12);
+}
+
+.report-item-hover {
+  background: rgba(7, 193, 96, 0.04);
+}
+
+.report-item-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 28rpx;
+  font-weight: 500;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.report-badge {
+  flex-shrink: 0;
+  font-size: 20rpx;
+  font-weight: 600;
+  padding: 4rpx 14rpx;
+  border-radius: 999rpx;
+}
+
+.report-badge.published {
+  color: var(--primary);
+  background: rgba(7, 193, 96, 0.12);
+}
+
+.report-badge.draft {
+  color: var(--text-sub);
+  background: rgba(60, 60, 67, 0.08);
+}
+
+.report-item-date {
+  flex-shrink: 0;
+  font-size: 22rpx;
+  color: var(--text-hint);
+}
+
+.report-arrow {
+  flex-shrink: 0;
+  font-size: 28rpx;
   color: rgba(60, 60, 67, 0.25);
 }
-.training-item {
-  background-color: #f7f7fa;
-}
-.training-header .date {
-  color: #007aff;
-}
-.training-header .type {
-  background-color: rgba(0, 122, 255, 0.12);
-  color: #007aff;
-}
-.training-item .name {
-  color: #000000;
-}
-.training-footer .focus {
-  color: rgba(60, 60, 67, 0.34);
-}
-.training-footer .photo-count {
-  color: #007aff;
-}
-.feedback-item {
-  background-color: #f7f7fa;
-}
-.feedback-header .date {
-  color: #007aff;
-}
-.feedback-header .week {
-  color: rgba(60, 60, 67, 0.34);
-}
-.feedback-item .content {
-  color: rgba(60, 60, 67, 0.6);
-}
 
-/* 空状态 */
-.empty,
-.emp-txt {
-  color: rgba(60, 60, 67, 0.34);
+.report-empty {
+  text-align: left;
+  padding: 20rpx 4rpx 4rpx;
+  border-top: 1rpx dashed rgba(60, 60, 67, 0.12);
 }

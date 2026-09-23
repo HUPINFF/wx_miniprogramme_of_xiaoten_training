@@ -14,10 +14,11 @@
           lazy-load
         ></image>
         
-        <!-- 视频 -->
-        <video 
-          wx:else 
-          class="moment-video" 
+        <!-- 视频：catch:tap 挂住冒泡，否则点视频想播放却被整卡的「跳详情」劫持 -->
+        <video
+          wx:else
+          catch:tap="stopPropagation"
+          class="moment-video"
           src="{{item.video}}" 
           controls 
           show-center-play-btn 

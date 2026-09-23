@@ -480,6 +480,8 @@ Page({
   //
   // 原先「我的预约」「我的反馈」「关于我们」三个菜单项已删除 —— 搬来的八宫格
   // 和「关于我们」版块指向同样的页面，留着是重复入口。
+  // 2026-09-22 宫格精简为五个（训练数据/课程表/课堂点评/我的反馈/成长案例，
+  // 用户两轮定稿）：goToBookClass / goToClassRecords / contactCoach 已一并移除。
 
   /**
    * 快捷入口 - 训练数据
@@ -503,22 +505,6 @@ Page({
   },
 
   /**
-   * 快捷入口 - 预约上课
-   */
-  goToBookClass() {
-    if (!this.checkLogin()) return;
-    wx.switchTab({ url: "/pages/users/orders/index" });
-  },
-
-  /**
-   * 快捷入口 - 上课记录
-   */
-  goToClassRecords() {
-    if (!this.checkLogin()) return;
-    wx.navigateTo({ url: '/pages/users/class-records/index' });
-  },
-
-  /**
    * 快捷入口 - 课堂点评
    */
   goToClassComments() {
@@ -531,13 +517,6 @@ Page({
    */
   goToChildProfile() {
     wx.navigateTo({ url: "/pages/users/all-growth/index" });
-  },
-
-  /**
-   * 快捷入口 - 联系教练
-   */
-  contactCoach() {
-    wx.navigateTo({ url: "/pages/users/coach-list/index" });
   },
 
   /**
@@ -649,6 +628,9 @@ Page({
       console.warn('精彩瞬间 ID 为空');
     }
   },
+
+  // 空处理：动态卡内 <video> 用 catch:tap 挂住，防止点视频播放时冒泡触发 viewMoment
+  stopPropagation() {},
 
   // ==================== 联系功能 ====================
 

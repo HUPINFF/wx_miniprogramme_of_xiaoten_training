@@ -144,6 +144,20 @@ Page({
       if(!this.data.hasMore || this.data.loadingMore) return;
       this.loadFeedbackList(true);
     },
+
+  // 预览每课反馈照片
+  previewFeedbackPhoto(e) {
+    const { urls, url } = e.currentTarget.dataset;
+    if (!urls || !urls.length) return;
+    wx.previewImage({ urls: urls, current: url });
+  },
+
+  // 点反馈卡片 → 反馈详情
+  goToDetail(e) {
+    const { id } = e.currentTarget.dataset;
+    if (!id) return;
+    wx.navigateTo({ url: '/pages/users/feedback-detail/index?id=' + id });
+  },
   /**
    * 生命周期函数--监听页面隐藏
    */

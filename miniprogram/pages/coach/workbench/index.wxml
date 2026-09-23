@@ -1,7 +1,5 @@
-<!--pages/coach/workbench/index.wxml-->
-<!-- <text>pages/coach/workbench/index.wxml</text> -->
+<!--pages/coach/workbench/index.wxml 首页同款渐变头部 + 白卡工作台-->
 <view class="container">
-  <!-- <nav-bar title="工作台" showBack="{{false}}"></nav-bar> -->
   <view class="gradient-bg"></view>
 
   <view class="header-area">
@@ -26,7 +24,7 @@
     </view>
 
     <view class="skeleton-grid">
-      <view class="skeleton-grid-item skeleton-shimmer" wx:for="{{[1,2,3,4,5]}}" wx:key="*this"></view>
+      <view class="skeleton-grid-item skeleton-shimmer" wx:for="{{[1,2,3,4]}}" wx:key="*this"></view>
     </view>
 
     <view class="section">
@@ -74,17 +72,36 @@
   bind:update="onCoachUpdate"
 />
 
-  <!-- 欢迎不分 -->
-  <!-- 欢迎语 -->
-<view class="welcome">
-  <view class="welcome-left">
-    <text class="greeting">👋 你好，{{coachInfo.name}}教练</text>
-    <text class="date">{{todayDate}}</text>
+  <!-- 正在上课：点了「上课」的课次在这里置顶展示，一键回到课堂 -->
+  <view class="inclass-area" wx:if="{{inClassList.length > 0}}">
+    <!-- 每节课一张独立白卡外框：多节并列时边界清晰，不糊成一块绿 -->
+    <view class="inclass-item" wx:for="{{inClassList}}" wx:key="_id">
+      <view class="inclass-card" bind:tap="goBackToClass" data-id="{{item._id}}">
+        <!-- 四角深浅循环：浅相=品牌亮绿(#00d68f)、深相=深绿(#05a350)，都是绿底
+             （不用薄荷浅色，白字不会糊）；四角同周期同相位，多卡并列样式一致 -->
+        <view class="corner-colors" aria-hidden="true">
+          <view class="cc-light cc-tl"></view>
+          <view class="cc-dark cc-tl"></view>
+          <view class="cc-light cc-tr"></view>
+          <view class="cc-dark cc-tr"></view>
+          <view class="cc-light cc-bl"></view>
+          <view class="cc-dark cc-bl"></view>
+          <view class="cc-light cc-br"></view>
+          <view class="cc-dark cc-br"></view>
+        </view>
+        <view class="inclass-main">
+          <view class="inclass-tag">
+            <view class="live-dot"></view>
+            <text>正在上课</text>
+          </view>
+          <view class="inclass-name">{{item.childName}}</view>
+          <view class="inclass-desc">{{item.startTime}} 开课{{item.itemsText ? ' · ' + item.itemsText : ''}}</view>
+          <view class="inclass-elapsed" wx:if="{{item.elapsedText}}">{{item.elapsedText}}</view>
+        </view>
+        <view class="inclass-btn">回到课堂</view>
+      </view>
+    </view>
   </view>
-  <view class="welcome-right">
-    <text>💪</text>
-  </view>
-</view>
 
   <!-- 快捷入口 -->
   <view class="quick-actions">
@@ -96,11 +113,6 @@
     <view class="action" bind:tap="gotoWeeklyPerformance">
       <text class="iconfont icon-luruchengji"></text>
       <text>录入成绩</text>
-    </view>
-
-    <view class="action" bind:tap="gotoFeedback">
-      <text class="iconfont icon-tianxiefankui"></text>
-      <text>写反馈</text>
     </view>
 
     <view class="action" bind:tap="gotoAppointments">
@@ -128,14 +140,14 @@
       <view class="training-item" wx:for="{{todayTrainings}}" wx:key="_id">
         <view class="time">{{item.startTime}}</view>
         <view class="info" bind:tap="goToTrainingDetail" data-id="{{item._id}}">
-          <text class="name">{{item.name}}</text>
-          <text class="child">{{item.childName}}</text>
+          <text class="name">{{item.childName}}</text>
+          <text class="child">{{item.itemsText}}</text>
         </view>
         <view
           class="start-btn status-{{item.status || 'pending'}}"
           bind:tap="goToClass"
           data-id="{{item._id}}"
-          style="{{(!item.status || item.status === 'pending') && !item.canStart ? 'background: #ccc;' : ''}}{{item.status === 'in_class' ? 'background: #4a90d9;' : ''}}{{item.status === 'finished' ? 'background: #999;' : ''}}"
+          style="{{(!item.status || item.status === 'pending') && !item.canStart ? 'background: #ccc;' : ''}}{{item.childBusy ? 'background: #ccc;' : ''}}{{item.status === 'in_class' ? 'background: #4a90d9;' : ''}}{{item.status === 'finished' ? 'background: #999;' : ''}}"
         >
           <text>{{(!item.status || item.status === 'pending') && item.canStart ? '上课' : ''}}{{(!item.status || item.status === 'pending') && !item.canStart ? '未到时间' : ''}}{{item.status === 'in_class' ? '上课中' : ''}}{{item.status === 'finished' ? '已下课' : ''}}</text>
         </view>

@@ -67,6 +67,12 @@ page {
   color: #34c759;
 }
 
+/* 预约审批建的课是 scheduled——此前只有「已排课」文案没有配色，一直显示灰底 */
+.course-status.status-scheduled {
+  background: rgba(175, 82, 222, 0.12);
+  color: #af52de;
+}
+
 /* ==================== 白色分组卡 ==================== */
 .card {
   background: #ffffff;
@@ -158,4 +164,42 @@ page {
   color: rgba(60, 60, 67, 0.34);
   font-size: 28rpx;
   padding: 40rpx 0;
+}
+
+/* ==================== 改课记录 ==================== */
+.log-item {
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid rgba(60, 60, 67, 0.08);
+}
+
+.log-item:last-child { padding-bottom: 0; border-bottom: none; }
+
+.log-line1 {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-bottom: 8rpx;
+}
+
+.log-action {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #FF9500;
+}
+
+.log-by {
+  font-size: 22rpx;
+  color: rgba(60, 60, 67, 0.6);
+}
+
+.log-time {
+  margin-left: auto;
+  font-size: 22rpx;
+  color: rgba(60, 60, 67, 0.34);
+}
+
+.log-detail {
+  font-size: 24rpx;
+  line-height: 1.6;
+  color: rgba(60, 60, 67, 0.6);
 }

@@ -2,6 +2,7 @@
 // 查询逻辑来自 pages/coach/workbench/index.js 的 loadTodayTrainings()，
 // 但补了三个修正：onShow 空值守卫、查询 .catch()、按开始时间排序。
 const db = wx.cloud.database();
+const { findActiveClassForChild } = require('../../../utils/helper');
 const WEEK = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
 
 Page({
@@ -109,9 +110,13 @@ Page({
         }
 
         const child = childInfoMap[t.childId];
+        // 灰字副标题：训练项目名；旧文档无 items 时回落到教练手填内容 / 训练重点
+        const itemsText = (t.items || []).map(it => (it && it.name) || '').filter(Boolean).join('、')
+          || t.coachContent || t.focus || '';
         return {
           ...t,
           childName: (child && child.name) || t.childName || '未知学员',
+          itemsText,
           canStart,
           status,
           statusText,
@@ -163,14 +168,21 @@ Page({
       return;
     }
 
-    db.collection('trainings').doc(id).update({
-      data: {
-        status: 'in_class',
-        inClassTime: new Date()
+    // 开课前守卫：同一学员不能同时上两节课（与工作台 goToClass 同口径）
+    findActiveClassForChild(db, training.childId, id).then(conflict => {
+      if (conflict) {
+        wx.showToast({ title: '该学员正在上课中', icon: 'none' });
+        return;
       }
-    }).then(() => {
-      wx.navigateTo({ url: `/pages/coach/in-class/index?trainingId=${id}` });
-      this.loadTrainings();
+      return db.collection('trainings').doc(id).update({
+        data: {
+          status: 'in_class',
+          inClassTime: new Date()
+        }
+      }).then(() => {
+        wx.navigateTo({ url: `/pages/coach/in-class/index?trainingId=${id}` });
+        this.loadTrainings();
+      });
     }).catch(err => {
       console.error('开始上课失败', err);
       wx.showToast({ title: '操作失败', icon: 'none' });

@@ -1,6 +1,5 @@
 {
   "usingComponents": {
-    "nav-bar":"/components/nav-bar/nav-bar",
     "coach-card": "/components/coach-card/index",
     "coach-tab-bar": "/components/coach-tab-bar/index"
   },

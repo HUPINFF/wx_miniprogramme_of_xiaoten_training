@@ -3,376 +3,62 @@
 
 <!-- 页面内容 -->
 <view class="page-content">
-  
+
   <!-- 顶部标题区：把「成长记录」变成「孩子的成长」 -->
   <view class="header-area">
     <text class="header-title">{{childInfo.name ? childInfo.name + '的成长' : '成长记录'}}</text>
     <text class="header-subtitle">每一次训练，都在悄悄改变他</text>
   </view>
 
-  <!-- 本月概览条：先给两个最容易读懂的数字 -->
-  <view class="overview-strip" wx:if="{{overviewVisible}}">
-    <view class="overview-item">
-      <view class="overview-num-row">
-        <text class="overview-num">{{monthTrainings}}</text>
-        <text class="overview-unit">次</text>
+  <!-- 四个版块入口：各自摘要行先在这里给家长一个答案，细节点进去看 -->
+  <view class="entry-list">
+
+    <!-- ① 基本能力成长：原页面的能力分组卡 + 成长曲线整体搬到了 growth-ability -->
+    <view class="entry-card" hover-class="entry-card-hover" bind:tap="goAbility">
+      <view class="entry-icon">📊</view>
+      <view class="entry-body">
+        <text class="entry-title">基本能力成长</text>
+        <text class="entry-desc">能力值 · 最新进步 · 成长曲线</text>
+        <text class="entry-summary" wx:if="{{abilitySummary}}">{{abilitySummary}}</text>
       </view>
-      <text class="overview-label">本月训练</text>
+      <text class="entry-arrow">›</text>
     </view>
-    <view class="overview-divider"></view>
-    <view class="overview-item">
-      <view class="overview-num-row">
-        <text class="overview-num">{{totalImproved}}</text>
-        <text class="overview-unit">项</text>
+
+    <!-- ② 训练记录：每一次课的流水（新的在上），点进看单次课详情 -->
+    <view class="entry-card" hover-class="entry-card-hover" bind:tap="goTrainingRecords">
+      <view class="entry-icon">🏃</view>
+      <view class="entry-body">
+        <text class="entry-title">训练记录</text>
+        <text class="entry-desc">每次课的完成情况 · 照片 · 视频</text>
+        <text class="entry-summary" wx:if="{{trainingSummary}}">{{trainingSummary}}</text>
       </view>
-      <text class="overview-label">最近测评进步</text>
+      <text class="entry-arrow">›</text>
     </view>
+
+    <!-- ③ 训练照片与视频：原页面的照片/视频时间轴整体搬到了 growth-records -->
+    <view class="entry-card" hover-class="entry-card-hover" bind:tap="goRecords">
+      <view class="entry-icon">🎬</view>
+      <view class="entry-body">
+        <text class="entry-title">训练照片与视频</text>
+        <text class="entry-desc">训练照片 · 视频 · 成长影像</text>
+        <text class="entry-summary" wx:if="{{recordsSummary}}">{{recordsSummary}}</text>
+      </view>
+      <text class="entry-arrow">›</text>
+    </view>
+
+    <!-- ④ 成长报告：教练撰写的月度/季度总结，海报式成品 -->
+    <view class="entry-card" hover-class="entry-card-hover" bind:tap="goReports">
+      <view class="entry-icon">📄</view>
+      <view class="entry-body">
+        <text class="entry-title">成长报告</text>
+        <text class="entry-desc">教练撰写的月度 / 季度成长总结</text>
+        <text class="entry-summary" wx:if="{{reportsSummary}}">{{reportsSummary}}</text>
+      </view>
+      <text class="entry-arrow">›</text>
+    </view>
+
   </view>
 
-  <!-- 最新进步故事卡。highlight 为 null 时整卡隐藏（无记录/只有一条/无变化都不渲染） -->
-  <view class="hl-card {{highlight.isImprovement === false ? 'is-down' : ''}}" wx:if="{{highlight}}">
-    <view class="hl-accent"></view>
-    <view class="hl-body">
-
-      <view class="hl-head">
-        <text class="hl-emoji">{{highlight.isImprovement === false ? '💪' : '🎉'}}</text>
-        <text class="hl-label">{{highlight.mode === 'first' ? '首次记录' : (highlight.isImprovement === false ? '继续加油' : '最新进步')}}</text>
-      </view>
-
-      <view class="hl-main">
-        <text class="hl-metric">{{highlight.metricName}}</text>
-        <view class="hl-values">
-          <text class="hl-current">{{highlight.currentText}}</text>
-          <block wx:if="{{highlight.previousText}}">
-            <text class="hl-arrow">←</text>
-            <text class="hl-previous">{{highlight.previousText}}</text>
-          </block>
-        </view>
-      </view>
-
-      <view class="hl-foot" wx:if="{{highlight.deltaText}}">
-        <text class="hl-delta">{{highlight.deltaText}}</text>
-        <text class="hl-dot">·</text>
-        <text class="hl-compare">{{highlight.comparisonText}}</text>
-      </view>
-
-      <view class="hl-story" wx:if="{{storyText}}">
-        <text>{{storyText}}</text>
-      </view>
-
-    </view>
-  </view>
-
-  <!-- 能力成长：把 10 项指标按能力域归组，点某项看它的曲线。
-       一条测评都没有时整块隐藏（空状态交给下方图表区）。 -->
-  <view class="ability-section" wx:if="{{abilityGroups.length > 0}}">
-    <view class="ability-head-row">
-      <text class="ability-title">能力成长</text>
-      <text class="ability-hint">点一项，看它的变化</text>
-    </view>
-
-    <view class="ability-grid">
-      <view class="ability-card" wx:for="{{abilityGroups}}" wx:key="key" wx:for-item="group">
-        <view class="ability-card-head">
-          <text class="ability-icon">{{group.icon}}</text>
-          <text class="ability-name">{{group.name}}</text>
-          <text
-            class="ability-badge {{group.improvedCount > 0 ? 'up' : (group.measuredCount > 0 ? '' : 'none')}}"
-            wx:if="{{group.measuredCount > 0}}"
-          >{{group.improvedCount > 0 ? group.improvedCount + '项进步' : '待突破'}}</text>
-          <text class="ability-badge none" wx:else>未测</text>
-        </view>
-
-        <view class="ability-metrics">
-          <view
-            class="metric-row {{selectedSport === metric.key ? 'active' : ''}}"
-            wx:for="{{group.metrics}}"
-            wx:key="key"
-            wx:for-item="metric"
-            hover-class="metric-row-hover"
-            bind:tap="selectMetric"
-            data-key="{{metric.key}}"
-          >
-            <text class="metric-name">{{metric.name}}</text>
-            <text class="metric-value {{metric.hasData ? '' : 'empty'}}">{{metric.hasData ? metric.valueText : '未测'}}</text>
-            <text
-              class="metric-delta {{metric.isImprovement === true ? 'up' : (metric.isImprovement === false ? 'down' : 'flat')}}"
-              wx:if="{{metric.deltaText}}"
-            >{{metric.isImprovement === true ? '↑' : (metric.isImprovement === false ? '↓' : '·')}}{{metric.deltaText}}</text>
-          </view>
-        </view>
-      </view>
-    </view>
-  </view>
-
-  <!-- 时间选择器（渐变背景到此结束） -->
-  <view class="time-tab-wrapper">
-    <view class="time-tab">
-      <view
-        class="time-tab-item {{currentTab === 'week' ? 'active' : ''}}"
-        bind:tap="switchTab"
-        data-tab="week"
-      >
-        <text class="time-icon">📅</text>
-        <text>每周</text>
-      </view>
-      <view class="time-tab-divider"></view>
-      <view
-        class="time-tab-item {{currentTab === 'month' ? 'active' : ''}}"
-        bind:tap="switchTab"
-        data-tab="month"
-      >
-        <text class="time-icon">📆</text>
-        <text>每月</text>
-      </view>
-    </view>
-  </view>
-
-</view>
-
-<!-- 图表区域（在渐变背景之外，白色背景） -->
-<view class="chart-section">
-  <view class="chart-accent"></view>
-  
-  <view class="chart-header">
-    <view class="chart-title-group">
-      <text class="chart-icon">📊</text>
-      <text class="chart-title">{{getSportName(selectedSport)}} 成长曲线</text>
-    </view>
-    <view class="chart-badge" wx:if="{{hasData}}">
-      <text class="badge-text">{{currentTab === 'week' ? '近12周' : '近12月'}}</text>
-    </view>
-  </view>
-
-  <view class="chart-body" wx:if="{{hasData}}">
-    <scroll-view 
-      scroll-x="true" 
-      class="chart-scroll"
-      enhanced
-      show-scrollbar="{{false}}"
-      bounces="{{true}}"
-    >
-      <canvas 
-        canvas-id="lineChart" 
-        class="line-chart" 
-        style="width: {{chartWidth}}px;"
-      ></canvas>
-    </scroll-view>
-    
-    <view class="chart-footer">
-      <view class="swipe-hint">
-        <view class="swipe-line"></view>
-        <text class="swipe-text">左右滑动查看更多</text>
-        <view class="swipe-line"></view>
-      </view>
-    </view>
-  </view>
-
-  <view class="empty-state" wx:else>
-    <view class="empty-illustration">
-      <view class="empty-circle outer"></view>
-      <view class="empty-circle inner"></view>
-      <text class="empty-emoji">📈</text>
-    </view>
-    <text class="empty-title">暂无测评数据</text>
-    <text class="empty-desc">上完第一节课，这里就会长出孩子的成长曲线</text>
-    <view class="empty-action" bind:tap="goBooking">
-      <text>去预约训练</text>
-      <text class="arrow">→</text>
-    </view>
-  </view>
-</view>
-
-<!-- 教练的观察：最新一条课后反馈，用「人」的视角给数据配上温度 -->
-<view class="coach-note" wx:if="{{coachNote}}" bind:tap="goFeedback" hover-class="coach-note-hover">
-  <view class="note-head">
-    <text class="note-label">教练的观察</text>
-    <text class="note-meta" wx:if="{{coachNote.weekRange}}">{{coachNote.weekRange}}</text>
-    <text class="note-more">全部反馈 ›</text>
-  </view>
-  <text class="note-content">{{coachNote.content}}</text>
-</view>
-
-<!-- 视频时间轴区域 -->
-<view class="timeline-section">
-  <view class="timeline-header">
-    <view class="timeline-title-group">
-      <text class="timeline-icon">🎬</text>
-      <text class="timeline-title">训练记录</text>
-    </view>
-    <view class="timeline-badge" wx:if="{{timelineData.length > 0}}">
-      <text class="badge-text">{{timelineData.length}}个月</text>
-    </view>
-  </view>
-
-  <view class="timeline-body" wx:if="{{!timelineLoading && timelineData.length > 0}}">
-    <view 
-      class="timeline-item" 
-      wx:for="{{timelineData}}" 
-      wx:key="yearMonth"
-    >
-      <!-- 月份标记 -->
-      <view class="timeline-month">
-        <view class="month-dot"></view>
-        <text class="month-text">{{item.yearMonth}}</text>
-      </view>
-      
-      <!-- 内容区域 -->
-      <view class="timeline-content">
-        <!-- 照片展示 -->
-        <view class="media-group" wx:if="{{item.photos && item.photos.length > 0}}">
-          <view class="media-header">
-            <text class="media-icon">📷</text>
-            <text class="media-count">{{item.photoCount}}张</text>
-          </view>
-          <view class="photo-grid">
-            <view 
-              class="photo-item" 
-              wx:for="{{item.photos}}" 
-              wx:for-item="photo"
-              wx:for-index="photoIndex"
-              wx:key="photoIndex"
-              bind:tap="previewPhoto"
-              data-photos="{{item.photos}}"
-              data-index="{{photoIndex}}"
-            >
-              <image src="{{photo}}" mode="aspectFill" class="photo-img"></image>
-            </view>
-          </view>
-        </view>
-
-        <!-- 视频展示 -->
-        <view class="media-group" wx:if="{{item.videos && item.videos.length > 0}}">
-          <view class="media-header">
-            <text class="media-icon">🎥</text>
-            <text class="media-count">{{item.videoCount}}个</text>
-          </view>
-          <view class="video-grid">
-            <view 
-              class="video-item" 
-              wx:for="{{item.videos}}" 
-              wx:for-item="video"
-              wx:for-index="videoIndex"
-              wx:key="videoIndex"
-              bind:tap="playVideo"
-              data-url="{{video}}"
-            >
-              <video 
-                src="{{video}}" 
-                class="video-media"
-                mode="aspectFill"
-                object-fit="cover"
-                show-center-play-btn="{{true}}"
-                controls="{{false}}"
-              ></video>
-              <view class="video-overlay">
-                <view class="play-btn"></view>
-              </view>
-            </view>
-          </view>
-        </view>
-      </view>
-    </view>
-  </view>
-
-  <!-- 空状态 -->
-  <view class="timeline-empty" wx:if="{{!timelineLoading && timelineData.length === 0}}">
-    <view class="empty-illustration">
-      <text class="empty-emoji">📹</text>
-    </view>
-    <text class="empty-title">暂无训练记录</text>
-    <text class="empty-desc">等待教练上传训练视频和照片</text>
-  </view>
-
-  <!-- 加载状态 -->
-  <view class="timeline-loading" wx:if="{{timelineLoading}}">
-    <view class="loading-spinner"></view>
-    <text>加载中...</text>
-  </view>
-</view>
-
-<!-- 对比海报区域 -->
-<view class="compare-section">
-  <view class="compare-header">
-    <text class="compare-icon">📊</text>
-    <text class="compare-title">成长对比</text>
-  </view>
-
-  <view class="compare-content">
-    <view class="compare-row">
-      <view class="compare-label">选择项目</view>
-      <view class="compare-select-item full-width">
-        <picker
-          mode="selector"
-          range="{{sportsItems}}"
-          range-key="name"
-          bindchange="selectCompareSport"
-          value="{{compareSportIndex}}"
-        >
-          <view class="select-btn">
-            <text>{{compareSport.name || '选择项目'}}</text>
-            <text class="select-arrow">▼</text>
-          </view>
-        </picker>
-      </view>
-    </view>
-
-    <view class="compare-row">
-      <view class="compare-label">选择对比周</view>
-      <view class="compare-selects">
-        <view class="compare-select-item">
-          <picker
-            mode="selector"
-            range="{{weekOptions}}"
-            range-key="label"
-            bindchange="selectCompareWeek1"
-            value="{{compareWeek1Index}}"
-          >
-            <view class="select-btn">
-              <text>{{compareWeek1.label || '选择周'}}</text>
-              <text class="select-arrow">▼</text>
-            </view>
-          </picker>
-        </view>
-        <text class="compare-vs">VS</text>
-        <view class="compare-select-item">
-          <view class="select-btn disabled">
-            <text>最近1周</text>
-          </view>
-        </view>
-      </view>
-    </view>
-
-    <view 
-      class="compare-btn {{canGenerateCompare && compareSport ? 'active' : ''}}"
-      bind:tap="generateComparePoster"
-    >
-      <text>生成对比海报</text>
-    </view>
-  </view>
-
-  <!-- 对比图表 -->
-  <view class="compare-chart" wx:if="{{showCompareChart}}">
-    <view class="compare-chart-inner">
-      <view class="compare-canvas-wrapper">
-        <canvas 
-          canvas-id="compareChart" 
-          class="compare-chart-canvas"
-        ></canvas>
-      </view>
-      
-      <view class="compare-legend">
-        <view class="legend-item">
-          <view class="legend-dot first"></view>
-          <text class="legend-text">{{compareWeeks[0]}}</text>
-        </view>
-        <view class="legend-item">
-          <view class="legend-dot last"></view>
-          <text class="legend-text">最近1周</text>
-        </view>
-      </view>
-    </view>
-  </view>
 </view>
 
 <view class="safe-area"></view>

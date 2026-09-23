@@ -1,33 +1,41 @@
-<!--pages/coach/profile/index.wxml-->
-<nav-bar title="我的" showBack="{{false}}"></nav-bar>
-
+<!--pages/coach/profile/index.wxml — 我的：品牌绿渐变头部 + 白卡菜单-->
 <view class="container">
-  <!-- 教练资料卡：复用 coach-card，自带姓名/电话/微信/简介/头像的编辑能力 -->
-  <coach-card
-    coachInfo="{{coachInfo}}"
-    editable="{{true}}"
-    bind:update="onCoachUpdate"
-  />
+  <view class="gradient-bg"></view>
 
-  <!-- 菜单分组 -->
-  <view class="menu-group" wx:for="{{menuGroups}}" wx:key="title" wx:for-item="group">
-    <text class="group-title">{{group.title}}</text>
-    <view class="menu-card">
-      <view
-        class="menu-item"
-        wx:for="{{group.items}}"
-        wx:key="title"
-        data-url="{{item.url}}"
-        bind:tap="onMenuTap"
-      >
-        <text class="menu-icon">{{item.icon}}</text>
-        <text class="menu-title">{{item.title}}</text>
-        <text class="menu-arrow">›</text>
-      </view>
-    </view>
+  <!-- 顶部标题区：白字标题 + 品牌胶囊（tab 页无返回键） -->
+  <view class="header-area">
+    <text class="header-title">我的</text>
+    <text class="header-subtitle">腾鑫体育 · 教练端</text>
   </view>
 
-  <button class="logout-btn" bind:tap="logout">退出登录</button>
+  <view class="page-body">
+    <!-- 教练资料卡：复用 coach-card，自带姓名/电话/微信/简介/头像的编辑能力 -->
+    <coach-card
+      coachInfo="{{coachInfo}}"
+      editable="{{true}}"
+      bind:update="onCoachUpdate"
+    />
+
+    <!-- 菜单分组 -->
+    <view class="menu-group" wx:for="{{menuGroups}}" wx:key="title" wx:for-item="group">
+      <view class="group-title"><view class="title-accent"></view><text>{{group.title}}</text></view>
+      <view class="menu-card">
+        <view
+          class="menu-item"
+          wx:for="{{group.items}}"
+          wx:key="title"
+          data-url="{{item.url}}"
+          bind:tap="onMenuTap"
+        >
+          <view class="menu-icon">{{item.icon}}</view>
+          <text class="menu-title">{{item.title}}</text>
+          <text class="menu-arrow">›</text>
+        </view>
+      </view>
+    </view>
+
+    <button class="logout-btn" bind:tap="logout">退出登录</button>
+  </view>
 
   <coach-tab-bar current="profile" />
 </view>

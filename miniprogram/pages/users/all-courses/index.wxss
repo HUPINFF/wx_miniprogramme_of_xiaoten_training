@@ -1,54 +1,136 @@
-/* pages/users/all-courses/index.wxss */
+/* pages/users/all-courses/index.wxss 全部课程：首页同款渐变头部 + 白卡课程列表。
+   变量与首页同源（page 级 wxss 每页独立，要在这份里再声明一遍）；
+   原页面 --primary 曾是 iOS 蓝 #007AFF，统一回品牌绿 #07c160 */
 page {
-  --bg: #F2F2F7;
-  --primary: #007AFF;
-  --primary-dark: #0056CF;
-  --primary-light: rgba(0, 122, 255, 0.1);
+  --primary: #07c160;
+  --primary-light: #e8f5e9;
+  --bg: #f5f7fa;
   --card: #ffffff;
-  --text-main: #000000;
-  --text-sub: rgba(60, 60, 67, 0.6);
-  --text-hint: rgba(60, 60, 67, 0.34);
-  --border: rgba(60, 60, 67, 0.1);
-  --radius-sm: 14rpx;
-  --radius-md: 20rpx;
-  --radius-lg: 28rpx;
-  --radius-xl: 32rpx;
-
-  background-color: var(--bg);
+  --text-main: #1a1a2e;
+  --text-sub: #6b7280;
+  --text-hint: #9ca3af;
+  --shadow-2: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+  --radius-md: 24rpx;
+  --radius-lg: 32rpx;
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.fade-in {
+  animation: fadeIn 0.4s ease-out both;
+}
+
+/* ==================== 渐变背景（首页同一配方，短一截） ==================== */
+.gradient-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 460rpx;
+  background: linear-gradient(135deg, #07c160 0%, #00d68f 30%, #e8f5e9 80%, rgba(245, 247, 250, 0) 100%);
+  z-index: 0;
+}
+
+.gradient-bg::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80rpx;
+  background: linear-gradient(180deg, transparent 0%, var(--bg) 100%);
+}
+
+/* ==================== 页面容器 ==================== */
 .container {
   min-height: 100vh;
-  padding: 24rpx;
+  background: var(--bg);
   padding-bottom: 60rpx;
+  position: relative;
 }
 
-.course-list {
+/* ==================== 顶部标题区 ==================== */
+.header-area {
+  position: relative;
+  z-index: 1;
+  padding: 96rpx 40rpx 50rpx;
   display: flex;
   flex-direction: column;
-  gap: 20rpx;
+  align-items: center;
+}
+
+.header-title {
+  font-size: 52rpx;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 16rpx;
+  text-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
+  letter-spacing: 2rpx;
+}
+
+.header-subtitle {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.15);
+  padding: 8rpx 24rpx;
+  border-radius: 20rpx;
+  letter-spacing: 1rpx;
+}
+
+/* 返回键：白透圆钮浮在标题行左侧 */
+.back-btn {
+  position: absolute;
+  left: 30rpx;
+  top: 104rpx;
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 40rpx;
+  line-height: 60rpx;
+  text-align: center;
+  backdrop-filter: blur(10rpx);
+}
+
+.back-btn-active {
+  background: rgba(255, 255, 255, 0.32);
+}
+
+/* ==================== 课程列表 ==================== */
+.course-list {
+  position: relative;
+  z-index: 1;
+  padding: 0 30rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
 }
 
 .course-card {
   display: flex;
   align-items: center;
   background: var(--card);
-  border-radius: 24rpx;
-  padding: 20rpx;
-  transition: opacity 0.2s ease;
+  border-radius: var(--radius-lg);
+  padding: 22rpx;
+  box-shadow: var(--shadow-2);
 }
 
-.course-card:active {
-  opacity: 0.85;
+.course-card-active {
+  background: rgba(0, 0, 0, 0.03);
 }
 
 .course-cover {
   width: 160rpx;
   height: 160rpx;
-  border-radius: 16rpx;
+  border-radius: 20rpx;
   overflow: hidden;
   margin-right: 24rpx;
   flex-shrink: 0;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
 }
 
 .course-cover-img {
@@ -56,18 +138,19 @@ page {
   height: 100%;
 }
 
+/* 无封面占位：浅绿渐变 + 图标，别用灰底和品牌绿打架 */
 .course-no-cover {
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #f7f7fa 0%, #ececf1 100%);
+  background: linear-gradient(135deg, #e8f5e9 0%, #d3ecd9 100%);
 }
 
 .course-no-cover text {
   font-size: 60rpx;
-  opacity: 0.6;
+  opacity: 0.7;
 }
 
 .course-info {
@@ -80,13 +163,13 @@ page {
 
 .course-name {
   font-size: 30rpx;
-  font-weight: 600;
-  color: #000;
+  font-weight: 700;
+  color: var(--text-main);
 }
 
 .course-desc {
   font-size: 24rpx;
-  color: rgba(60, 60, 67, 0.6);
+  color: var(--text-sub);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -98,46 +181,79 @@ page {
   gap: 16rpx;
 }
 
+/* 课时徽章：浅绿底绿字，与全站「绿色=课程/完成」语义一致 */
 .course-hours {
-  font-size: 24rpx;
-  color: #007AFF;
-  background: rgba(0, 122, 255, 0.1);
+  font-size: 22rpx;
+  color: var(--primary);
+  background: var(--primary-light);
   padding: 4rpx 16rpx;
   border-radius: 999rpx;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .card-arrow {
-  font-size: 36rpx;
+  font-size: 32rpx;
   color: rgba(60, 60, 67, 0.25);
-  font-weight: 500;
+  font-weight: 600;
   margin-left: 12rpx;
 }
 
+/* ==================== 空状态 ==================== */
 .empty-state {
+  position: relative;
+  z-index: 1;
+  padding: 140rpx 0 80rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 200rpx 0;
+  gap: 10rpx;
 }
 
 .empty-icon {
-  font-size: 120rpx;
-  margin-bottom: 30rpx;
-  opacity: 0.4;
+  font-size: 96rpx;
+  margin-bottom: 10rpx;
 }
 
-.empty-text {
-  font-size: 28rpx;
-  color: rgba(60, 60, 67, 0.6);
+.empty-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--text-sub);
 }
 
+.empty-sub {
+  font-size: 24rpx;
+  color: var(--text-hint);
+}
+
+/* ==================== 加载浮层 ==================== */
 .loading {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  padding: 200rpx;
-  color: rgba(60, 60, 67, 0.34);
-  font-size: 28rpx;
+  gap: 20rpx;
+  background-color: rgba(255, 255, 255, 0.96);
+  padding: 40rpx 48rpx;
+  border-radius: 24rpx;
+  color: rgba(60, 60, 67, 0.6);
+  font-size: 26rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid rgba(60, 60, 67, 0.1);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

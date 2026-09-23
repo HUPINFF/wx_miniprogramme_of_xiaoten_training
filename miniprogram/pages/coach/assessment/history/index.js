@@ -24,15 +24,16 @@ Page({
   },
 
   // 加载历史测评记录
+  // 有返回值：onPullDownRefresh 靠它决定何时收起刷新动画
   loadAssessmentHistory() {
     if(!this.data.childId) {
       this.setData({loading:false});
-      return;
+      return Promise.resolve();
     }
     this.setData({loading:true});
 
     const db = wx.cloud.database();
-    db.collection('assessments').where({
+    return db.collection('assessments').where({
       childId:this.data.childId
     }).orderBy('year','desc').orderBy('month','desc').get().then(res => {
       this.setData({
@@ -44,6 +45,16 @@ Page({
       this.setData({ loading: false });
       wx.showToast({ title: '加载失败', icon: 'none' });
     });
+  },
+
+  /** 返回上一页；直接打开本页（无上一页）时退回首页 tab */
+  goBack() {
+    const pages = getCurrentPages();
+    if (pages.length > 1) {
+      wx.navigateBack();
+    } else {
+      wx.switchTab({ url: '/pages/users/home/index' });
+    }
   },
 
   /**

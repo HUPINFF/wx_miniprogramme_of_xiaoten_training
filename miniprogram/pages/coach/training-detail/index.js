@@ -1,7 +1,10 @@
+const { toLocalDate } = require('../../../utils/helper');
+
 Page({
   data: {
     training: null,
-    childInfo: null
+    childInfo: null,
+    changeLogs: []
   },
 
   onLoad(options) {
@@ -17,7 +20,7 @@ Page({
     db.collection('trainings').doc(trainingId).get().then(res => {
       console.log('训练数据:', res.data);
       const training = res.data;
-      this.setData({ training });
+      this.setData({ training, changeLogs: this.formatChangeLogs(training) });
 
       if (training && training.childId) {
         console.log('加载学员信息, childId:', training.childId);
@@ -28,6 +31,26 @@ Page({
     }).catch(err => {
       console.error('加载训练信息失败', err);
       wx.showToast({ title: '加载失败', icon: 'none' });
+    });
+  },
+
+  // changeLogs 倒序展示（最近一次在最上）；at 落库的是 Date，这里格式化成「9月21日 14:30」
+  formatChangeLogs(training) {
+    const logs = (training && training.changeLogs) || [];
+    return logs.slice().reverse().map(l => {
+      const d = toLocalDate(l.at);
+      let timeText = '';
+      if (d) {
+        const hh = String(d.getHours()).padStart(2, '0');
+        const mm = String(d.getMinutes()).padStart(2, '0');
+        timeText = (d.getMonth() + 1) + '月' + d.getDate() + '日 ' + hh + ':' + mm;
+      }
+      return {
+        timeText: timeText,
+        by: l.by || '',
+        action: l.action || '改课',
+        detail: l.detail || ''
+      };
     });
   },
 

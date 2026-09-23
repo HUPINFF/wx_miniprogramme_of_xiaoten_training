@@ -12,6 +12,12 @@ Component({
     showBack: {
       type: Boolean,
       value: true
+    },
+
+    // 配色主题：default=蓝绿渐变（历史默认） | green=首页同款品牌绿渐变
+    theme: {
+      type: String,
+      value: 'default'
     }
   },
   data: {

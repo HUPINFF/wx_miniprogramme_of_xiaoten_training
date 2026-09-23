@@ -141,6 +141,45 @@
       </view>
     </view>
 
+    <!-- 教练反馈：这节课教练写的评价（评分/进步标签/正文），嵌在详情页直接能看。
+         完整版（课堂照片/视频/朋友圈分享文案）在反馈详情页；还没写反馈的已完结课给一行提示 -->
+    <view class="card" wx:if="{{feedback || statusKey === 'finished'}}">
+      <view class="card-title-row">
+        <view class="card-title">教练反馈</view>
+        <view class="fb-more" wx:if="{{feedback}}" bind:tap="goFeedbackDetail" hover-class="fb-more-active">查看完整反馈 ›</view>
+      </view>
+
+      <block wx:if="{{feedback}}">
+        <view class="fb-coach-row">
+          <image wx:if="{{feedback.coachAvatar}}" class="fb-avatar" src="{{feedback.coachAvatar}}" mode="aspectFill"></image>
+          <view wx:else class="fb-avatar fb-avatar-empty">{{feedback.coachName ? feedback.coachName[0] : '教'}}</view>
+          <view class="fb-coach-meta">
+            <text class="fb-coach-name">{{feedback.coachName ? feedback.coachName + '教练' : '课程教练'}}</text>
+            <view class="stars">
+              <text
+                class="star {{sIndex < feedback.rating ? 'on' : ''}}"
+                wx:for="{{[1,2,3,4,5]}}"
+                wx:for-item="star"
+                wx:for-index="sIndex"
+                wx:key="*this"
+              >★</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="fb-tags" wx:if="{{feedback.tags && feedback.tags.length > 0}}">
+          <text class="fb-tag" wx:for="{{feedback.tags}}" wx:for-item="tag" wx:key="*this">{{tag}}</text>
+        </view>
+
+        <text class="fb-content" wx:if="{{feedback.content}}">{{feedback.content}}</text>
+      </block>
+
+      <!-- 只在反馈真的查完了才说「暂无」：查无结果和还没查回来是两回事 -->
+      <view class="fb-none" wx:elif="{{feedbackLoaded}}">
+        <text>本次课暂无教练反馈</text>
+      </view>
+    </view>
+
   </view>
 </view>
 

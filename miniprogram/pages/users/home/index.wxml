@@ -40,7 +40,7 @@
   <!-- 整卡可点，进训练详情页；两种状态共用同一个页面 -->
   <view
     wx:if="{{!loading && currentMode !== 'none'}}"
-    class="status-card {{currentMode === 'in_class' ? 'status-card-live' : ''}} fade-in"
+    class="status-card {{currentMode === 'in_class' ? 'status-card-live' : 'status-card-upcoming'}} fade-in"
     hover-class="status-card-active"
     bind:tap="goToTrainingDetail"
     data-id="{{currentTraining._id}}"
@@ -80,11 +80,27 @@
 
     <!-- 下节课 -->
     <block wx:else>
+      <!-- 四角颜色循环变换：每角一对 浅绿/深绿 光晕原地交叉淡入淡出（只动 opacity，
+           无位移无扫过感）；四角周期相位各不同，整卡颜色此起彼伏循环变换 -->
+      <view class="corner-colors" aria-hidden="true">
+        <view class="cc-light cc-tl"></view>
+        <view class="cc-dark cc-tl"></view>
+        <view class="cc-light cc-tr"></view>
+        <view class="cc-dark cc-tr"></view>
+        <view class="cc-light cc-bl"></view>
+        <view class="cc-dark cc-bl"></view>
+        <view class="cc-light cc-br"></view>
+        <view class="cc-dark cc-br"></view>
+      </view>
       <view class="status-head">
         <text class="status-badge upcoming">下节课</text>
-        <text class="status-more">查看详情 ›</text>
+        <view class="status-links">
+          <text class="status-more">查看详情 ›</text>
+          <!-- 我的课表：查看详情正下方的第二入口；catch 断冒泡防误触整卡跳详情 -->
+          <text class="status-schedule-btn" catch:tap="goToMySchedule">我的课表 ›</text>
+        </view>
       </view>
-      <view class="status-title">
+      <view class="status-title status-title-hero">
         {{upcomingDateText}} {{currentTraining.startTime}}<text wx:if="{{currentTraining.endTime}}">-{{currentTraining.endTime}}</text>
       </view>
       <view class="status-row" wx:if="{{currentTraining.location}}">
@@ -95,25 +111,9 @@
         <text class="status-label">教练</text>
         <text class="status-value">{{currentTraining.coachName}}</text>
       </view>
-      <view class="status-row" wx:if="{{currentTraining.focus}}">
-        <text class="status-label">重点</text>
-        <text class="status-value">{{currentTraining.focus}}</text>
-      </view>
-
-      <!-- 最近进步 + 最近训练反馈 -->
-      <view class="status-divider" wx:if="{{progress || latestFeedback}}"></view>
-
-      <view class="progress-line" wx:if="{{progress}}">
-        <text class="progress-label">{{progressLabel}}</text>
-        <text class="progress-text">{{progressText}}</text>
-      </view>
-
-      <view class="feedback-line" wx:if="{{latestFeedback}}">
-        <view class="feedback-head">
-          <text class="progress-label">训练反馈</text>
-          <text class="feedback-meta">{{latestFeedback.weekRange}}</text>
-        </view>
-        <text class="feedback-content">{{latestFeedback.content}}</text>
+      <view class="status-row" wx:if="{{upcomingItemsText}}">
+        <text class="status-label">训练项目</text>
+        <text class="status-value">{{upcomingItemsText}}</text>
       </view>
     </block>
   </view>
@@ -125,9 +125,39 @@
     <view class="skeleton skeleton-status-row"></view>
   </view>
 
+  <!-- 最近进步：「当前情况」卡下方的独立卡片，版式与「最新训练反馈」同款（用户定稿）。
+       进步是历史成绩，跟此刻是否在上课无关，三种状态（上课中/下节课/空闲）都显示；
+       没算出进步（数据不足/没加量）整卡隐藏。退步（最近变化）整卡转石墨灰——记录
+       如实，不庆祝。整卡可点 → 成长档案。顺序：当前情况 → 最近进步 → 训练反馈 -->
+  <view wx:if="{{!loading && progress}}"
+        class="fb-card fb-card--progress {{progress.isImprovement === false ? 'fb-card--flat' : ''}} fade-in"
+        hover-class="fb-card-active" bind:tap="goToGrowth">
+    <view class="fb-head">
+      <text class="fb-label">{{progressLabel}}</text>
+      <text class="fb-today" wx:if="{{progressCompare}}">{{progressCompare}}</text>
+      <text class="fb-items" wx:if="{{progressMetric}}">{{progressMetric}}</text>
+    </view>
+    <text class="fb-content">{{progressDelta}}</text>
+    <text class="fb-more">成长档案 ›</text>
+  </view>
+
+  <!-- 训练反馈：独立卡，上课中/下节课/空闲三种状态都常驻显示（最新一条反馈）。
+       点整卡进反馈详情；「今日」橙标 = 反馈对应的课就是今天上的 -->
+  <view wx:if="{{!loading && latestFeedback}}" class="fb-card fade-in"
+        hover-class="fb-card-active" bind:tap="goToFeedback">
+    <view class="fb-head">
+      <text class="fb-label">最新训练反馈</text>
+      <text class="fb-today" wx:if="{{feedbackIsToday}}">今日</text>
+      <text class="fb-items" wx:if="{{feedbackItemsText}}">{{feedbackItemsText}}</text>
+      <text class="fb-meta">{{latestFeedback.weekRange}}</text>
+    </view>
+    <text class="fb-content">{{latestFeedback.content}}</text>
+    <text class="fb-more">查看全部反馈 ›</text>
+  </view>
+
   <!-- 空闲态：没在上课、也没有下节课 → 成长足迹。
-       今天没课的日子里，让家长也能看见孩子在持续积累：
-       练了多少次 + 最近进步 + 最新反馈；全新用户给一条去预约的引导。 -->
+       今天没课的日子里，让家长也能看见孩子在持续积累：练了多少次；
+       最新反馈已上移为上方三态常驻的独立卡，全新用户给一条去预约的引导。 -->
   <view wx:if="{{!loading && currentMode === 'none' && childInfo}}" class="growth-section fade-in">
     <view class="growth-card">
       <view class="growth-head">
@@ -152,23 +182,6 @@
           <text class="stat-label">本月训练</text>
         </view>
       </view>
-
-      <block wx:if="{{progress || latestFeedback}}">
-        <view class="growth-divider"></view>
-
-        <view class="progress-line" wx:if="{{progress}}">
-          <text class="progress-label">{{progressLabel}}</text>
-          <text class="progress-text">{{progressText}}</text>
-        </view>
-
-        <view class="growth-feedback" wx:if="{{latestFeedback}}" bind:tap="goToFeedback" hover-class="growth-feedback-active">
-          <view class="growth-feedback-head">
-            <text class="growth-feedback-label">最新反馈</text>
-            <text class="growth-feedback-meta">{{latestFeedback.weekRange}}</text>
-          </view>
-          <text class="growth-feedback-content">{{latestFeedback.content}}</text>
-        </view>
-      </block>
 
       <block wx:if="{{isGrowthEmpty}}">
         <view class="growth-divider"></view>

@@ -1,7 +1,7 @@
 {
   "usingComponents": {
-    "nav-bar":"/components/nav-bar/nav-bar",
-    "edit-hours-modal": "/components/edit-hours-modal/index"
+    "edit-hours-modal": "/components/edit-hours-modal/index",
+    "edit-goal-modal": "/components/edit-goal-modal/index"
   },
   "navigationStyle": "custom",
   

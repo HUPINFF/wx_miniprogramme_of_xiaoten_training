@@ -1,80 +1,122 @@
-<!--pages/coach/children/index.wxml-->
-<!-- <text>pages/coach/children/index.wxml</text> -->
+<!--pages/coach/children/list/index.wxml-->
+<!-- 学员管理：搜索 + 学员卡片列表 + 关联学员/更换教练入口 + 关联弹窗 -->
 <view class="container">
-  <nav-bar title="学员管理" showBack="{{true}}"></nav-bar>
+  <!-- 渐变背景层：与工作台/学员详情同款（绿→淡绿→透明），内容浮在上面 -->
+  <view class="gradient-bg"></view>
 
-<!-- <view>显示</view> -->
-<view class="header">
-  <input placeholder="搜索学员" bindinput="onSearch"/>
-</view>
+  <!-- 顶部标题区：白字标题 + 副标题胶囊 + 返回按钮，压在渐变上 -->
+  <view class="header-area">
+    <view class="back-btn" hover-class="back-btn-active" bind:tap="goBack">‹</view>
+    <text class="header-title">学员管理</text>
+    <text class="header-sub" wx:if="{{!loading && children.length}}">共 {{children.length}} 名学员</text>
+  </view>
 
-<view wx:if="{{loading}}" class="skeleton-list">
+  <view class="page-content">
+  <!-- 搜索栏 -->
+  <view class="search-wrap">
+    <view class="search-box">
+      <text class="search-icon">🔍</text>
+      <input
+        class="search-input"
+        placeholder="搜索学员姓名"
+        placeholder-class="search-placeholder"
+        bindinput="onSearch"
+      />
+    </view>
+  </view>
+
+  <!-- 骨架屏（加载中） -->
+  <view wx:if="{{loading}}" class="skeleton-list">
     <view class="skeleton-item" wx:for="{{[1,2,3,4]}}" wx:key="*this">
-      <view class="skeleton-avatar skeleton-shrimmer"></view>
+      <view class="skeleton-avatar skeleton-shimmer"></view>
       <view class="skeleton-info">
-        <view class="skeleton-line skeleton-line-name skeleton-shrimmer"></view>
-        <view class="skeleton-line skeleton0line-mata skeleton-shrimmer"></view>
+        <view class="skeleton-line skeleton-line-name skeleton-shimmer"></view>
+        <view class="skeleton-line skeleton-line-meta skeleton-shimmer"></view>
       </view>
     </view>
   </view>
 
-<view wx:else class="child-list">
-  <view class="child-item" wx:for="{{children}}" wx:key="_id" bind:tap="viewDetail" data-id="{{item._id}}">
-    <image class="avatar" src="cloud://hupin255-5gfbw856b1c861ef.6875-hupin255-5gfbw856b1c861ef-1410552194/default_avatar/6756593ba0eb6a537f7060da8ede3ca8.jpeg" mode="aspectFill"></image>
+  <!-- 学员列表 -->
+  <view wx:else class="child-list">
+    <view
+      class="child-card"
+      wx:for="{{children}}"
+      wx:key="_id"
+      hover-class="child-card-hover"
+      hover-stay-time="80"
+      bind:tap="viewDetail"
+      data-id="{{item._id}}"
+    >
+      <image class="avatar" src="cloud://hupin255-5gfbw856b1c861ef.6875-hupin255-5gfbw856b1c861ef-1410552194/default_avatar/6756593ba0eb6a537f7060da8ede3ca8.jpeg" mode="aspectFill"></image>
 
-    <view class="Info">
-      <text class="name">{{item.name}}</text>
-      <text class="age">{{item.age}}岁 · {{item.gender === 'male' ? '男':'女'}} </text>
+      <view class="child-info">
+        <text class="child-name">{{item.name}}</text>
+        <view class="child-meta">
+          <text class="meta-age">{{item.age}}岁</text>
+          <text class="meta-dot">·</text>
+          <text class="meta-gender {{item.gender === 'male' ? 'boy' : 'girl'}}">{{item.gender === 'male' ? '男' : '女'}}</text>
+        </view>
+      </view>
+
+      <text class="child-arrow">›</text>
+    </view>
+
+    <!-- 空状态 -->
+    <view wx:if="{{children.length === 0}}" class="empty">
+      <view class="empty-icon">👤</view>
+      <text class="empty-title">暂无关联学员</text>
+      <text class="empty-hint">点击下方「关联学员」，输入学员ID完成关联</text>
     </view>
   </view>
 
-  <!-- 空状态 -->
-  <view wx:if="{{children.length === 0 && !loading}}" class="empty">
-      <text>暂无关联学员</text>
-      <text class="empty-hint">点击上方按钮关联学员</text>
+  <!-- 底部操作区：快捷入口卡（图标气泡 + 标题 + 副文案，与成长页 quick-nav 同一家族） -->
+  <view class="action-cards">
+    <view class="action-card" hover-class="action-card-hover" hover-stay-time="80" bind:tap="addChild">
+      <view class="action-bubble bubble-green"><text class="bubble-icon">＋</text></view>
+      <view class="action-main">
+        <text class="action-title">关联学员</text>
+        <text class="action-desc">输入学员ID，关联到自己名下</text>
+      </view>
+      <text class="action-arrow">›</text>
     </view>
-</view>
 
-<!-- 添加学员 -->
-<view class="add-btn" bind:tap="addChild">
-    <text class="add-icon">+</text>
-    <text class="add-text">关联学员</text>
+    <view class="action-card" hover-class="action-card-hover" hover-stay-time="80" bind:tap="gotoChangeCoachRequests">
+      <view class="action-bubble bubble-blue"><text class="bubble-icon">🔄</text></view>
+      <view class="action-main">
+        <text class="action-title">更换教练申请</text>
+        <text class="action-desc">查看学员发来的更换申请</text>
+      </view>
+      <text class="action-arrow">›</text>
+    </view>
   </view>
 
-  <!-- 更换教练入口 -->
-  <view class="change-coach-btn" bind:tap="gotoChangeCoachRequests">
-    <text class="change-coach-icon">🔄</text>
-    <text class="change-coach-text">更换教练申请</text>
-  </view>
-
-<!-- 关联学员弹窗 -->
+  <!-- 关联学员弹窗 -->
   <view class="modal-mask" wx:if="{{showAddModal}}" bind:tap="closeModal">
-    <view class="moal-container" catch:tap="stopPropagation">
+    <view class="modal-container" catch:tap="stopPropagation">
       <view class="modal-header">
         <text class="modal-title">关联学员</text>
-        <text class="modal-close" bind:tap="closeModal">✕</text>
+        <view class="modal-close" bind:tap="closeModal"><text>✕</text></view>
       </view>
 
       <view class="modal-body">
         <view class="form-item">
           <text class="label">学员ID <text class="required">*</text></text>
-            <input 
-            class="input" 
-            placeholder="请输入学员ID" 
-            value="{{childId}}" 
+          <input
+            class="input"
+            placeholder="请输入学员ID"
+            placeholder-class="input-placeholder"
+            value="{{childId}}"
             bindinput="onChildIdInput"
-            />
-          <text class="hint">请输入家长端孩子的ID</text>  
+          />
+          <text class="hint">请输入家长端孩子的ID</text>
         </view>
 
         <!-- 查询到孩子的信息 -->
         <view class="child-preview" wx:if="{{previewChild}}">
-          <text class="preview-title">找到孩子：</text>
-
+          <text class="preview-title">已找到孩子</text>
           <view class="preview-info">
             <text class="preview-name">{{previewChild.name}}</text>
-            <text class="preview-age">{{previewChild.age}}</text>
-            <text class="preview-gender">{{previewChild.gender ==='male'?'男孩':'女孩'}}</text>
+            <text class="preview-meta">{{previewChild.age}}岁 · {{previewChild.gender === 'male' ? '男孩' : '女孩'}}</text>
           </view>
         </view>
 
@@ -89,5 +131,6 @@
         <button class="confirm-btn" bind:tap="confirmAdd" loading="{{submitting}}" disabled="{{!previewChild}}">确认关联</button>
       </view>
     </view>
+  </view>
   </view>
 </view>

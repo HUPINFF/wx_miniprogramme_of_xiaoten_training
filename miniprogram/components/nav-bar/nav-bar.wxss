@@ -9,6 +9,12 @@
   box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
 }
 
+/* 首页同款品牌绿渐变（users/home gradient-bg 的绿段）：导航是实心条，不带尾部淡出 */
+.custom-navbar.theme-green {
+  background: linear-gradient(135deg, #07c160 0%, #00d68f 100%);
+  box-shadow: 0 4rpx 16rpx rgba(7, 193, 96, 0.25);
+}
+
 .navbar-content {
   display: flex;
   align-items: center;

@@ -27,6 +27,8 @@ Page({
     inClassTimeText: '',  // 实际开课时间，格式 '9月15日 14:32'；教练没记录时为空
     coachInfo: null,  // users 集合里的教练（avatarUrl / name / phone）
     childInfo: null,
+    feedback: null,   // 这节课的教练反馈（每课反馈文档，没写/查不到则 null）
+    feedbackLoaded: false,  // 反馈查询已出结果（含失败）——「暂无反馈」只在查完之后才许说
 
     // 头图。本页唯一「大声」的地方，一条训练只讲一件事：
     // 上课中→已经上了多久（活数字）；未开课→还有多久；已结束→这次练的是什么
@@ -70,8 +72,10 @@ Page({
       // 状态文案走 helper 的元数据，四种状态全覆盖（教练端详情页只写了三种）
       const meta = getTrainingStatusMeta(training.status);
       const inClassTimeText = this.formatDateTime(training.inClassTime);
-      const photos = training.photos || [];
-      const videos = training.videos || [];
+      // 媒体两个来源：上课页现场传的 classPhotos/classVideos（现行流程），
+      // 老流程写的 photos/videos（历史文档）。合并展示，别让新文档因为字段改名而空白
+      const photos = (training.classPhotos || []).concat(training.photos || []);
+      const videos = (training.classVideos || []).concat(training.videos || []);
 
       this.setData(Object.assign({
         training,
@@ -88,9 +92,10 @@ Page({
       // 头图可能是活数字，按秒刷新；不需要的（已完成等）startTicker 自己会跳过
       this.startTicker();
 
-      // 教练和学员是附加信息，各自失败不影响主内容
+      // 教练/学员/反馈都是附加信息，各自失败不影响主内容
       if (training.coachId) this.loadCoachInfo(training.coachId, training.coachName);
       if (training.childId) this.loadChildInfo(training.childId);
+      this.loadFeedback(id, training.childId);
     }).catch(err => {
       console.error('加载训练详情失败:', err);
       this.setData({ loading: false });
@@ -137,6 +142,35 @@ Page({
       // 学员信息只是补充，失败就不显示「学员」那一行
       console.error('加载学员信息失败:', err);
     });
+  },
+
+  /**
+   * 加载这节课的教练反馈（每课反馈文档，trainingId 指回本次课）
+   *
+   * 查不到的情况：还没写反馈 / 旧周报形态的文档没有 trainingId（无法按课匹配）/
+   * 查询失败。反馈是补充信息，任何一种情况都只是不显示内容，不影响页面其它部分。
+   */
+  loadFeedback(trainingId, childId) {
+    const db = wx.cloud.database();
+    const where = { trainingId: trainingId };
+    if (childId) where.childId = childId;   // 顺路带上 childId，缩小匹配面
+
+    db.collection('feedbacks').where(where).limit(1).get().then(res => {
+      this.setData({ feedback: (res.data || [])[0] || null, feedbackLoaded: true });
+    }).catch(err => {
+      // 失败也置位：不然已完结且有反馈的课会一直挂着「暂无教练反馈」这个错误陈述
+      console.error('加载教练反馈失败:', err);
+      this.setData({ feedbackLoaded: true });
+    });
+  },
+
+  /**
+   * 查看完整反馈：照片/视频/朋友圈分享文案都在反馈详情页
+   */
+  goFeedbackDetail() {
+    const fb = this.data.feedback;
+    if (!fb || !fb._id) return;
+    wx.navigateTo({ url: '/pages/users/feedback-detail/index?id=' + fb._id });
   },
 
   /**
@@ -324,11 +358,36 @@ Page({
    */
   playVideo(e) {
     const url = e.currentTarget.dataset.url;
-    wx.previewMedia({
-      sources: [{ url: url, type: 'video' }],
-      current: 0,
-      showmenu: true
-    });
+    if (!url) return;
+
+    const open = (src) => {
+      wx.previewMedia({
+        sources: [{ url: src, type: 'video' }],
+        current: 0,
+        showmenu: true,
+        fail: () => {
+          wx.showToast({ title: '视频播放失败', icon: 'none' });
+        }
+      });
+    };
+
+    // previewMedia 不认 cloud:// fileID（<image>/<video>/previewImage 可以直接吃），
+    // 云存储的文件要先换临时链接。换不出来就明说，别把 fileID 塞给 previewMedia 静默失败
+    if (/^cloud:/.test(url)) {
+      wx.cloud.getTempFileURL({ fileList: [url] }).then(res => {
+        const file = (res.fileList || [])[0];
+        const src = file && file.tempFileURL;
+        if (!src) {
+          wx.showToast({ title: '视频加载失败', icon: 'none' });
+          return;
+        }
+        open(src);
+      }).catch(() => {
+        wx.showToast({ title: '视频加载失败', icon: 'none' });
+      });
+    } else {
+      open(url);
+    }
   },
 
   /**

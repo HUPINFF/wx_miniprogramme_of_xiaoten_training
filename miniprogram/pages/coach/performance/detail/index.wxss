@@ -1,0 +1,258 @@
+/* pages/coach/performance/detail/index.wxss 单周体测成绩详情：首页同款渐变头部 + 白卡指标网格。
+   变量与首页同源（page 级 wxss 每页独立，要在这份里再声明一遍） */
+page {
+  --primary: #07c160;
+  --primary-dark: #05a350;
+  --primary-light: #e8f5e9;
+  --bg: #f5f7fa;
+  --card: #ffffff;
+  --text-main: #1a1a2e;
+  --text-sub: #6b7280;
+  --text-hint: #9ca3af;
+  --radius-xl: 32rpx;
+  --shadow-card: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.fade-in {
+  animation: fadeIn 0.4s ease-out both;
+}
+
+/* ==================== 渐变背景（首页同一配方） ==================== */
+.gradient-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 460rpx;
+  background: linear-gradient(135deg, #07c160 0%, #00d68f 30%, #e8f5e9 80%, rgba(245, 247, 250, 0) 100%);
+  z-index: 0;
+}
+
+.gradient-bg::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80rpx;
+  background: linear-gradient(180deg, transparent 0%, var(--bg) 100%);
+}
+
+/* ==================== 页面容器 ==================== */
+.container {
+  min-height: 100vh;
+  background: var(--bg);
+  position: relative;
+}
+
+/* ==================== 顶部标题区 ==================== */
+.header-area {
+  position: relative;
+  z-index: 1;
+  padding: 92rpx 40rpx 30rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.header-title {
+  font-size: 48rpx;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
+  letter-spacing: 2rpx;
+}
+
+/* 副标题胶囊：孩子名 · 周起始，半透明白底 */
+.header-sub {
+  margin-top: 16rpx;
+  font-size: 24rpx;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.22);
+  padding: 8rpx 28rpx;
+  border-radius: 999rpx;
+  backdrop-filter: blur(10rpx);
+}
+
+/* 返回键：白透圆钮浮在标题行左侧 */
+.back-btn {
+  position: absolute;
+  left: 30rpx;
+  top: 96rpx;
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 40rpx;
+  line-height: 60rpx;
+  text-align: center;
+  backdrop-filter: blur(10rpx);
+}
+
+.back-btn-active {
+  background: rgba(255, 255, 255, 0.32);
+}
+
+/* ==================== 内容层 ==================== */
+.page-content {
+  position: relative;
+  z-index: 1;
+  padding: 10rpx 24rpx 60rpx;
+}
+
+/* ==================== 详情卡 ==================== */
+.detail-card {
+  background: var(--card);
+  border-radius: var(--radius-xl);
+  padding: 30rpx;
+  box-shadow: var(--shadow-card);
+}
+
+/* ==================== 指标网格（两列，标签+数值） ==================== */
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16rpx;
+}
+
+.metric-item {
+  background: #f7f8fa;
+  border-radius: 16rpx;
+  padding: 20rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  align-items: center;
+}
+
+.metric-label {
+  font-size: 24rpx;
+  color: var(--text-hint);
+}
+
+.metric-value {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: var(--text-main);
+  font-variant-numeric: tabular-nums;
+}
+
+.metric-value.empty {
+  color: var(--text-hint);
+  font-weight: 400;
+  font-size: 28rpx;
+}
+
+/* ==================== 趋势对比（up橙/down绿，语义沿用成绩明细列表） ==================== */
+.trend-block {
+  margin-top: 28rpx;
+  padding-top: 24rpx;
+  border-top: 1rpx dashed rgba(60, 60, 67, 0.12);
+}
+
+.trend-title {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 16rpx;
+}
+
+.trend-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10rpx 4rpx;
+}
+
+.trend-label {
+  font-size: 26rpx;
+  color: var(--text-sub);
+}
+
+.trend-value {
+  font-size: 26rpx;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.trend-value.up {
+  color: #ff9500;
+}
+
+.trend-value.down {
+  color: #34c759;
+}
+
+/* ==================== 底部说明 ==================== */
+.footer-hint {
+  margin-top: 28rpx;
+  text-align: center;
+  font-size: 22rpx;
+  color: var(--text-hint);
+}
+
+/* ==================== 空状态 ==================== */
+.empty {
+  text-align: center;
+  padding: 120rpx 40rpx;
+  background: var(--card);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+}
+
+.empty-icon {
+  display: block;
+  font-size: 96rpx;
+  margin-bottom: 20rpx;
+}
+
+.empty-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.empty-hint {
+  display: block;
+  font-size: 24rpx;
+  color: var(--text-hint);
+  margin-top: 12rpx;
+}
+
+/* ==================== 加载 HUD ==================== */
+.loading {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20rpx;
+  background-color: rgba(28, 28, 30, 0.88);
+  padding: 40rpx;
+  border-radius: 24rpx;
+  color: #fff;
+  z-index: 1000;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid rgba(255, 255, 255, 0.25);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

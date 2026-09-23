@@ -34,7 +34,7 @@
           </view>
 
           <view class="rating">
-            <text class="star {{index < item.rating ? 'active' :'' }}" wx:for="{{[1,2,3,4,5]}}" wx:key="index">★</text>
+            <text class="star {{sIndex < item.rating ? 'active' :'' }}" wx:for="{{[1,2,3,4,5]}}" wx:for-item="star" wx:for-index="sIndex" wx:key="sIndex">★</text>
           </view>
         </view>
 
@@ -59,13 +59,13 @@
             <!-- <image src="{{item.coachAvatar || '/images/default-avatar.png'}}" mode="aspectFill"></image> -->
             <text class="coach-name">{{item.coachName}}教练</text>
           </view>
-          <text class="edit-btn" catch:tap="editFeedback" data-id="{{item._id}}">编辑</text>
+          <text class="edit-btn {{item.trainingMissing ? 'disabled' : ''}}" catch:tap="editFeedback" data-id="{{item._id}}">{{item.trainingMissing ? '课次已删' : '编辑'}}</text>
         </view>
       </view>
     </block>
 
     <!-- 空状态 -->
-    <view class="empty" wx:if="{{feedbcakList.lenght === 0 &&!loading}}">
+    <view class="empty" wx:if="{{feedbackList.length === 0 && !loading}}">
       <text>暂无反馈记录</text>
     </view>
 

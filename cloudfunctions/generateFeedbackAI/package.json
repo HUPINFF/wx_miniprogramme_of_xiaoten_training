@@ -1,0 +1,10 @@
+{
+  "name": "generateFeedbackAI",
+  "version": "1.0.0",
+  "description": "课后反馈 AI 文案：中转智谱 GLM-4-Flash，生成家长版/朋友圈版",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~3.0.4"
+  },
+  "license": "ISC"
+}

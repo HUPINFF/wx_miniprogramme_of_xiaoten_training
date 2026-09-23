@@ -1,41 +1,109 @@
-/* pages/users/course-detail/index.wxss */
+/* pages/users/course-detail/index.wxss 课程详情：首页同款渐变头部 + 白卡内容流。
+   变量与首页同源（page 级 wxss 每页独立，要在这份里再声明一遍）；
+   原文件基样式 + iOS 覆盖双层叠加，本次合并重写为一层，配色统一品牌绿 */
 page {
-  --bg: #F2F2F7;
-  --primary: #007AFF;
-  --primary-dark: #0056CF;
-  --primary-light: rgba(0, 122, 255, 0.1);
+  --primary: #07c160;
+  --primary-light: #e8f5e9;
+  --bg: #f5f7fa;
   --card: #ffffff;
-  --text-main: #000000;
-  --text-sub: rgba(60, 60, 67, 0.6);
-  --text-hint: rgba(60, 60, 67, 0.34);
-  --border: rgba(60, 60, 67, 0.1);
-  --radius-sm: 14rpx;
-  --radius-md: 20rpx;
+  --text-main: #1a1a2e;
+  --text-sub: #6b7280;
+  --text-hint: #9ca3af;
   --radius-lg: 28rpx;
   --radius-xl: 32rpx;
-
-  background-color: var(--bg);
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.fade-in {
+  animation: fadeIn 0.4s ease-out both;
+}
+
+/* ==================== 渐变背景（首页同一配方，短一截） ==================== */
+.gradient-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 400rpx;
+  background: linear-gradient(135deg, #07c160 0%, #00d68f 30%, #e8f5e9 80%, rgba(245, 247, 250, 0) 100%);
+  z-index: 0;
+}
+
+.gradient-bg::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80rpx;
+  background: linear-gradient(180deg, transparent 0%, var(--bg) 100%);
+}
+
+/* ==================== 页面容器 ==================== */
 .container {
   min-height: 100vh;
-  background-color: var(--bg);
+  background: var(--bg);
+  position: relative;
 }
 
+/* ==================== 顶部标题区（紧凑款：封面区自带课程名，不重复铺副标题） ==================== */
+.header-area {
+  position: relative;
+  z-index: 1;
+  padding: 92rpx 40rpx 36rpx;
+  display: flex;
+  justify-content: center;
+}
+
+.header-title {
+  font-size: 48rpx;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
+  letter-spacing: 2rpx;
+}
+
+/* 返回键：白透圆钮浮在标题行左侧 */
+.back-btn {
+  position: absolute;
+  left: 30rpx;
+  top: 98rpx;
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 40rpx;
+  line-height: 60rpx;
+  text-align: center;
+  backdrop-filter: blur(10rpx);
+}
+
+.back-btn-active {
+  background: rgba(255, 255, 255, 0.32);
+}
+
+/* ==================== 内容流 ==================== */
 .page-content {
-  padding: 24rpx;
-  padding-bottom: 140rpx;
+  position: relative;
+  z-index: 1;
+  padding: 0 24rpx 170rpx;
 }
 
-/* 封面区域 */
+/* 封面区域：无封面时浅绿渐变占位（与列表页占位同族） */
 .cover-section {
   position: relative;
   width: 100%;
   height: 400rpx;
-  border-radius: 24rpx;
+  border-radius: var(--radius-xl);
   overflow: hidden;
   margin-bottom: 24rpx;
-  background: linear-gradient(135deg, #4a90d9 0%, #67b26f 100%);
+  background: linear-gradient(135deg, #e8f5e9 0%, #d3ecd9 100%);
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.08);
 }
 
 .cover-image {
@@ -62,40 +130,43 @@ page {
   left: 0;
   right: 0;
   padding: 30rpx;
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.55));
 }
 
 .course-name {
   font-size: 40rpx;
-  font-weight: 700;
+  font-weight: 800;
   color: #fff;
   line-height: 1.3;
+  text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.2);
 }
 
 .course-hours-badge {
   position: absolute;
   top: 20rpx;
   right: 20rpx;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.45);
   color: #fff;
-  font-size: 26rpx;
-  padding: 12rpx 24rpx;
-  border-radius: 30rpx;
-  backdrop-filter: blur(10rpx);
+  font-size: 24rpx;
+  padding: 10rpx 22rpx;
+  border-radius: 999rpx;
+  backdrop-filter: blur(20rpx);
+  border: 1rpx solid rgba(255, 255, 255, 0.25);
 }
 
-/* 课程信息卡片 */
-.info-card {
-  background: #ffffff;
-  border-radius: 20rpx;
-  padding: 28rpx;
+/* ==================== 信息卡片 ==================== */
+.info-card,
+.advice-card,
+.custom-section {
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  padding: 30rpx;
   margin-bottom: 24rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.04);
-  border: 1rpx solid #f0f0f5;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
 }
 
 .info-row {
-  margin-bottom: 28rpx;
+  margin-bottom: 30rpx;
 }
 
 .info-row:last-child {
@@ -115,45 +186,42 @@ page {
 
 .label-text {
   font-size: 28rpx;
-  font-weight: 600;
-  color: #2c3e50;
+  font-weight: 700;
+  color: var(--text-main);
 }
 
+/* 内容底色改中性浅灰（原为蓝调 #f8faff），让品牌绿只出现在关键处 */
 .info-content {
-  background: linear-gradient(135deg, #f8faff 0%, #f0f7ff 100%);
+  background: #f7f8fa;
   border-radius: 16rpx;
   padding: 24rpx;
-  border: 1rpx solid #e8f0fe;
 }
 
 .info-content text {
   font-size: 28rpx;
-  color: #4a5568;
+  color: var(--text-sub);
   line-height: 1.8;
 }
 
-/* 建议区域 */
+/* ==================== 建议区域 ==================== */
 .advice-section {
   display: flex;
   flex-direction: column;
-  gap: 20rpx;
+  gap: 24rpx;
   margin-bottom: 24rpx;
 }
 
 .advice-card {
-  background: #ffffff;
-  border-radius: 20rpx;
-  padding: 28rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.04);
-  border: 1rpx solid #f0f0f5;
+  margin-bottom: 0;
 }
 
+/* 左色条区分受众：家长绿（成长）、教练橙（教学的温度） */
 .advice-card.parent {
-  border-left: 6rpx solid #07c160;
+  border-left: 6rpx solid var(--primary);
 }
 
 .advice-card.coach {
-  border-left: 6rpx solid #4a90d9;
+  border-left: 6rpx solid #ff9500;
 }
 
 .advice-header {
@@ -169,31 +237,23 @@ page {
 
 .advice-title {
   font-size: 30rpx;
-  font-weight: 600;
-  color: #2c3e50;
+  font-weight: 700;
+  color: var(--text-main);
 }
 
 .advice-content {
-  background: #f8f9fc;
-  border-radius: 12rpx;
-  padding: 20rpx;
+  background: #f7f8fa;
+  border-radius: 16rpx;
+  padding: 22rpx;
 }
 
 .advice-content text {
   font-size: 28rpx;
-  color: #4a5568;
+  color: var(--text-sub);
   line-height: 1.7;
 }
 
-/* 自定义内容区域 */
-.custom-section {
-  background: #ffffff;
-  border-radius: 20rpx;
-  padding: 28rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.04);
-  border: 1rpx solid #f0f0f5;
-}
-
+/* ==================== 自定义内容（图文/视频） ==================== */
 .section-title {
   display: flex;
   align-items: center;
@@ -207,13 +267,13 @@ page {
 
 .section-title text:nth-child(2) {
   font-size: 30rpx;
-  font-weight: 600;
-  color: #2c3e50;
+  font-weight: 700;
+  color: var(--text-main);
 }
 
 .content-count {
   font-size: 24rpx;
-  color: #999;
+  color: var(--text-hint);
   font-weight: 400;
 }
 
@@ -224,7 +284,7 @@ page {
 }
 
 .custom-item {
-  background: #f8f9fc;
+  background: #f7f8fa;
   border-radius: 16rpx;
   overflow: hidden;
 }
@@ -238,14 +298,14 @@ page {
   width: 100%;
   height: 400rpx;
   display: block;
-  background: #f5f5f5;
+  background: #f0f0f3;
 }
 
 .media-video {
   width: 100%;
   height: 400rpx;
   display: block;
-  background: #f5f5f5;
+  background: #f0f0f3;
 }
 
 .media-badge {
@@ -260,6 +320,7 @@ page {
   display: flex;
   align-items: center;
   justify-content: center;
+  pointer-events: none;
 }
 
 .badge-icon {
@@ -270,75 +331,79 @@ page {
 
 .custom-desc {
   padding: 20rpx;
-  background: #fff;
-  border-top: 1rpx solid #f0f0f5;
+  background: var(--card);
+  border-top: 1rpx solid rgba(60, 60, 67, 0.08);
 }
 
 .custom-desc text {
   font-size: 28rpx;
-  color: #4a5568;
+  color: var(--text-sub);
   line-height: 1.7;
 }
 
-/* 底部联系按钮 */
+/* ==================== 底部联系按钮（品牌绿 CTA） ==================== */
 .bottom-button {
   position: fixed;
   bottom: 40rpx;
-  left: 24rpx;
-  right: 24rpx;
+  left: 40rpx;
+  right: 40rpx;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 16rpx;
   background: linear-gradient(135deg, #07c160 0%, #06a34d 100%);
   padding: 28rpx;
-  border-radius: 48rpx;
-  box-shadow: 0 8rpx 24rpx rgba(7, 193, 96, 0.4);
+  border-radius: 999rpx;
+  box-shadow: 0 8rpx 24rpx rgba(7, 193, 96, 0.35);
   z-index: 10000;
 }
 
+.bottom-button:active {
+  opacity: 0.88;
+}
+
 .button-icon {
-  font-size: 40rpx;
+  font-size: 38rpx;
 }
 
 .button-text {
   font-size: 32rpx;
   font-weight: 600;
   color: #fff;
+  letter-spacing: 2rpx;
 }
 
-/* 空状态 */
+/* ==================== 空状态 ==================== */
 .empty-state {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 100rpx 40rpx;
-  background: #ffffff;
-  border-radius: 24rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.04);
-  border: 1rpx solid #f0f0f5;
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
 }
 
 .empty-icon {
-  font-size: 120rpx;
-  margin-bottom: 30rpx;
+  font-size: 110rpx;
+  margin-bottom: 24rpx;
   opacity: 0.5;
 }
 
 .empty-title {
   font-size: 32rpx;
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--text-main);
   margin-bottom: 12rpx;
 }
 
 .empty-subtitle {
   font-size: 26rpx;
-  color: #8896a6;
+  color: var(--text-hint);
 }
 
-/* 加载状态 */
+/* ==================== 加载浮层 ==================== */
 .loading-cover {
   position: fixed;
   top: 0;
@@ -357,17 +422,17 @@ page {
   flex-direction: column;
   align-items: center;
   gap: 20rpx;
-  padding: 60rpx 80rpx;
+  padding: 50rpx 70rpx;
   background: #fff;
   border-radius: 24rpx;
   box-shadow: 0 8rpx 40rpx rgba(0, 0, 0, 0.1);
 }
 
 .loading-spinner {
-  width: 64rpx;
-  height: 64rpx;
-  border: 4rpx solid #e8f0fe;
-  border-top-color: #4a90d9;
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid rgba(7, 193, 96, 0.15);
+  border-top-color: var(--primary);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -381,79 +446,4 @@ page {
 .loading-text {
   font-size: 28rpx;
   color: rgba(60, 60, 67, 0.6);
-}
-
-/* ==================== iOS 精修（追加覆盖，后面规则优先） ==================== */
-
-/* 封面：去蓝绿渐变占位，改中性；overlay 收敛 */
-.cover-section {
-  background: linear-gradient(135deg, #f7f7fa 0%, #ececf1 100%);
-  border-radius: 28rpx;
-}
-.cover-overlay {
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.5));
-}
-.course-hours-badge {
-  background: rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(20rpx);
-  -webkit-backdrop-filter: blur(20rpx);
-  border: 1rpx solid rgba(255, 255, 255, 0.25);
-  border-radius: 999rpx;
-}
-
-/* 卡片：平面白卡 */
-.info-card,
-.advice-card,
-.custom-section,
-.empty-state {
-  background: #ffffff;
-  border-radius: 28rpx;
-  box-shadow: none;
-  border: none;
-}
-.label-text,
-.advice-title,
-.section-title text:nth-child(2),
-.empty-title {
-  color: #000;
-}
-.content-count,
-.empty-subtitle {
-  color: rgba(60, 60, 67, 0.6);
-}
-.info-content,
-.advice-content,
-.custom-item {
-  background: #f7f7fa;
-  border: none;
-}
-.info-content text,
-.advice-content text,
-.custom-desc text {
-  color: rgba(60, 60, 67, 0.6);
-}
-.advice-card.parent {
-  border-left: 4rpx solid #34C759;
-}
-.advice-card.coach {
-  border-left: 4rpx solid #007AFF;
-}
-.custom-desc {
-  border-top: 1rpx solid rgba(60, 60, 67, 0.1);
-}
-
-/* 底部联系按钮 → 系统蓝实心 */
-.bottom-button {
-  background: #007AFF;
-  border-radius: 28rpx;
-  box-shadow: none;
-}
-.bottom-button:active {
-  opacity: 0.85;
-}
-
-/* 加载 */
-.loading-spinner {
-  border: 4rpx solid rgba(0, 122, 255, 0.15);
-  border-top-color: #007AFF;
 }

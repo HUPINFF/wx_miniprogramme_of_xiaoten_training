@@ -196,10 +196,24 @@ page {
 /* 空状态 */
 .empty {
   text-align: center;
-  padding: 120rpx 0;
+  padding: 120rpx 32rpx;
   color: rgba(60, 60, 67, 0.34);
   font-size: 28rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
 }
+
+.empty-icon { font-size: 88rpx; opacity: 0.35; }
+
+.empty-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: rgba(60, 60, 67, 0.6);
+}
+
+.empty-hint { font-size: 24rpx; line-height: 1.6; }
 
 /* 加载 HUD */
 .loading {

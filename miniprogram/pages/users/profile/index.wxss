@@ -650,13 +650,14 @@ page {
    ========================================================================== */
 
 /* ==================== 快捷入口 ==================== */
+/* 五个入口一行（2026-09-22 精简定稿）：gap/padding 收窄给 5 列留位 */
 .quick-entry {
   margin: 0 30rpx 30rpx;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20rpx;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12rpx;
   background: var(--card);
-  padding: 36rpx 24rpx;
+  padding: 32rpx 20rpx;
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-2);
   position: relative;

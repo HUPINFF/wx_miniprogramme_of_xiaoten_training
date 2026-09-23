@@ -1,0 +1,92 @@
+<!--pages/coach/performance/detail/index.wxml 单周体测成绩详情：首页同款渐变头部 + 指标网格 + 趋势对比-->
+<view class="container">
+  <view class="gradient-bg"></view>
+
+  <!-- 顶部标题区：白字标题 + 副标题胶囊（孩子 · 周起始）+ 返回按钮 -->
+  <view class="header-area">
+    <view class="back-btn" hover-class="back-btn-active" bind:tap="goBack">‹</view>
+    <text class="header-title">体测成绩</text>
+    <text class="header-sub" wx:if="{{record}}">{{childName ? childName + ' · ' : ''}}{{record.weekDate}} 那周</text>
+  </view>
+
+  <!-- 内容层（z-index:1，卡片压在渐变上） -->
+  <view class="page-content">
+    <view class="detail-card fade-in" wx:if="{{record}}">
+      <!-- 十项固定指标（口径与成绩明细列表一致，空值统一「暂无」） -->
+      <view class="metric-grid">
+        <view class="metric-item">
+          <text class="metric-label">50米跑</text>
+          <text class="metric-value {{record.fiftyMeter ? '' : 'empty'}}">{{record.fiftyMeter ? record.fiftyMeter + '秒' : '暂无'}}</text>
+        </view>
+        <view class="metric-item">
+          <text class="metric-label">1000米跑</text>
+          <text class="metric-value {{record.thousandMeter ? '' : 'empty'}}">{{record.thousandMeter || '暂无'}}</text>
+        </view>
+        <view class="metric-item">
+          <text class="metric-label">800米跑</text>
+          <text class="metric-value {{record.eightHundredMeter ? '' : 'empty'}}">{{record.eightHundredMeter || '暂无'}}</text>
+        </view>
+        <view class="metric-item">
+          <text class="metric-label">仰卧起坐</text>
+          <text class="metric-value {{record.sitUp ? '' : 'empty'}}">{{record.sitUp ? record.sitUp + '个/分' : '暂无'}}</text>
+        </view>
+        <view class="metric-item">
+          <text class="metric-label">跳绳</text>
+          <text class="metric-value {{record.ropeSkipping ? '' : 'empty'}}">{{record.ropeSkipping ? record.ropeSkipping + '个/分' : '暂无'}}</text>
+        </view>
+        <view class="metric-item">
+          <text class="metric-label">坐位体前屈</text>
+          <text class="metric-value {{record.sitAndReach ? '' : 'empty'}}">{{record.sitAndReach ? record.sitAndReach + '厘米' : '暂无'}}</text>
+        </view>
+        <view class="metric-item">
+          <text class="metric-label">立定跳远</text>
+          <text class="metric-value {{record.standingLongJump ? '' : 'empty'}}">{{record.standingLongJump ? record.standingLongJump + '厘米' : '暂无'}}</text>
+        </view>
+        <view class="metric-item">
+          <text class="metric-label">肺活量</text>
+          <text class="metric-value {{record.vitalCapacity ? '' : 'empty'}}">{{record.vitalCapacity ? record.vitalCapacity + '毫升' : '暂无'}}</text>
+        </view>
+        <view class="metric-item">
+          <text class="metric-label">协调性</text>
+          <text class="metric-value {{record.coordination ? '' : 'empty'}}">{{record.coordination ? record.coordination + '分' : '暂无'}}</text>
+        </view>
+        <view class="metric-item">
+          <text class="metric-label">敏捷性</text>
+          <text class="metric-value {{record.agility ? '' : 'empty'}}">{{record.agility ? record.agility + '分' : '暂无'}}</text>
+        </view>
+      </view>
+
+      <!-- 趋势对比（录入时有算出来才有；up/down 语义沿用成绩明细列表） -->
+      <view class="trend-block" wx:if="{{record.trend && (record.trend.fiftyMeter || record.trend.coordination || record.trend.agility)}}">
+        <view class="trend-title">与上周对比</view>
+        <view class="trend-row" wx:if="{{record.trend.fiftyMeter}}">
+          <text class="trend-label">50米跑</text>
+          <text class="trend-value {{record.trend.fiftyMeter.type}}">{{record.trend.fiftyMeter.type === 'up' ? '↑' : '↓'}} {{record.trend.fiftyMeter.value}}秒</text>
+        </view>
+        <view class="trend-row" wx:if="{{record.trend.coordination}}">
+          <text class="trend-label">协调性</text>
+          <text class="trend-value {{record.trend.coordination.type}}">{{record.trend.coordination.type === 'up' ? '↑' : '↓'}} {{record.trend.coordination.value}}分</text>
+        </view>
+        <view class="trend-row" wx:if="{{record.trend.agility}}">
+          <text class="trend-label">敏捷性</text>
+          <text class="trend-value {{record.trend.agility.type}}">{{record.trend.agility.type === 'up' ? '↑' : '↓'}} {{record.trend.agility.value}}分</text>
+        </view>
+      </view>
+
+      <view class="footer-hint">数据来自教练每周录入的固定体测指标</view>
+    </view>
+
+    <!-- 空态 -->
+    <view class="empty" wx:if="{{!record && !loading}}">
+      <text class="empty-icon">📊</text>
+      <text class="empty-title">记录不存在</text>
+      <text class="empty-hint">这条成绩可能已被删除</text>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text>加载中...</text>
+  </view>
+</view>

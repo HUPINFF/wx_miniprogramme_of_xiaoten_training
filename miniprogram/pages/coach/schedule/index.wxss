@@ -1,64 +1,111 @@
-/* pages/coach/schedule/index.wxss — iOS 风格 */
+/* pages/coach/schedule/index.wxss — 今日课：品牌绿渐变头部 + 白卡课程列表
+   与工作台/经营驾驶舱同一设计语言（渐变 hero、绿系变量、软阴影白卡） */
 
-/* ==================== 全局变量（iOS 化） ==================== */
 page {
-  --bg: #F2F2F7;
-  --primary: #007AFF;
-  --primary-light: rgba(0, 122, 255, 0.1);
+  --bg: #f5f7fa;
+  --primary: #07c160;
+  --primary-dark: #05a350;
+  --primary-light: #e8f5e9;
   --card: #ffffff;
-  --text-main: #000000;
-  --text-sub: rgba(60, 60, 67, 0.6);
-  --text-hint: rgba(60, 60, 67, 0.34);
-  --border: rgba(60, 60, 67, 0.1);
-  --radius-sm: 14rpx;
+  --text-main: #1a2a1a;
+  --text-sub: #5f6f65;
+  --text-hint: #9aa8a0;
+  --border: rgba(26, 42, 26, 0.08);
   --radius-md: 20rpx;
   --radius-lg: 28rpx;
-  --radius-xl: 32rpx;
+  --card-shadow: 0 4rpx 20rpx rgba(26, 42, 26, 0.06);
+  --blue: #4a90d9;
 }
 
 /* ==================== 页面容器 ==================== */
-/* 底部 tab = 112rpx + 安全区，再留 28rpx 呼吸位。
-   nav-bar 自带 .navbar-placeholder 占位，这里不用再留顶部间距 */
+/* 底部 tab = 112rpx + 安全区，再留 28rpx 呼吸位 */
 .container {
   min-height: 100vh;
   background-color: var(--bg);
-  padding: 24rpx 0 calc(140rpx + env(safe-area-inset-bottom));
+  padding: 0 0 calc(140rpx + env(safe-area-inset-bottom));
+  position: relative;
 }
 
-/* ==================== 概览 ==================== */
-.summary {
+/* ==================== 渐变背景层 ==================== */
+.gradient-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 500rpx;
+  background: linear-gradient(135deg, #07c160 0%, #00d68f 30%, #e8f5e9 80%, rgba(245, 247, 250, 0) 100%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.gradient-bg::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80rpx;
+  background: linear-gradient(180deg, transparent 0%, var(--bg) 100%);
+}
+
+/* ==================== 顶部标题区 ==================== */
+.header-area {
+  padding: 100rpx 40rpx 70rpx;
+  position: relative;
+  z-index: 1;
   display: flex;
-  align-items: baseline;
+  flex-direction: column;
+  align-items: center;
+}
+
+.header-title {
+  display: block;
+  font-size: 52rpx;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 16rpx;
+  text-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
+  letter-spacing: 2rpx;
+}
+
+.hero-pills {
+  display: flex;
+  align-items: center;
   gap: 16rpx;
-  padding: 0 32rpx 20rpx;
 }
 
-.summary-date {
-  font-size: 30rpx;
-  font-weight: 600;
-  color: var(--text-main);
+.header-subtitle,
+.header-pill {
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 400;
+  letter-spacing: 1rpx;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 8rpx 24rpx;
+  border-radius: 20rpx;
 }
 
-.summary-count {
-  font-size: 24rpx;
-  color: var(--text-sub);
+/* ==================== 主体 ==================== */
+.page-body {
+  position: relative;
+  z-index: 1;
+  padding: 0 24rpx;
 }
 
 /* ==================== 课程卡片 ==================== */
 .card-list {
-  margin: 0 24rpx;
   display: flex;
   flex-direction: column;
-  gap: 16rpx;
+  gap: 20rpx;
 }
 
 .course-card {
   display: flex;
   align-items: center;
-  padding: 24rpx;
+  padding: 26rpx 24rpx;
   background: var(--card);
   border-radius: var(--radius-lg);
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  box-shadow: var(--card-shadow);
 }
 
 .cc-time {
@@ -67,23 +114,24 @@ page {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 8rpx;
+  gap: 10rpx;
 }
 
 .cc-start {
-  font-size: 30rpx;
+  font-size: 32rpx;
   font-weight: 700;
   color: var(--text-main);
+  line-height: 1;
 }
 
 .cc-dot {
-  width: 8rpx;
-  height: 8rpx;
+  width: 10rpx;
+  height: 10rpx;
   border-radius: 50%;
 }
-.cc-dot.ready { background: #34C759; }
+.cc-dot.ready { background: var(--primary); }
 .cc-dot.wait { background: #C7C7CC; }
-.cc-dot.ongoing { background: #007AFF; }
+.cc-dot.ongoing { background: var(--blue); }
 .cc-dot.done { background: #8E8E93; }
 
 .cc-body {
@@ -104,6 +152,10 @@ page {
 .cc-child {
   font-size: 24rpx;
   color: var(--text-sub);
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .cc-meta { display: flex; gap: 8rpx; }
@@ -124,7 +176,7 @@ page {
   align-items: center;
   justify-content: center;
   border-radius: 999rpx;
-  background: #007AFF;
+  background: var(--primary);
   transition: transform 0.15s ease;
 }
 
@@ -134,8 +186,16 @@ page {
   color: #ffffff;
 }
 
+/* 待上课 = 品牌绿渐变 + 绿投影；上课中 = 蓝（与工作台「上课中」徽标同色） */
+.cc-btn.ready {
+  background: linear-gradient(135deg, #07c160 0%, #00d68f 100%);
+  box-shadow: 0 6rpx 16rpx rgba(7, 193, 96, 0.3);
+}
 .cc-btn.wait { background: #C7C7CC; }
-.cc-btn.ongoing { background: #34C759; }
+.cc-btn.ongoing {
+  background: var(--blue);
+  box-shadow: 0 6rpx 16rpx rgba(74, 144, 217, 0.3);
+}
 .cc-btn.done { background: #8E8E93; }
 
 .cc-btn:active { transform: scale(0.95); opacity: 0.9; }
@@ -165,8 +225,9 @@ page {
 .empty-btn {
   margin-top: 24rpx;
   padding: 20rpx 56rpx;
-  background: var(--primary);
+  background: linear-gradient(135deg, #07c160 0%, #00d68f 100%);
   border-radius: 999rpx;
+  box-shadow: 0 8rpx 20rpx rgba(7, 193, 96, 0.3);
 }
 
 .empty-btn text {
@@ -181,9 +242,10 @@ page {
 .skeleton-card {
   display: flex;
   align-items: center;
-  padding: 24rpx;
+  padding: 26rpx 24rpx;
   background: var(--card);
   border-radius: var(--radius-lg);
+  box-shadow: var(--card-shadow);
 }
 
 .sk-time {
@@ -206,7 +268,7 @@ page {
 .sk-line-sm { width: 38%; }
 
 .sk-shimmer {
-  background: linear-gradient(90deg, #f2f2f7 25%, #e5e5ea 37%, #f2f2f7 63%);
+  background: linear-gradient(90deg, #eef1f0 25%, #e2e7e5 37%, #eef1f0 63%);
   background-size: 400% 100%;
   animation: sk-shimmer 1.4s ease infinite;
 }

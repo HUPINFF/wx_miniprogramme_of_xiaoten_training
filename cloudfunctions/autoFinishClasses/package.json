@@ -1,0 +1,14 @@
+{
+  "name": "autoFinishClasses",
+  "version": "1.0.0",
+  "description": "定时兜底：过了当天还在上课中(in_class)的课自动置为已下课(finished)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}

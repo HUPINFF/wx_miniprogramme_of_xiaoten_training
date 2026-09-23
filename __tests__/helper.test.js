@@ -12,6 +12,7 @@ const {
   formatMonthLabel,
   getTrainingStatusMeta,
   pickCurrentTraining,
+  findActiveClassForChild,
   parseSessionStart,
   formatDurationText,
   elapsedMinutesOf,
@@ -22,6 +23,7 @@ const {
   formatDeltaText,
   readTouchedField,
   pickProgressHighlight,
+  pickItemProgress,
   summarizeAbilityGroups,
   ABILITY_GROUPS,
   canViewChild
@@ -665,20 +667,26 @@ describe('formatDeltaNumber', () => {
 
 describe('formatDeltaText', () => {
   test('用时变短说「快」', () => {
-    expect(formatDeltaText(0.3, getMetricMeta('fiftyMeter'))).toBe('快0.3秒');
+    expect(formatDeltaText(0.3, getMetricMeta('fiftyMeter'))).toBe('已经快了0.3秒');
   });
 
   test('用时变长说「慢」', () => {
-    expect(formatDeltaText(-0.2, getMetricMeta('fiftyMeter'))).toBe('慢0.2秒');
+    expect(formatDeltaText(-0.2, getMetricMeta('fiftyMeter'))).toBe('慢了0.2秒');
   });
 
   test('计数变多说「多」', () => {
-    expect(formatDeltaText(5, getMetricMeta('sitUp'))).toBe('多5个');
+    expect(formatDeltaText(5, getMetricMeta('sitUp'))).toBe('已经多了5个');
   });
 
-  test('评分说「提升/下降」，不说「快/慢」', () => {
-    expect(formatDeltaText(3, getMetricMeta('agility'))).toBe('提升3分');
-    expect(formatDeltaText(-3, getMetricMeta('coordination'))).toBe('下降3分');
+  test('评分类也用「多/少」，进步带「已经」、退步坦白不加', () => {
+    expect(formatDeltaText(3, getMetricMeta('agility'))).toBe('已经多了3分');
+    expect(formatDeltaText(-3, getMetricMeta('coordination'))).toBe('少了3分');
+  });
+
+  test('不足展示精度的小数差返回空，不出「快了0秒」', () => {
+    expect(formatDeltaText(0.03, getMetricMeta('fiftyMeter'))).toBe('');
+    expect(formatDeltaText(-0.04, getMetricMeta('fiftyMeter'))).toBe('');
+    expect(formatDeltaText(0.06, getMetricMeta('fiftyMeter'))).toBe('已经快了0.1秒');
   });
 });
 
@@ -771,7 +779,7 @@ describe('pickProgressHighlight', () => {
     expect(result.isImprovement).toBeNull();
   });
 
-  test('本周比上周快 → improved，且识别为「较上周」', () => {
+  test('本周比上周快 → improved，且识别为「自上周」', () => {
     const result = pick([
       { weekDate: '2026-09-07', fiftyMeter: 8.5 },   // 8 天前
       { weekDate: '2026-09-14', fiftyMeter: 8.2 }    // 1 天前
@@ -779,8 +787,8 @@ describe('pickProgressHighlight', () => {
     expect(result.mode).toBe('improved');
     expect(result.previousText).toBe('8.5秒');
     expect(result.currentText).toBe('8.2秒');
-    expect(result.deltaText).toBe('快0.3秒');
-    expect(result.comparisonText).toBe('较上周');
+    expect(result.deltaText).toBe('已经快了0.3秒');
+    expect(result.comparisonText).toBe('自上周');
     expect(result.isImprovement).toBe(true);
   });
 
@@ -800,11 +808,11 @@ describe('pickProgressHighlight', () => {
       { weekDate: '2026-09-14', fiftyMeter: 8.7 }
     ]);
     expect(result.mode).toBe('changed');
-    expect(result.deltaText).toBe('慢0.2秒');
+    expect(result.deltaText).toBe('慢了0.2秒');
     expect(result.isImprovement).toBe(false);
   });
 
-  test('间隔不是 7 天 → 不谎称「较上周」', () => {
+  test('间隔不是 7 天 → 不谎称「自上周」', () => {
     // calculateTrend 会把这个说成「上周」。
     // 注意 latest 那条是新的（1 天前）就不会被下面的新鲜度守卫拦掉，
     // 拦的是 previous 太旧——这里要测的正是「对比基准很旧」这个文案分支。
@@ -812,7 +820,7 @@ describe('pickProgressHighlight', () => {
       { weekDate: '2026-08-24', fiftyMeter: 8.5 },   // 22 天前
       { weekDate: '2026-09-14', fiftyMeter: 8.2 }    // 1 天前
     ]);
-    expect(result.comparisonText).toBe('较上次记录（2026年8月24日-8月30日）');
+    expect(result.comparisonText).toBe('自上次记录（2026年8月24日-8月30日）');
   });
 
   test('800米按秒计算进步，不是按分钟（R6）', () => {
@@ -822,7 +830,7 @@ describe('pickProgressHighlight', () => {
     ]);
     expect(result.mode).toBe('improved');
     // 不乘 deltaScale 的话这里会是「快0.2秒」
-    expect(result.deltaText).toBe('快10秒');
+    expect(result.deltaText).toBe('已经快了10秒');
   });
 
   test('横跨多个指标时，取相对进步最大的那个', () => {
@@ -832,7 +840,30 @@ describe('pickProgressHighlight', () => {
       { weekDate: '2026-09-14', fiftyMeter: 8.2, sitUp: 50 }
     ]);
     expect(result.metricKey).toBe('sitUp');
-    expect(result.deltaText).toBe('多10个');
+    expect(result.deltaText).toBe('已经多了10个');
+  });
+
+  test('相邻两周持平、但和更早一周比有进步 → 报更早基线（并写明对比段）', () => {
+    const result = pick([
+      { weekDate: '2026-08-31', fiftyMeter: 8.8 },   // 基线：半个月前
+      { weekDate: '2026-09-07', fiftyMeter: 8.2 },   // 上周（已进步到位）
+      { weekDate: '2026-09-14', fiftyMeter: 8.2 }    // 本周：和上周持平
+    ]);
+    expect(result.mode).toBe('improved');
+    expect(result.deltaText).toBe('已经快了0.6秒');
+    // 基线不是上周 → 不许谎称「自上周」
+    expect(result.comparisonText).toBe('自上次记录（2026年8月31日-9月6日）');
+    expect(result.isImprovement).toBe(true);
+  });
+
+  test('多个基线都有进步时，取相对变化最大的一次', () => {
+    const result = pick([
+      { weekDate: '2026-08-31', sitUp: 40 },
+      { weekDate: '2026-09-07', fiftyMeter: 8.3 },                    // vs 本周：快0.1秒 ≈ 1.2%
+      { weekDate: '2026-09-14', fiftyMeter: 8.2, sitUp: 44 }          // vs 8-31：仰卧起坐 +10%
+    ]);
+    expect(result.metricKey).toBe('sitUp');
+    expect(result.deltaText).toBe('已经多了4个');
   });
 
   test('完全没有变化 → 返回 null，而不是「慢0秒」', () => {
@@ -937,16 +968,16 @@ describe('summarizeAbilityGroups', () => {
 
     const fifty = metricOf(groups, 'speed', 'fiftyMeter');
     expect(fifty.isImprovement).toBe(true);
-    expect(fifty.deltaText).toBe('快0.3秒');
+    expect(fifty.deltaText).toBe('已经快了0.3秒');
     expect(fifty.previousText).toBe('9.5秒');
 
     const sitUp = metricOf(groups, 'strength', 'sitUp');
     expect(sitUp.isImprovement).toBe(false);
-    expect(sitUp.deltaText).toBe('少5个');
+    expect(sitUp.deltaText).toBe('少了5个');
 
     const rope = metricOf(groups, 'agility', 'ropeSkipping');
     expect(rope.isImprovement).toBe(true);
-    expect(rope.deltaText).toBe('多15个');
+    expect(rope.deltaText).toBe('已经多了15个');
 
     const speed = groupOf(groups, 'speed');
     expect(speed.improvedCount).toBe(1);
@@ -961,10 +992,10 @@ describe('summarizeAbilityGroups', () => {
 
     const item = metricOf(groups, 'endurance', 'eightHundredMeter');
     expect(item.isImprovement).toBe(true);
-    expect(item.deltaText).toBe('快10秒');
+    expect(item.deltaText).toBe('已经快了10秒');
   });
 
-  test('评分类指标（协调）用「提升/下降」', () => {
+  test('评分类指标（协调）也用「多/少」，不再用书面腔「提升」', () => {
     const groups = summarizeAbilityGroups([
       { weekDate: '2026-09-07', coordination: 75 },
       { weekDate: '2026-09-14', coordination: 78 }
@@ -972,7 +1003,7 @@ describe('summarizeAbilityGroups', () => {
 
     const item = metricOf(groups, 'agility', 'coordination');
     expect(item.isImprovement).toBe(true);
-    expect(item.deltaText).toBe('提升3分');
+    expect(item.deltaText).toBe('已经多了3分');
   });
 
   test('入参倒序（最新在前）也重排正确，不会把退步算成进步', () => {
@@ -983,7 +1014,7 @@ describe('summarizeAbilityGroups', () => {
 
     const fifty = metricOf(groups, 'speed', 'fiftyMeter');
     expect(fifty.isImprovement).toBe(true);
-    expect(fifty.deltaText).toBe('快0.3秒');
+    expect(fifty.deltaText).toBe('已经快了0.3秒');
   });
 
   test('历史数据的指标字段是数组 → 取第一个非空元素解析', () => {
@@ -1017,5 +1048,235 @@ describe('summarizeAbilityGroups', () => {
     expect(sitUp.hasData).toBe(true);
     expect(sitUp.isImprovement).toBeNull();
     expect(sitUp.deltaText).toBe('');
+  });
+});
+
+// ==================== pickItemProgress（训练项目组数/个数进步） ====================
+describe('pickItemProgress', () => {
+  const TODAY = '2026-09-21';
+  const pick = (trainings, options) => pickItemProgress(trainings, Object.assign({ today: TODAY }, options));
+  const lesson = (date, items) => ({ date, items });
+
+  test('同名项目一个月内做得更多 → 挑出来（组数个数都涨）', () => {
+    const result = pick([
+      lesson('2026-08-25', [{ name: '深蹲', done: true, sets: '3', reps: '12' }]),
+      lesson('2026-09-18', [{ name: '深蹲', done: true, sets: '4', reps: '15' }])
+    ]);
+    expect(result).not.toBeNull();
+    expect(result.mode).toBe('item');
+    expect(result.metricName).toBe('深蹲');
+    expect(result.deltaText).toBe('从3组×12次练到4组×15次');
+    expect(result.comparisonText).toBe('自8月25日');
+    expect(result.isImprovement).toBe(true);
+  });
+
+  test('多个项目都进步 → 取相对提升最大的', () => {
+    const result = pick([
+      // 深蹲 3组×12次=36 → 4组×12次=48（+33%）；折返跑 10次 → 11次（+10%）
+      lesson('2026-09-01', [
+        { name: '深蹲', done: true, sets: '3', reps: '12' },
+        { name: '折返跑', done: true, reps: '10' }
+      ]),
+      lesson('2026-09-18', [
+        { name: '深蹲', done: true, sets: '4', reps: '12' },
+        { name: '折返跑', done: true, reps: '11' }
+      ])
+    ]);
+    expect(result.metricName).toBe('深蹲');
+    expect(result.deltaText).toBe('从3组×12次练到4组×12次');
+  });
+
+  test('没勾完成的项目不算（计划量不等于做到）', () => {
+    const result = pick([
+      lesson('2026-09-01', [{ name: '深蹲', done: true, sets: '3', reps: '12' }]),
+      lesson('2026-09-18', [{ name: '深蹲', done: false, sets: '4', reps: '15' }])
+    ]);
+    expect(result).toBeNull();
+  });
+
+  test('只填组数/只填个数 → 「从X练到Y」，数字前后一摆', () => {
+    const setsOnly = pick([
+      lesson('2026-09-01', [{ name: '平板支撑', done: true, sets: '3' }]),
+      lesson('2026-09-18', [{ name: '平板支撑', done: true, sets: '4' }])
+    ]);
+    expect(setsOnly.deltaText).toBe('从3组练到4组');
+
+    const repsOnly = pick([
+      lesson('2026-09-01', [{ name: '跳绳', done: true, reps: '120' }]),
+      lesson('2026-09-18', [{ name: '跳绳', done: true, reps: '135' }])
+    ]);
+    expect(repsOnly.deltaText).toBe('从120次练到135次');
+  });
+
+  test('组数涨、每组个数跌但总量涨 → 如实报总量（加起来…），不掩盖退步的那截', () => {
+    const result = pick([
+      lesson('2026-09-01', [{ name: '深蹲', done: true, sets: '3', reps: '12' }]),   // 36
+      lesson('2026-09-18', [{ name: '深蹲', done: true, sets: '4', reps: '10' }])    // 40
+    ]);
+    expect(result.deltaText).toBe('加起来从36次练到40次');
+  });
+
+  test('数据形态不同没法比：一次只填组数、一次组数个数都填 → 跳过这组', () => {
+    const result = pick([
+      lesson('2026-09-01', [{ name: '深蹲', done: true, sets: '3' }]),
+      lesson('2026-09-18', [{ name: '深蹲', done: true, sets: '3', reps: '12' }])
+    ]);
+    expect(result).toBeNull();
+  });
+
+  test('窗口外（一个月前）的课次不参与', () => {
+    const result = pick([
+      lesson('2026-08-10', [{ name: '深蹲', done: true, sets: '2', reps: '10' }]),   // 42 天前
+      lesson('2026-09-18', [{ name: '深蹲', done: true, sets: '4', reps: '15' }])
+    ]);
+    expect(result).toBeNull();
+  });
+
+  test('项目只出现一次 / 没有同名项目 / 空输入 → null（调用方回落体测成绩）', () => {
+    expect(pick([lesson('2026-09-18', [{ name: '深蹲', done: true, sets: '4', reps: '15' }])])).toBeNull();
+    expect(pick([
+      lesson('2026-09-01', [{ name: '深蹲', done: true, sets: '3', reps: '12' }]),
+      lesson('2026-09-18', [{ name: '仰卧起坐', done: true, reps: '40' }])
+    ])).toBeNull();
+    expect(pick([])).toBeNull();
+    expect(pick(null)).toBeNull();
+  });
+
+  test('组数/个数都没填的项目没法比，跳过', () => {
+    const result = pick([
+      lesson('2026-09-01', [{ name: '深蹲', done: true }]),
+      lesson('2026-09-18', [{ name: '深蹲', done: true }])
+    ]);
+    expect(result).toBeNull();
+  });
+
+  test('项目名带首尾空格也算同名', () => {
+    const result = pick([
+      lesson('2026-09-01', [{ name: '深蹲 ', done: true, sets: '3', reps: '12' }]),
+      lesson('2026-09-18', [{ name: '深蹲', done: true, sets: '4', reps: '12' }])
+    ]);
+    expect(result.metricName).toBe('深蹲');
+    expect(result.deltaText).toBe('从3组×12次练到4组×12次');
+  });
+
+  test('中间冲高、最新回落 → 以最新为 current 扫全部基线，报对最早基线的进步', () => {
+    const result = pick([
+      lesson('2026-09-01', [{ name: '深蹲', done: true, sets: '3', reps: '12' }]),   // 36
+      lesson('2026-09-10', [{ name: '深蹲', done: true, sets: '5', reps: '12' }]),   // 60（冲高）
+      lesson('2026-09-18', [{ name: '深蹲', done: true, sets: '4', reps: '12' }])    // 48 ← 最新
+    ]);
+    // current 永远是最新一次；基线扫到 36 → +33%（冲高那次的 60 不许拿来当 current 夸大）
+    expect(result.currentText).toBe('4组×12次');
+    expect(result.deltaText).toBe('从3组×12次练到4组×12次');
+  });
+
+  // ---- 同一天多节课：先后必须确定（按 startTime），不能看查询返回顺序 ----
+  test('同一天两节课：按 startTime 定先后，晚一次做得更多 → 算进步', () => {
+    const result = pick([
+      { date: '2026-09-21', startTime: '18:09', items: [{ name: '跳绳', done: true, sets: '10', reps: '500' }] },
+      { date: '2026-09-21', startTime: '14:00', items: [{ name: '跳绳', done: true, sets: '8', reps: '400' }] }
+    ]);
+    expect(result).not.toBeNull();
+    expect(result.currentText).toBe('10组×500次');
+    expect(result.deltaText).toBe('从8组×400次练到10组×500次');
+    expect(result.comparisonText).toBe('自9月21日');
+  });
+
+  test('同一天两节课：晚一次反而做得少 → 不把退步反过来报成进步', () => {
+    const result = pick([
+      { date: '2026-09-21', startTime: '14:00', items: [{ name: '跳绳', done: true, sets: '10', reps: '500' }] },
+      { date: '2026-09-21', startTime: '18:09', items: [{ name: '跳绳', done: true, sets: '8', reps: '400' }] }
+    ]);
+    expect(result).toBeNull();
+  });
+
+  test('同一天两节课、量一模一样 → 没有进步，返回 null', () => {
+    const result = pick([
+      { date: '2026-09-21', startTime: '14:00', items: [{ name: '跳绳', done: true, sets: '10', reps: '500' }] },
+      { date: '2026-09-21', startTime: '18:09', items: [{ name: '跳绳', done: true, sets: '10', reps: '500' }] }
+    ]);
+    expect(result).toBeNull();
+  });
+
+  // ---- 形态守卫双向（工作流确认缺陷：原守卫只挡组数方向，漏了只填个数的镜像） ----
+  test('只填个数 → 组×次：形态不同，反向也要挡住不比', () => {
+    const result = pick([
+      { date: '2026-09-01', _id: 'a', items: [{ name: '跳绳', done: true, reps: '12' }] },
+      { date: '2026-09-20', _id: 'b', items: [{ name: '跳绳', done: true, sets: '3', reps: '12' }] }
+    ]);
+    expect(result).toBeNull();
+  });
+
+  // ---- 同课次同名去重（工作流确认缺陷：课内两行差异冒充跨课进步） ----
+  test('同一节课两行同名（3×12、4×12）→ 只有本课自己，不成进步', () => {
+    const result = pick([
+      { date: '2026-09-21', _id: 'a', items: [
+        { name: '深蹲', done: true, sets: '3', reps: '12' },
+        { name: '深蹲', done: true, sets: '4', reps: '12' }
+      ] }
+    ]);
+    expect(result).toBeNull();
+  });
+
+  test('新课次录了两行同名（5×12、3×12）→ 取量大的一行，真进步不被压成 null', () => {
+    const result = pick([
+      { date: '2026-08-25', _id: 'a', items: [{ name: '深蹲', done: true, sets: '3', reps: '12' }] },
+      { date: '2026-09-20', _id: 'b', items: [
+        { name: '深蹲', done: true, sets: '5', reps: '12' },
+        { name: '深蹲', done: true, sets: '3', reps: '12' }
+      ] }
+    ]);
+    expect(result).not.toBeNull();
+    expect(result.currentText).toBe('5组×12次');
+    expect(result.deltaText).toBe('从3组×12次练到5组×12次');
+    expect(result.comparisonText).toBe('自8月25日');
+  });
+});
+
+// ==================== findActiveClassForChild（开课守卫） ====================
+describe('findActiveClassForChild', () => {
+  // 最小 db 桩：collection().where().get() 按注入数据 resolve/reject
+  function dbWith(data, fail) {
+    return {
+      collection: () => ({
+        where: () => ({
+          get: () => (fail ? Promise.reject(new Error('db down')) : Promise.resolve({ data }))
+        })
+      })
+    };
+  }
+
+  test('同学员有真的在上课中的另一节 → 返回冲突课次', async () => {
+    const conflict = { _id: 't2', childId: 'c1', status: 'in_class' };
+    const res = await findActiveClassForChild(dbWith([conflict]), 'c1', 't1');
+    expect(res).toBe(conflict);
+  });
+
+  test('冲突课已盖下课戳 classEndedAt → 不算冲突', async () => {
+    const res = await findActiveClassForChild(
+      dbWith([{ _id: 't2', status: 'in_class', classEndedAt: new Date() }]),
+      'c1',
+      't1'
+    );
+    expect(res).toBeNull();
+  });
+
+  test('排除本次要开的那节课自身', async () => {
+    const res = await findActiveClassForChild(
+      dbWith([{ _id: 't1', status: 'in_class' }]),
+      'c1',
+      't1'
+    );
+    expect(res).toBeNull();
+  });
+
+  test('查询失败 fail-open：返回 null 放行开课', async () => {
+    const res = await findActiveClassForChild(dbWith([], true), 'c1', 't1');
+    expect(res).toBeNull();
+  });
+
+  test('childId 缺失直接放行（不发查询）', async () => {
+    const res = await findActiveClassForChild(dbWith([{ _id: 't2' }]), '', 't1');
+    expect(res).toBeNull();
   });
 });

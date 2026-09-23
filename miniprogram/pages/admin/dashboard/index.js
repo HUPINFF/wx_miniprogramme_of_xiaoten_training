@@ -16,6 +16,7 @@ const WEEK_LABELS = ['一', '二', '三', '四', '五', '六', '日'];
 Page({
   data: {
     loading: true,
+    heroDate: '',
     today: { total: '--', finished: '--', inClass: '--', waiting: '--' },
     overview: {
       students: '--',
@@ -31,6 +32,11 @@ Page({
   },
 
   onLoad() {
+    // 头部日期胶囊：如「9月22日 · 周一」
+    const now = new Date();
+    const weekLabel = ['日', '一', '二', '三', '四', '五', '六'][now.getDay()];
+    this.setData({ heroDate: `${now.getMonth() + 1}月${now.getDate()}日 · 周${weekLabel}` });
+
     this.assertAdmin().then(me => {
       if (me) this.loadAll();
     });
@@ -95,6 +101,11 @@ Page({
         // 第二批：需要全量的慢查询，失败也不影响已上屏的卡片
         this.loadSlowStats();
       });
+  },
+
+  /** 排课调度中心入口（蓝图第 10 页，独立子页 pages/admin/schedule） */
+  onScheduleCenterTap() {
+    wx.navigateTo({ url: '/pages/admin/schedule/index' });
   },
 
   /** 第一批：全部走 count()，并发 8 个（wx.request 并发上限 10） */
@@ -216,6 +227,7 @@ Page({
   /** 本周 7 天课次趋势 */
   loadTrend(week) {
     const db = wx.cloud.database();
+    const todayStr = getTodayString(); // 给今天那根柱子打高亮标
     const days = [];
 
     for (let i = 0; i < 7; i++) {
@@ -235,6 +247,7 @@ Page({
           date: days[i],
           label: WEEK_LABELS[i],
           count,
+          isToday: days[i] === todayStr,
           // percent 在 js 里算好，wxml 里做不了除法取整
           percent: max ? Math.round(count / max * 100) : 0
         }))

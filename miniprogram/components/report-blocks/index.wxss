@@ -1,0 +1,164 @@
+/* components/report-blocks/index.wxss
+   报告积木块样式：海报式成品卡的内页语言，白底黑字 + 系统蓝强调，
+   和学员详情页的 iOS 化同一套色板。 */
+
+.rb-section {
+  padding: 28rpx 0;
+  border-top: 1rpx solid rgba(60, 60, 67, 0.08);
+}
+
+.rb-section:first-child {
+  border-top: none;
+  padding-top: 4rpx;
+}
+
+.rb-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #000000;
+  margin-bottom: 18rpx;
+}
+
+.rb-empty {
+  font-size: 24rpx;
+  color: rgba(60, 60, 67, 0.34);
+  padding: 6rpx 0;
+}
+
+/* 本期完成：两个大数字格 */
+.stats-grid {
+  display: flex;
+  gap: 16rpx;
+}
+
+.stats-cell {
+  flex: 1;
+  background: #f7f7fa;
+  border-radius: 16rpx;
+  padding: 22rpx 16rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.stats-num {
+  font-size: 44rpx;
+  font-weight: 700;
+  color: #007aff;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+
+.stats-label {
+  font-size: 22rpx;
+  color: rgba(60, 60, 67, 0.6);
+}
+
+.type-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-top: 18rpx;
+}
+
+.type-tag {
+  font-size: 22rpx;
+  color: #007aff;
+  background: rgba(0, 122, 255, 0.08);
+  padding: 6rpx 16rpx;
+  border-radius: 999rpx;
+}
+
+/* 能力变化行：图标 + 域名 + 指标值 + 变化 */
+.ability-line {
+  display: flex;
+  align-items: baseline;
+  padding: 8rpx 0;
+}
+
+.ability-icon {
+  flex-shrink: 0;
+  font-size: 24rpx;
+  margin-right: 10rpx;
+}
+
+.ability-name {
+  flex-shrink: 0;
+  font-size: 26rpx;
+  color: rgba(60, 60, 67, 0.6);
+}
+
+.ability-val {
+  flex: 1;
+  min-width: 0;
+  margin-left: 16rpx;
+  font-size: 26rpx;
+  font-weight: 500;
+  color: #000000;
+  font-variant-numeric: tabular-nums;
+}
+
+.ability-delta {
+  flex-shrink: 0;
+  margin-left: 12rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+}
+
+.ability-delta.up {
+  color: #007aff;
+}
+
+.ability-delta.down {
+  color: #ff9500;
+}
+
+/* 精彩证据：三列照片格 */
+.photo-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+/* 三列 200rpx + 2×12rpx 间距 = 624rpx，海报内页最窄容器 636rpx 也放得下
+   （208rpx 时 648rpx 超宽，第三张必被挤到第二行） */
+.photo-item {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 16rpx;
+  background: #f2f2f7;
+}
+
+.rb-video {
+  width: 100%;
+  height: 360rpx;
+  border-radius: 16rpx;
+  background: #000000;
+  margin-top: 12rpx;
+}
+
+/* 教练写的话：保留换行的正文排版 */
+.text-body {
+  font-size: 27rpx;
+  line-height: 1.7;
+  color: #1a1a1a;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-top: 16rpx;
+}
+
+.tag-chip {
+  font-size: 22rpx;
+  font-weight: 500;
+  color: #007aff;
+  background: rgba(0, 122, 255, 0.1);
+  padding: 6rpx 18rpx;
+  border-radius: 999rpx;
+}

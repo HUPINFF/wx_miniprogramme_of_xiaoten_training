@@ -1,0 +1,79 @@
+<!-- components/report-blocks/index.wxml
+     报告积木块渲染（只读）。六种块：stats/ability 自动块，photos/comment/plan/action 教练块。
+     WXML 表达式里不调方法，所有判空都用属性访问，保证老草稿缺字段也不炸。 -->
+<view class="rb">
+  <view class="rb-section" wx:for="{{sections}}" wx:for-item="sec" wx:key="kind">
+
+    <!-- 本期完成：节数 + 消耗课时 + 训练主题分布 -->
+    <block wx:if="{{sec.kind === 'stats'}}">
+      <view class="rb-title" wx:if="{{showTitle}}">{{sec.title}}</view>
+      <view class="rb-empty" wx:if="{{sec.empty}}">本周期暂无上课记录</view>
+      <block wx:else>
+        <view class="stats-grid">
+          <view class="stats-cell">
+            <text class="stats-num">{{sec.data.finishedCount}}</text>
+            <text class="stats-label">完成训练（节）</text>
+          </view>
+          <view class="stats-cell">
+            <text class="stats-num">{{sec.data.hoursUsed}}</text>
+            <text class="stats-label">消耗课时</text>
+          </view>
+        </view>
+        <view class="type-tags" wx:if="{{sec.data.typeCounts.length > 0}}">
+          <text class="type-tag" wx:for="{{sec.data.typeCounts}}" wx:for-item="tc" wx:key="type">{{tc.type}} ×{{tc.count}}</text>
+        </view>
+      </block>
+    </block>
+
+    <!-- 能力变化：期内期初期末对比 + 体态变化 -->
+    <block wx:elif="{{sec.kind === 'ability'}}">
+      <view class="rb-title" wx:if="{{showTitle}}">{{sec.title}}</view>
+      <view class="rb-empty" wx:if="{{sec.empty}}">本周期暂无测评记录</view>
+      <block wx:else>
+        <view class="ability-line" wx:for="{{sec.data.rows}}" wx:for-item="row" wx:key="key">
+          <text class="ability-icon">{{row.icon}}</text>
+          <text class="ability-name">{{row.name}}</text>
+          <text class="ability-val">{{row.metricName}} {{row.valueText}}</text>
+          <text class="ability-delta {{row.isImprovement === false ? 'down' : 'up'}}" wx:if="{{row.deltaText}}">{{row.isImprovement === false ? '↓' : '↑'}}{{row.deltaText}}</text>
+        </view>
+        <view class="ability-line" wx:for="{{sec.data.bodyRows}}" wx:for-item="row" wx:key="key">
+          <text class="ability-icon">📏</text>
+          <text class="ability-name">{{row.label}}</text>
+          <text class="ability-val">{{row.valueText}}</text>
+          <text class="ability-delta up">{{row.deltaText}}</text>
+        </view>
+      </block>
+    </block>
+
+    <!-- 精彩证据：照片九宫格（点开全屏预览）+ 视频列表 -->
+    <block wx:elif="{{sec.kind === 'photos'}}">
+      <view class="rb-title" wx:if="{{showTitle}}">{{sec.title}}</view>
+      <view class="rb-empty" wx:if="{{!sec.fileIDs.length && !(sec.videos && sec.videos.length)}}">还没挑选照片或视频</view>
+      <block wx:else>
+        <view class="photo-grid" wx:if="{{sec.fileIDs.length > 0}}">
+          <image
+            class="photo-item"
+            wx:for="{{sec.fileIDs}}"
+            wx:key="*this"
+            src="{{item}}"
+            mode="aspectFill"
+            data-urls="{{sec.fileIDs}}"
+            data-url="{{item}}"
+            bind:tap="previewImage"
+          />
+        </view>
+        <video class="rb-video" wx:for="{{sec.videos}}" wx:key="*this" src="{{item}}" object-fit="contain"></video>
+      </block>
+    </block>
+
+    <!-- 教练点评 / 下阶段计划 / 家长行动：文字 + 标签 -->
+    <block wx:elif="{{sec.kind === 'comment' || sec.kind === 'plan' || sec.kind === 'action'}}">
+      <view class="rb-title" wx:if="{{showTitle}}">{{sec.title}}</view>
+      <view class="text-body" wx:if="{{sec.content}}">{{sec.content}}</view>
+      <view class="tag-row" wx:if="{{sec.tags.length > 0}}">
+        <text class="tag-chip" wx:for="{{sec.tags}}" wx:key="*this">{{item}}</text>
+      </view>
+      <view class="rb-empty" wx:if="{{!sec.content && (!sec.tags || sec.tags.length === 0)}}">待补充</view>
+    </block>
+  </view>
+</view>

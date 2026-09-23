@@ -1,9 +1,9 @@
 {
   "usingComponents": {
-    "nav-bar": "/components/nav-bar/nav-bar",
     "coach-tab-bar": "/components/coach-tab-bar/index"
   },
   "navigationStyle": "custom",
   "enablePullDownRefresh": true,
-  "backgroundTextStyle": "dark"
+  "backgroundColor": "#07c160",
+  "backgroundTextStyle": "light"
 }

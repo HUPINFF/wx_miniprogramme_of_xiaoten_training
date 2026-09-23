@@ -1,12 +1,13 @@
 // pages/coach/workbench/index.js
 // workbench 在 pages/coach/ 下一层，到 miniprogram/ 只要三级
 const { fetchAll } = require('../../../utils/db');
+const { findActiveClassForChild } = require('../../../utils/helper');
 
 Page({
   data: {
     coachInfo: {},
-    todayDate: '',
     todayTrainings: [],
+    inClassList: [],
     todo: {
       weeklyPerformance: 0,
       feedback: 0,
@@ -22,7 +23,6 @@ Page({
   },
 
   async onLoad() {
-    this.setTodayDate();
     await this.refreshData();
     await this.loadCoachInfo();
     this.loadTodayTrainings();
@@ -44,13 +44,6 @@ Page({
     } finally {
       this.setData({ loading: false });
     }
-  },
-
-  setTodayDate() {
-    const now = new Date();
-    this.setData({
-      todayDate: `${now.getMonth() + 1}月${now.getDate()}日`
-    });
   },
 
   loadCoachInfo() {
@@ -105,6 +98,12 @@ Page({
         }, {});
       }
 
+      // 同一学员不能同时上两节课：先收集「真的在上课中」（in_class 且没盖下课戳）的
+      // 学员，列表里把这些学员的其他待上课次按钮置灰；点击时 goToClass 里还有 DB 级守卫兜底
+      const busyChildIds = new Set(
+        res.data.filter(t => t.status === 'in_class' && !t.classEndedAt).map(t => t.childId)
+      );
+
       // 处理训练数据
       const trainings = res.data.map(training => {
         const childInfo = childInfoMap[training.childId] || {};
@@ -117,15 +116,84 @@ Page({
           canStart = now >= startDateTime;
         }
 
+        // 灰字副标题：训练项目名；旧文档无 items 时回落到教练手填内容 / 训练重点
+        const itemsText = (training.items || []).map(it => (it && it.name) || '').filter(Boolean).join('、')
+          || training.coachContent || training.focus || '';
+        // 这节课的学员是否被别的在上课占着（只对待上/已排课的课次有意义）
+        const statusKey = training.status || 'pending';
+        const childBusy = busyChildIds.has(training.childId)
+          && statusKey !== 'in_class' && statusKey !== 'finished';
+
         return {
           ...training,
           childName: childInfo.name || '未知学员',
-          canStart: canStart
+          itemsText,
+          canStart: canStart,
+          childBusy
         };
       });
 
       this.setData({ todayTrainings: trainings });
+      this.updateInClassList(trainings);
     });
+  },
+
+  // 「正在上课」卡片：从今日课里挑出「真的在课上」的课次——status 是 in_class 且
+  // 没盖过下课戳（classEndedAt 在下课那一刻就写入，而 status 要等课后记录
+  // 「完成记录」才变 finished，单看 status 会把下课后的窗口期也当上课中）。
+  // 带「已上课 X 分钟」的耗时文案；有课中时起一个 30s 定时器让耗时自己走。
+  updateInClassList(trainings) {
+    const inClassList = (trainings || []).filter(t => t.status === 'in_class' && !t.classEndedAt).map(t => ({
+      _id: t._id,
+      childName: t.childName,
+      itemsText: t.itemsText,
+      startTime: t.startTime,
+      elapsedText: this.formatElapsed(t.inClassTime)
+    }));
+
+    this.setData({ inClassList });
+
+    if (inClassList.length > 0 && !this.inClassTimer) {
+      this.inClassTimer = setInterval(() => {
+        // 用 todayTrainings 重新派生：下课（盖上 classEndedAt）后卡片自动消失
+        this.updateInClassList(this.data.todayTrainings);
+      }, 30000);
+    } else if (inClassList.length === 0 && this.inClassTimer) {
+      clearInterval(this.inClassTimer);
+      this.inClassTimer = null;
+    }
+  },
+
+  formatElapsed(inClassTime) {
+    const start = inClassTime ? new Date(inClassTime).getTime() : NaN;
+    if (!isFinite(start)) return '';
+    const minutes = Math.max(0, Math.floor((Date.now() - start) / 60000));
+    if (minutes < 1) return '刚刚开始';
+    if (minutes < 60) return `已上课 ${minutes} 分钟`;
+    const hours = Math.floor(minutes / 60);
+    const rest = minutes % 60;
+    return rest > 0 ? `已上课 ${hours} 小时 ${rest} 分钟` : `已上课 ${hours} 小时`;
+  },
+
+  goBackToClass(e) {
+    const { id } = e.currentTarget.dataset;
+    if (id) {
+      wx.navigateTo({ url: `/pages/coach/in-class/index?trainingId=${id}` });
+    }
+  },
+
+  onHide() {
+    if (this.inClassTimer) {
+      clearInterval(this.inClassTimer);
+      this.inClassTimer = null;
+    }
+  },
+
+  onUnload() {
+    if (this.inClassTimer) {
+      clearInterval(this.inClassTimer);
+      this.inClassTimer = null;
+    }
   },
 
   loadTodoCount() {
@@ -166,7 +234,10 @@ Page({
         }).count(),
         db.collection('feedbacks').where({
           childId: _.in(childIds),
-          weekStart: weekStart
+          weekStart: weekStart,
+          // 每课反馈（带 trainingId）不计入：这里统计的是「本周已写周反馈的学员数」，
+          // 同一孩子一周可能有多条每课反馈，混进来会把待写反馈数压小
+          trainingId: _.exists(false)
         }).count()
       ]).then(([perfRes, feedbackRes]) => {
         // 兜底 max(0)：万一历史数据里同一个孩子本周有多条记录，减出来会是负数
@@ -480,16 +551,23 @@ Page({
       return;
     }
 
-    // 开始上课 - 先更新状态再跳转
+    // 开始上课 - 先守卫（同一学员不能同时上两节课）再更新状态跳转
     const db = wx.cloud.database();
-    db.collection('trainings').doc(id).update({
-      data: {
-        status: 'in_class',
-        inClassTime: new Date()
+    findActiveClassForChild(db, training.childId, id).then(conflict => {
+      if (conflict) {
+        // 这孩子还有一节真的在上课中（没点下课）；给不同学员开课不受影响
+        wx.showToast({ title: '该学员正在上课中', icon: 'none' });
+        return;
       }
-    }).then(() => {
-      wx.navigateTo({ url: `/pages/coach/in-class/index?trainingId=${id}` });
-      this.loadTodayTrainings();
+      return db.collection('trainings').doc(id).update({
+        data: {
+          status: 'in_class',
+          inClassTime: new Date()
+        }
+      }).then(() => {
+        wx.navigateTo({ url: `/pages/coach/in-class/index?trainingId=${id}` });
+        this.loadTodayTrainings();
+      });
     }).catch(err => {
       console.error('开始上课失败', err);
       wx.showToast({ title: '操作失败', icon: 'none' });

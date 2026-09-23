@@ -1,0 +1,385 @@
+/* pages/users/feedback-detail/index.wxss — 家长端反馈详情（精致版）
+   与 my-feedback 同一版式语言：iOS 白卡 + 灰底，头部渐变提气，正文大字重排版。 */
+page {
+  background-color: #F2F2F7;
+}
+
+.container {
+  min-height: 100vh;
+  padding-bottom: 48rpx;
+}
+
+.page-body {
+  padding: 20rpx 24rpx 0;
+}
+
+.card {
+  background: #ffffff;
+  border: 1rpx solid rgba(60, 60, 67, 0.06);
+  border-radius: 28rpx;
+  padding: 32rpx 28rpx;
+  margin-bottom: 22rpx;
+  box-shadow: 0 4rpx 18rpx rgba(31, 41, 55, 0.04);
+}
+
+.card-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 22rpx;
+}
+
+.card-head-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-head-row .card-title {
+  margin-bottom: 22rpx;
+}
+
+/* ==================== 头部：渐变提气 ==================== */
+.head-card {
+  background: linear-gradient(165deg, #EDF4FF 0%, #FFFFFF 58%);
+  padding-bottom: 36rpx;
+}
+
+.fb-head-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.fb-child {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #000;
+  letter-spacing: 1rpx;
+}
+
+.fb-date {
+  font-size: 24rpx;
+  color: rgba(60, 60, 67, 0.55);
+}
+
+.fb-course {
+  display: inline-block;
+  margin-top: 16rpx;
+  padding: 8rpx 22rpx;
+  font-size: 24rpx;
+  font-weight: 500;
+  color: #007AFF;
+  background: rgba(0, 122, 255, 0.09);
+  border-radius: 999rpx;
+}
+
+.stars {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-top: 24rpx;
+}
+
+.star {
+  font-size: 50rpx;
+  line-height: 1;
+  color: rgba(60, 60, 67, 0.18);
+}
+
+.star.on {
+  color: #FF9500;
+  text-shadow: 0 2rpx 8rpx rgba(255, 149, 0, 0.28);
+}
+
+.rating-num {
+  margin-left: 10rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #FF9500;
+}
+
+.fb-week {
+  margin-top: 20rpx;
+  font-size: 24rpx;
+  color: rgba(60, 60, 67, 0.55);
+}
+
+/* ==================== 标签 ==================== */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.tag {
+  background-color: rgba(52, 199, 89, 0.13);
+  color: #2FAE52;
+  border-radius: 999rpx;
+  padding: 10rpx 24rpx;
+  font-size: 25rpx;
+  font-weight: 500;
+}
+
+/* ==================== 教练反馈：一封来自教练的信 ==================== */
+.fb-hero {
+  background: linear-gradient(172deg, #FFFBF3 0%, #FFFFFF 64%);
+  border-color: rgba(255, 149, 0, 0.16);
+  box-shadow: 0 6rpx 26rpx rgba(150, 96, 0, 0.05);
+  animation: fbRise 0.5s ease-out both;
+}
+
+@keyframes fbRise {
+  from { opacity: 0; transform: translateY(18rpx); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fb-letter-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.fb-coach-id {
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+}
+
+.fb-avatar {
+  width: 76rpx;
+  height: 76rpx;
+  border-radius: 50%;
+  border: 4rpx solid #ffffff;
+  box-shadow: 0 0 0 3rpx rgba(255, 149, 0, 0.32);
+  background: #f0f0f0;
+}
+
+.fb-avatar-fb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(150deg, #FFB340, #FF8A00);
+}
+
+.fb-coach-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.fb-coach-name {
+  font-size: 31rpx;
+  font-weight: 700;
+  color: #000;
+  letter-spacing: 0.5rpx;
+}
+
+.fb-coach-role {
+  font-size: 22rpx;
+  color: rgba(60, 60, 67, 0.45);
+  letter-spacing: 1rpx;
+}
+
+.fb-quote-mark {
+  font-family: Georgia, "Songti SC", "STSong", "SimSun", serif;
+  font-size: 120rpx;
+  line-height: 0.7;
+  color: rgba(255, 149, 0, 0.16);
+  transform: translateY(10rpx);
+}
+
+.fb-letter-body {
+  margin-top: 26rpx;
+}
+
+.fb-letter-body text {
+  font-size: 30rpx;
+  color: rgba(0, 0, 0, 0.82);
+  line-height: 1.9;
+  letter-spacing: 0.5rpx;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.fb-empty-hint {
+  font-size: 26rpx;
+  color: rgba(60, 60, 67, 0.38);
+  padding: 8rpx 0;
+}
+
+.fb-tear-line {
+  margin-top: 30rpx;
+  border-top: 2rpx dashed rgba(255, 149, 0, 0.35);
+}
+
+.fb-sign-row {
+  margin-top: 22rpx;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.fb-sign-date {
+  font-size: 22rpx;
+  color: rgba(60, 60, 67, 0.42);
+  font-family: Georgia, "Songti SC", "STSong", "SimSun", serif;
+  letter-spacing: 1rpx;
+}
+
+.fb-sign-right {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.fb-sign-name {
+  font-size: 27rpx;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.72);
+  font-family: Georgia, "Songti SC", "STSong", "SimSun", serif;
+}
+
+.fb-seal {
+  width: 62rpx;
+  height: 62rpx;
+  border-radius: 14rpx;
+  background: #E4573D;
+  box-shadow: inset 0 0 0 3rpx rgba(255, 255, 255, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(-6deg);
+  opacity: 0.92;
+}
+
+.fb-seal text {
+  font-size: 20rpx;
+  line-height: 1.15;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 2rpx;
+}
+
+/* ==================== 照片 ==================== */
+.photo-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14rpx;
+}
+
+.photo-thumb {
+  width: 212rpx;
+  height: 212rpx;
+  border-radius: 20rpx;
+  background-color: #f0f0f0;
+}
+
+/* ==================== 视频 ==================== */
+.fb-video {
+  width: 100%;
+  height: 360rpx;
+  border-radius: 20rpx;
+  margin-bottom: 18rpx;
+  background: #000;
+}
+
+.fb-video:last-child {
+  margin-bottom: 0;
+}
+
+/* ==================== 朋友圈分享文案 ==================== */
+.moments-card .card-title {
+  margin-bottom: 0;
+}
+
+.copy-link {
+  font-size: 26rpx;
+  font-weight: 500;
+  color: #007AFF;
+  padding: 4rpx 0 22rpx;
+}
+
+.copy-link:active {
+  opacity: 0.7;
+}
+
+.moments-quote {
+  background: #FFFBF3;
+  border-left: 6rpx solid #FF9500;
+  border-radius: 12rpx;
+  padding: 22rpx 24rpx;
+}
+
+.moments-quote text {
+  font-size: 27rpx;
+  color: rgba(0, 0, 0, 0.72);
+  line-height: 1.8;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.moments-hint {
+  margin-top: 16rpx;
+  font-size: 22rpx;
+  color: rgba(60, 60, 67, 0.35);
+}
+
+/* ==================== 加载 / 失败 ==================== */
+.loading {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20rpx;
+  font-size: 26rpx;
+  color: rgba(60, 60, 67, 0.6);
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid rgba(60, 60, 67, 0.15);
+  border-top-color: #007AFF;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.fail-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28rpx;
+  padding: 160rpx 60rpx 0;
+}
+
+.fail-text {
+  font-size: 27rpx;
+  color: rgba(60, 60, 67, 0.6);
+  text-align: center;
+}
+
+.retry-btn {
+  padding: 16rpx 60rpx;
+  font-size: 27rpx;
+  font-weight: 500;
+  color: #ffffff;
+  background: #007AFF;
+  border-radius: 999rpx;
+}
+
+.retry-btn:active {
+  opacity: 0.85;
+}

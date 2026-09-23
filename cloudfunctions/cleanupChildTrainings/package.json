@@ -1,0 +1,9 @@
+{
+  "name": "cleanupChildTrainings",
+  "version": "1.0.0",
+  "description": "一次性清理工具：删除指定学员的全部训练记录（先预览再 confirm 删除）",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}

@@ -1,8 +1,9 @@
 {
   "usingComponents": {
-    "nav-bar": "/components/nav-bar/nav-bar",
     "coach-card": "/components/coach-card/index",
     "coach-tab-bar": "/components/coach-tab-bar/index"
   },
-  "navigationStyle": "custom"
+  "navigationStyle": "custom",
+  "backgroundColor": "#07c160",
+  "backgroundTextStyle": "light"
 }

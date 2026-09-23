@@ -401,6 +401,42 @@ function isDatePast(record, today) {
   return date < today;
 }
 
+// ==================== 同一学员不能同时上两节课 ====================
+
+/**
+ * 查这个学员名下是否还有别的课「真的在上课中」——开课前的守卫。
+ *
+ * 业务规则：一个学员同一时刻只能在一节课里，不能给正上课的学员再开一节课
+ * （给不同学员开课不受影响）。判定口径与工作台「正在上课」卡一致：
+ *   - status === 'in_class' 且没盖下课戳 classEndedAt 才算「真的在上课」。
+ *     下课瞬间写 classEndedAt，status 要等课后记录「完成记录」才变 finished，
+ *     中间的窗口期不算在上课（此时给该学员开下一节是允许的）。
+ *   - 不限日期：昨天没完成记录挂着的 in_class 也算冲突，避免跨天开出第二节。
+ *
+ * 查询失败 fail-open（返回 null 放行）：把课开不起来比极小概率的双开更耽误事，
+ * 与归一链路「AI 失败不拦保存」同一取舍。
+ *
+ * @param {object} db - wx.cloud.database()
+ * @param {string} childId - 要开课的学员
+ * @param {string} [excludeId] - 本次要开的那节课自身（按 _id 排除）
+ * @returns {Promise<object|null>} 冲突的课次文档；无冲突/查询失败返回 null
+ */
+function findActiveClassForChild(db, childId, excludeId) {
+  if (!db || !childId) return Promise.resolve(null);
+  return db.collection('trainings').where({
+    childId: childId,
+    status: 'in_class'
+  }).get().then(function (res) {
+    const hit = ((res && res.data) || []).find(function (t) {
+      return t && t._id !== excludeId && !t.classEndedAt;
+    });
+    return hit || null;
+  }).catch(function (err) {
+    console.error('查询学员上课状态失败', err);
+    return null;
+  });
+}
+
 // ==================== 训练时长 ====================
 
 /**
@@ -577,26 +613,24 @@ function formatDeltaNumber(value) {
 }
 
 /**
- * 「快0.3秒」/「多5个」/「提升3分」这类进步文案
+ * 「已经快了0.3秒」/「已经多了10个」/「少了5个」这类进步/退步文案
  * @param {number} delta 带符号的进步量，>0 表示进步
  */
 function formatDeltaText(delta, meta) {
   if (!meta || !isFinite(delta)) return '';
 
   const size = formatDeltaNumber(Math.abs(delta));
+  // 不足展示精度的小数差（8.52 vs 8.49 → 实际 0.03，展示两位都是 8.5秒）
+  // 不出文案，否则渲染出「快了0秒」这种胡话
+  if (size === '0') return '';
   const isBetter = delta > 0;
-  let verb;
 
-  if (meta.betterDirection === 'lower') {
-    verb = isBetter ? '快' : '慢';
-  } else if (meta.deltaUnit === '分') {
-    // 敏捷/协调是评分，用「快/慢」读不通
-    verb = isBetter ? '提升' : '下降';
-  } else {
-    verb = isBetter ? '多' : '少';
-  }
+  // 进步加「已经」是报喜的口气；退步不加——「少了5个」坦白就好，不阴阳怪气
+  const prefix = isBetter ? '已经' : '';
+  // 计时用「快/慢」；次数/距离/评分统一「多/少」（「提升了3分」这类书面腔一并磨掉）
+  const verb = meta.betterDirection === 'lower' ? (isBetter ? '快' : '慢') : (isBetter ? '多' : '少');
 
-  return verb + size + meta.deltaUnit;
+  return prefix + verb + '了' + size + meta.deltaUnit;
 }
 
 /**
@@ -607,12 +641,16 @@ function formatDeltaText(delta, meta) {
  *
  * 与 pages/coach/performance/list/index.js:144-235 的 calculateTrend 相比，这里多做两件事：
  * 1. 校验前一条真的是「上周」（weekDate 相差正好 7 天）。calculateTrend 完全不校验，
- *    会把三个月前那条记录说成「上周」。不是 7 天就退化成「较上次记录（…）」。
+ *    会把三个月前那条记录说成「上周」。不是 7 天就退化成「自上次记录（…）」。
  * 2. 用 parsePerformanceValue 归一化后再算 delta（见 PERFORMANCE_METRICS 的 deltaScale 说明）。
  *
  * **最新那条必须真的是最近**（HIGHLIGHT_MAX_AGE_DAYS 之内），否则返回 null。
  * 否则学员停训两个月后，库里最新那条还是两个月前的，这张卡会把旧成绩
  * 顶着「最新进步」四个字报给家长。
+ *
+ * 「最明显」的对比基线不止相邻一次：相邻两周没进步时会往外看更早的记录
+ * （传入几条看几条），找相对进步最大的一次报。首页传 4 条 ≈ 一个月窗口；
+ * 只传 2 条时和原先行为完全一致。
  *
  * @param {Array} records performance 集合的记录
  * @param {{today?: string|Date}} [options] - today 仅用于测试注入，不传取当前时间
@@ -653,64 +691,86 @@ function pickProgressHighlight(records, options) {
   }
 
   const previous = sorted[sorted.length - 2];
-  const candidates = [];
 
-  PERFORMANCE_METRICS.forEach(function (meta) {
-    const currentValue = parsePerformanceValue(current[meta.key], meta.key);
-    const previousValue = parsePerformanceValue(previous[meta.key], meta.key);
-    if (currentValue === null || previousValue === null) return;
-    if (!isFinite(currentValue) || !isFinite(previousValue)) return;
+  // 一个基线的候选集：current 相对 baseline 在每个指标上的变化。
+  // 先乘 deltaScale 统一量纲再相减（800米存 '3分20秒'，不换算会算出「快0.2秒」这种胡话）；
+  // 按相对变化 ratio 排序，跨指标才可比（0.3 秒和 5 个谁更"明显"没有绝对答案）
+  const buildCandidates = function (baseline) {
+    const candidates = [];
 
-    const currentAbs = currentValue * meta.deltaScale;
-    const previousAbs = previousValue * meta.deltaScale;
-    // 带符号的进步量：正数 = 变好
-    const improvement = meta.betterDirection === 'lower'
-      ? previousAbs - currentAbs
-      : currentAbs - previousAbs;
+    PERFORMANCE_METRICS.forEach(function (meta) {
+      const currentValue = parsePerformanceValue(current[meta.key], meta.key);
+      const baselineValue = parsePerformanceValue(baseline[meta.key], meta.key);
+      if (currentValue === null || baselineValue === null) return;
+      if (!isFinite(currentValue) || !isFinite(baselineValue)) return;
 
-    // 按相对变化排序，跨指标才可比（0.3 秒和 5 个谁更"明显"没有绝对答案）
-    const base = Math.abs(previousAbs);
-    const ratio = base > 0 ? improvement / base : (improvement > 0 ? Infinity : 0);
+      const currentAbs = currentValue * meta.deltaScale;
+      const baselineAbs = baselineValue * meta.deltaScale;
+      // 带符号的进步量：正数 = 变好
+      const improvement = meta.betterDirection === 'lower'
+        ? baselineAbs - currentAbs
+        : currentAbs - baselineAbs;
 
-    candidates.push({
-      meta: meta,
-      currentAbs: currentAbs,
-      previousAbs: previousAbs,
-      improvement: improvement,
-      ratio: ratio
+      const base = Math.abs(baselineAbs);
+      const ratio = base > 0 ? improvement / base : (improvement > 0 ? Infinity : 0);
+
+      candidates.push({
+        meta: meta,
+        currentAbs: currentAbs,
+        baselineAbs: baselineAbs,
+        improvement: improvement,
+        ratio: ratio,
+        baseline: baseline
+      });
     });
-  });
 
-  if (!candidates.length) return null;
+    return candidates;
+  };
 
-  // 有进步就报最大的进步；全是退步就如实报最明显的那次退步
-  const improved = candidates.filter(function (item) { return item.ratio > 0; });
-  let picked;
-
-  if (improved.length) {
-    picked = improved.reduce(function (best, item) {
-      return item.ratio > best.ratio ? item : best;
-    });
-  } else {
-    // 零变化的不算「变化」——否则会渲染出「慢0秒」这种胡话。
-    // 一条都没动 → 没有「最明显进步」可报，返回 null 让调用方整卡隐藏。
-    const regressed = candidates.filter(function (item) { return item.improvement !== 0; });
-    if (!regressed.length) return null;
-    picked = regressed.reduce(function (worst, item) {
-      return item.ratio < worst.ratio ? item : worst;
+  // 「最明显」的基线不只看相邻一次：相邻两周没动静时往外多看几条
+  // （调用方给几条看几条，首页取 4 条 ≈ 一个月），哪条基线的相对进步最大报哪条。
+  // 对比段由 describeComparison 说明白（非上周会写「自上次记录（…）」，不谎称自上周）。
+  let best = null;
+  for (let i = sorted.length - 2; i >= 0; i--) {
+    buildCandidates(sorted[i]).forEach(function (item) {
+      if (item.ratio > 0 && (!best || item.ratio > best.ratio)) best = item;
     });
   }
 
+  if (best) {
+    return {
+      mode: 'improved',
+      metricKey: best.meta.key,
+      metricName: best.meta.name,
+      currentText: formatMetricValue(parsePerformanceValue(current[best.meta.key], best.meta.key), best.meta.key),
+      previousText: formatMetricValue(parsePerformanceValue(best.baseline[best.meta.key], best.meta.key), best.meta.key),
+      // improvement 已经乘过 deltaScale，是绝对单位（秒/米/个），直接配 meta.deltaUnit 出文案
+      deltaText: formatDeltaText(best.improvement, best.meta),
+      comparisonText: describeComparison(best.baseline, current),
+      isImprovement: true
+    };
+  }
+
+  // 一条进步都没有：如实报相邻两次里最明显的那次退步（对比基准用最近一次，别翻旧账）。
+  // 零变化不算「变化」——否则会渲染出「慢0秒」这种胡话；一条都没动 → null 整卡隐藏。
+  const candidates = buildCandidates(previous);
+  if (!candidates.length) return null;
+
+  const regressed = candidates.filter(function (item) { return item.improvement !== 0; });
+  if (!regressed.length) return null;
+  const picked = regressed.reduce(function (worst, item) {
+    return item.ratio < worst.ratio ? item : worst;
+  });
+
   return {
-    mode: picked.ratio > 0 ? 'improved' : 'changed',
+    mode: 'changed',
     metricKey: picked.meta.key,
     metricName: picked.meta.name,
     currentText: formatMetricValue(parsePerformanceValue(current[picked.meta.key], picked.meta.key), picked.meta.key),
     previousText: formatMetricValue(parsePerformanceValue(previous[picked.meta.key], picked.meta.key), picked.meta.key),
-    // improvement 已经乘过 deltaScale，是绝对单位（秒/米/个），直接配 meta.deltaUnit 出文案
     deltaText: formatDeltaText(picked.improvement, picked.meta),
     comparisonText: describeComparison(previous, current),
-    isImprovement: picked.ratio > 0
+    isImprovement: false
   };
 }
 
@@ -727,19 +787,211 @@ function firstAvailableMetric(record) {
  * 前一条记录是不是「上周」
  *
  * weekDate 存的是那一周的周一日期字符串，所以连续两周的记录应当正好差 7 天。
- * 差 7 天 → 「较上周」；不是 → 把上一次是哪一段明说出来。
+ * 差 7 天 → 「自上周」；不是 → 把上一次是哪一段明说出来。
  * 宁可说得啰嗦，也不能把三个月前那条说成「上周」。
+ * 用「自」不用「较」：和正文「从X练到Y」连读成一句话（自9月21日，从…练到…）。
  */
 function describeComparison(previous, current) {
   const gap = diffInDays(previous.weekDate, current.weekDate);
-  if (gap === 7) return '较上周';
+  if (gap === 7) return '自上周';
 
   let range = previous.weekRange;
   if (!range) {
     const week = getWeekRange(previous.weekDate);
     if (week) range = formatWeekRangeText(week.start, week.end);
   }
-  return range ? '较上次记录（' + range + '）' : '较上次记录';
+  return range ? '自上次记录（' + range + '）' : '自上次记录';
+}
+
+// ==================== 训练项目进步（组数/个数比对） ====================
+
+/**
+ * 「训练项目进步」只看最近一个月的同名项目
+ *
+ * 教练每次添加训练会录入项目清单（items，含组数/个数，选填），同一项目
+ * （按名字匹配）隔三差五会重复出现。最近一个月里「做得更多了」——能做
+ * 更多组、或每组多做几次——就是这个项目上的进步。
+ */
+const ITEM_PROGRESS_WINDOW_DAYS = 30;
+
+/**
+ * '3' / '3组' / 3 → 3；空、0、非数字开头 → 0
+ *
+ * 组数/个数落库时多数是输入框带来的字符串，历史数据里也有数字；
+ * parseInt 对两者都宽容（'3组' 也能取出 3），取不出来就当没填。
+ */
+function parseItemCount(value) {
+  if (value === null || value === undefined || value === '') return 0;
+  const n = parseInt(value, 10);
+  return isFinite(n) && n > 0 ? n : 0;
+}
+
+/**
+ * 一次完成的项目量：组数个数都填按总次数（组×个），只填一个就按那个量
+ * （3组=3、12次=12）——跨课次比的就是这个数有没有变大
+ */
+function itemVolumeOf(sets, reps) {
+  if (sets > 0 && reps > 0) return sets * reps;
+  return sets > 0 ? sets : reps;
+}
+
+/** 一次的量 → '3组×12次' / '3组' / '12次' */
+function formatItemAmount(sets, reps) {
+  const parts = [];
+  if (sets > 0) parts.push(sets + '组');
+  if (reps > 0) parts.push(reps + '次');
+  return parts.join('×');
+}
+
+/**
+ * 两次完成量的差 → 进步文案
+ *
+ * 统一写成「从X练到Y」（「从3组×12次练到5组×17次」）——数字前后一摆，
+ * 努力就落在两个真实数字之间，不用「多做N组」这种播报腔去复述算术；
+ * 数字由 DIN 字体渲染，成绩单视觉本来就给数字留着主角位。
+ *
+ * 有一截在退就不这么写了——「从3组×15次练到5组×10次」看不出哪截退了，
+ * 只报总量（「加起来从45次练到50次」）：如实，但不说教。
+ */
+function buildItemDeltaText(baseline, current, improvement) {
+  const dSets = current.sets - baseline.sets;
+  const dReps = current.reps - baseline.reps;
+
+  if (dSets < 0 || dReps < 0) {
+    // 走到这里两截量必然都在（不然 dX 不会是负数），总量按 组×个 算
+    if (improvement > 0 && baseline.sets * baseline.reps > 0) {
+      return '加起来从' + (baseline.sets * baseline.reps) + '次练到' + (current.sets * current.reps) + '次';
+    }
+    return '';
+  }
+  return '从' + formatItemAmount(baseline.sets, baseline.reps) + '练到' + formatItemAmount(current.sets, current.reps);
+}
+
+/**
+ * 从课次的「训练项目」里挑出「最明显进步」（家长首页进步行的第一优先数据源）
+ *
+ * 数据源是 trainings.items（教练添加训练时逐项录入的 项目名+组数/个数+完成勾选）。
+ * 规则：
+ * 1. 只认**勾了完成**的项目——没勾的是计划量，不代表孩子真实做到了；
+ * 2. 项目名 trim 后完全相同才算「同一个项目」；
+ * 3. 只比最近 ITEM_PROGRESS_WINDOW_DAYS 天内的课次；
+ * 4. 同名项目取最近一次做 current，窗口内更早的每一次都当基线试一遍
+ *    （和 pickProgressHighlight 扫全部基线同一哲学），相对提升最大的一次报哪条；
+ * 5. 多个项目同时进步时，取相对提升率（提升量 ÷ 基线量）最大的——
+ *    「36次到40次」和「10组到12组」谁更明显，只有比例可比；
+ * 6. 同一节课里同名项目录了两行（编辑页不拦重名，热身一组+正式组很常见），
+ *    只取量最大的一行当本课成绩——课内差异不冒充跨课进步，也不把真进步压没。
+ *
+ * 只填组数、只填个数、组数个数都填，是三种数据形态；形态不同没法比（比出来的
+ * 都是假进步），两个方向都跳过。
+ *
+ * 没有可比的同名项目 / 全都没进步 → 返回 null，调用方回落体测成绩那套
+ * （pickProgressHighlight），两套都没有才整行隐藏。
+ *
+ * @param {Array} trainings trainings 集合的课次文档（须含 date / items）
+ * @param {{today?: string|Date, windowDays?: number}} [options] today 仅测试注入
+ * @returns {Object|null} 形状与 pickProgressHighlight 的进步分支一致：
+ *   { mode:'item', isImprovement:true, metricName, deltaText, comparisonText, currentText, previousText }
+ */
+function pickItemProgress(trainings, options) {
+  const today = getTodayString((options && options.today) || new Date());
+  if (!today) return null;
+  const windowDays = (options && options.windowDays) || ITEM_PROGRESS_WINDOW_DAYS;
+
+  // ① 收集：先按「课次 + 项目名」去重，再归到 项目名 → [entries]。
+  // 同一节课里同名项目录了两行（热身一组 + 正式组很常见），那是本节课内部差异：
+  // 当跨课比会冒充进步（「跟本课自己比」），也会把 current 拖成课里较小的那行、
+  // 把真进步压成 null。每课次每项目只留量最大的一行，代表这节课的最好成绩。
+  const groups = {};
+  const perLesson = {};   // 课次身份 + 项目名 → 最优一行
+  (trainings || []).forEach(function (t) {
+    if (!t || !Array.isArray(t.items)) return;
+    const date = getTodayString(t.date);
+    if (!date) return;
+    const age = diffInDays(date, today);
+    if (age === null || age < 0 || age >= windowDays) return;
+
+    // 测试直接造的对象可能没有 _id，用日期+时间+课次名兜底当课次身份
+    const lessonId = t._id || (date + ' ' + (t.startTime || '') + ' ' + (t.name || ''));
+
+    t.items.forEach(function (item) {
+      if (!item || item.name === undefined || item.name === null) return;
+      if (!item.done) return;
+      const name = String(item.name).trim();
+      if (!name) return;
+      const sets = parseItemCount(item.sets);
+      const reps = parseItemCount(item.reps);
+      if (!sets && !reps) return;
+      const volume = itemVolumeOf(sets, reps);
+      const key = lessonId + '\n' + name;
+      const kept = perLesson[key];
+      if (kept && kept.volume >= volume) return;
+      perLesson[key] = {
+        name: name, date: date, sets: sets, reps: reps, volume: volume,
+        // startTime/_id 一起带上：同一天可能有多节课，「哪次是最新」必须定死，
+        // 不能取决于查询返回顺序（云库同日排序本来就不保证稳定）
+        startTime: t.startTime || '', _id: t._id || ''
+      };
+    });
+  });
+  Object.keys(perLesson).forEach(function (key) {
+    const entry = perLesson[key];
+    if (!groups[entry.name]) groups[entry.name] = [];
+    groups[entry.name].push({
+      date: entry.date, sets: entry.sets, reps: entry.reps,
+      startTime: entry.startTime, _id: entry._id
+    });
+  });
+
+  // ② 逐组比对，全项目里挑相对提升最大的一次
+  let best = null;
+  Object.keys(groups).forEach(function (name) {
+    const entries = groups[name].slice().sort(function (a, b) {
+      // diffInDays(from, to) = to - from，参数反着传才是升序（同 pickProgressHighlight）
+      const byDate = diffInDays(b.date, a.date) || 0;
+      if (byDate !== 0) return byDate;
+      // 同一天：按实际上课时间排（'HH:mm' 字典序即可），没 startTime 的用 _id 兜底
+      const byTime = (a.startTime || '').localeCompare(b.startTime || '');
+      if (byTime !== 0) return byTime;
+      return (a._id || '') < (b._id || '') ? -1 : ((a._id || '') > (b._id || '') ? 1 : 0);
+    });
+    if (entries.length < 2) return;
+
+    const current = entries[entries.length - 1];
+    for (let i = 0; i < entries.length - 1; i++) {
+      const baseline = entries[i];
+      // 数据形态不同的两次没法比（比出来的都是假进步），两个方向都挡：
+      // 只填组数 vs 组×次（原守卫已挡）、只填个数 vs 组×次（镜像方向，只查 reps 挡不住）
+      if ((baseline.sets > 0) !== (current.sets > 0)) continue;
+      if ((baseline.reps > 0) !== (current.reps > 0)) continue;
+
+      const currentVolume = itemVolumeOf(current.sets, current.reps);
+      const baselineVolume = itemVolumeOf(baseline.sets, baseline.reps);
+      const improvement = currentVolume - baselineVolume;
+      if (improvement <= 0 || baselineVolume <= 0) continue;
+
+      const deltaText = buildItemDeltaText(baseline, current, improvement);
+      if (!deltaText) continue;
+
+      const ratio = improvement / baselineVolume;
+      if (!best || ratio > best.ratio) {
+        best = { name: name, ratio: ratio, deltaText: deltaText, baseline: baseline, current: current };
+      }
+    }
+  });
+
+  if (!best) return null;
+
+  const baselineDate = best.baseline.date;
+  return {
+    mode: 'item',
+    isImprovement: true,
+    metricName: best.name,
+    currentText: formatItemAmount(best.current.sets, best.current.reps),
+    previousText: formatItemAmount(best.baseline.sets, best.baseline.reps),
+    deltaText: best.deltaText,
+    comparisonText: '自' + parseInt(baselineDate.slice(5, 7), 10) + '月' + parseInt(baselineDate.slice(8, 10), 10) + '日'
+  };
 }
 
 // ==================== 成长页能力分组 ====================
@@ -850,6 +1102,98 @@ function summarizeAbilityGroups(records) {
       improvedCount: improvedCount
     };
   });
+}
+
+/**
+ * 阶段成长报告用：把一段时期内的周测评记录做「期初 vs 期末」对比。
+ *
+ * 和 summarizeAbilityGroups（最近两次环比）是两种口径——报告回答的是
+ * 「这一个月/一个季度整体变化了多少」，比较对象是期内第一条和最后一条，
+ * 中间测了几次不影响结论。
+ *
+ * 每个能力域只出一行，代表指标的挑选规则：
+ *   1. 优先取「期初和期末都有值」的第一个指标（能算出变化）；
+ *   2. 没有成对的，退而取期末第一个有值的（只报当前值，无 delta）；
+ *   3. 整个域期末都没值 → 该域不出现（报告里没有「未测」占位，块空了由调用方兜底）。
+ *
+ * @param {Array} records 期内的 performance 记录（>=0 条，顺序不限）
+ * @returns {Array} [{key,name,icon,hasData:true,metricName,valueText,firstText,deltaText,isImprovement}]
+ */
+function buildPeriodAbilityRows(records) {
+  const list = (records || []).filter(function (record) {
+    return record && record.weekDate;
+  });
+  if (!list.length) return [];
+
+  // 和 summarizeAbilityGroups 同一排序手法（weekDate 升序，diffInDays 参数顺序别动）
+  const sorted = list.slice().sort(function (a, b) {
+    return (diffInDays(b.weekDate, a.weekDate) || 0);
+  });
+  const last = sorted[sorted.length - 1];
+  const first = sorted.length >= 2 ? sorted[0] : null;
+
+  // 线上历史数据指标字段可能是数组，取第一个非空元素再解析（同 summarizeAbilityGroups）
+  const readMetric = function (record, key) {
+    const raw = record ? record[key] : null;
+    const value = Array.isArray(raw)
+      ? raw.find(function (v) { return v !== undefined && v !== null && v !== ''; })
+      : raw;
+    return parsePerformanceValue(value, key);
+  };
+
+  const rows = ABILITY_GROUPS.map(function (group) {
+    const row = {
+      key: group.key,
+      name: group.name,
+      icon: group.icon,
+      hasData: false,
+      metricName: '',
+      valueText: '',
+      firstText: '',
+      deltaText: '',
+      isImprovement: null
+    };
+
+    // 1) 成对指标（期初+期末都有值）
+    for (let i = 0; i < group.metricKeys.length; i++) {
+      const key = group.metricKeys[i];
+      const meta = getMetricMeta(key);
+      const lastParsed = readMetric(last, key);
+      if (lastParsed === null) continue;
+      const firstParsed = first ? readMetric(first, key) : null;
+      if (firstParsed === null || !meta) continue;
+
+      const scale = meta.deltaScale;
+      const improvement = meta.betterDirection === 'lower'
+        ? firstParsed * scale - lastParsed * scale
+        : lastParsed * scale - firstParsed * scale;
+
+      row.hasData = true;
+      row.metricName = meta.name;
+      row.valueText = formatMetricValue(lastParsed, key);
+      row.firstText = formatMetricValue(firstParsed, key);
+      row.isImprovement = improvement > 0 ? true : (improvement < 0 ? false : null);
+      row.deltaText = improvement === 0 ? '' : formatDeltaText(improvement, meta);
+      return row;
+    }
+
+    // 2) 只有期末有值的指标：只报当前值
+    for (let i = 0; i < group.metricKeys.length; i++) {
+      const key = group.metricKeys[i];
+      const meta = getMetricMeta(key);
+      const lastParsed = readMetric(last, key);
+      if (lastParsed === null) continue;
+
+      row.hasData = true;
+      row.metricName = meta ? meta.name : key;
+      row.valueText = formatMetricValue(lastParsed, key);
+      return row;
+    }
+
+    return row;
+  });
+
+  return rows.filter(function (row) { return row.hasData; });
 }
 
 // ==================== 角色与可见范围 ====================
@@ -992,6 +1336,7 @@ module.exports = {
   TRAINING_STATUS_META,
   pickCurrentTraining,
   isDatePast,
+  findActiveClassForChild,
   // 训练时长
   parseSessionStart,
   formatDurationText,
@@ -1005,9 +1350,12 @@ module.exports = {
   readTouchedField,
   HIGHLIGHT_MAX_AGE_DAYS,
   pickProgressHighlight,
+  pickItemProgress,
+  ITEM_PROGRESS_WINDOW_DAYS,
   // 成长页能力分组
   ABILITY_GROUPS,
   summarizeAbilityGroups,
+  buildPeriodAbilityRows,
   // 角色与可见范围
   HOME,
   ENTRY,

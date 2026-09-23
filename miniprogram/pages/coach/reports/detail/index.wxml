@@ -1,0 +1,23 @@
+<!-- pages/coach/reports/detail/index.wxml — 成品报告查看 -->
+<nav-bar title="成长报告"></nav-bar>
+
+<view class="page" wx:if="{{!loading && report}}">
+  <view class="poster">
+    <view class="poster-head">
+      <view class="poster-name">{{report.childName}}</view>
+      <view class="poster-meta">
+        <text class="poster-period">{{report.periodLabel}}</text>
+        <text class="poster-type">{{typeLabel}}</text>
+        <text class="poster-status {{report.status === 'published' ? 'published' : 'draft'}}">{{report.status === 'published' ? '已发布' : '草稿'}}</text>
+      </view>
+    </view>
+    <report-blocks sections="{{report.sections}}"></report-blocks>
+    <view class="poster-foot">腾鑫体育 · 让每一次训练都被看见</view>
+  </view>
+
+  <!-- 草稿：继续编辑 / 删除 -->
+  <view class="bottom-bar" wx:if="{{report.status === 'draft'}}">
+    <view class="bar-btn secondary" bind:tap="onDelete">删除</view>
+    <view class="bar-btn primary" bind:tap="goEdit">继续编辑</view>
+  </view>
+</view>

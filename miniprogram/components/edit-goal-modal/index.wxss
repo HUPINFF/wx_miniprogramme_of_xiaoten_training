@@ -1,0 +1,185 @@
+/* components/edit-goal-modal/index.wxss */
+.modal-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.45);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: mask-fade 0.18s ease-out;
+}
+
+.modal-container {
+  width: 600rpx;
+  background-color: #ffffff;
+  border-radius: 36rpx;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8rpx 40rpx rgba(0, 0, 0, 0.12);
+  animation: modal-pop 0.24s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes mask-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modal-pop {
+  from { opacity: 0; transform: scale(0.92) translateY(24rpx); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32rpx;
+  border-bottom: 1rpx solid rgba(60, 60, 67, 0.1);
+}
+
+.modal-title {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #000000;
+}
+
+.modal-close {
+  font-size: 40rpx;
+  color: rgba(60, 60, 67, 0.34);
+  padding: 10rpx;
+  line-height: 1;
+}
+
+.modal-body {
+  padding: 32rpx;
+}
+
+/* 多行目标输入：浅灰底 + 聚焦描边（手动 class 切换，比 :focus 稳） */
+.goal-textarea {
+  width: 100%;
+  height: 200rpx;
+  box-sizing: border-box;
+  padding: 24rpx;
+  background-color: #f7f7fa;
+  border: 1rpx solid transparent;
+  border-radius: 20rpx;
+  font-size: 28rpx;
+  color: #000000;
+  line-height: 1.6;
+  transition: all 0.2s;
+}
+
+goal-tip {
+  background-color: #ffffff;
+  color: #ffffff;
+}
+
+.goal-textarea.focused {
+  border-color: #007aff;
+  background-color: #ffffff;
+}
+
+.char-counter {
+  display: flex;
+  justify-content: flex-end;
+  align-items: baseline;
+  margin-top: 10rpx;
+  font-size: 22rpx;
+}
+
+.char-num {
+  color: rgba(60, 60, 67, 0.34);
+  font-variant-numeric: tabular-nums;
+}
+
+.char-num.warm {
+  color: #ff9500;
+}
+
+.char-total {
+  color: rgba(60, 60, 67, 0.34);
+}
+
+/* 常用目标标签：轻点追加进输入框 */
+.goal-chips {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14rpx;
+  margin-top: 24rpx;
+}
+
+.chip-title {
+  font-size: 24rpx;
+  color: rgba(60, 60, 67, 0.6);
+  margin-right: 2rpx;
+}
+
+.chip {
+  font-size: 24rpx;
+  color: #007aff;
+  background: rgba(0, 122, 255, 0.08);
+  padding: 8rpx 22rpx;
+  border-radius: 999rpx;
+  transition: opacity 0.15s;
+}
+
+.chip:active {
+  opacity: 0.6;
+}
+
+.modal-footer {
+  display: flex;
+  padding: 24rpx 32rpx 36rpx;
+  gap: 24rpx;
+  border-top: 1rpx solid rgba(60, 60, 67, 0.1);
+}
+
+.cancel-btn, .confirm-btn {
+  flex: 1;
+  height: 88rpx;
+  border-radius: 999rpx;
+  font-size: 30rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+}
+
+.cancel-btn {
+  background-color: #f2f2f7;
+  color: #000000;
+}
+
+.cancel-btn::after {
+  border: none;
+}
+
+.cancel-btn:active {
+  background-color: #e4e4e9;
+}
+
+.confirm-btn {
+  background-color: #007aff;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.confirm-btn::after {
+  border: none;
+}
+
+.confirm-btn:active {
+  opacity: 0.85;
+}
+
+.confirm-btn[disabled] {
+  background-color: #d1d1d6;
+  color: rgba(255, 255, 255, 0.9);
+  opacity: 1;
+}

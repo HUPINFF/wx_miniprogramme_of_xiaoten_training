@@ -297,7 +297,7 @@ Page({
   viewPerformanceDetail(e) {
     const { id } = e.currentTarget.dataset;
     wx.navigateTo({
-      url: `/pages/coach/performance/detail/index?id=${id}`
+      url: `/pages/coach/performance/detail/index?id=${id}&childName=${this.data.childName}`
     });
   },
   /**

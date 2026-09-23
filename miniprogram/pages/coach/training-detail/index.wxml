@@ -3,7 +3,7 @@
   <view class="header">
     <view class="course-name">{{training.name}}</view>
     <view class="course-status status-{{training.status}}">
-      <text>{{training.status === 'pending' ? '待上课' : ''}}{{training.status === 'in_class' ? '上课中' : ''}}{{training.status === 'finished' ? '已下课' : ''}}</text>
+      <text>{{training.status === 'pending' ? '待上课' : ''}}{{training.status === 'scheduled' ? '已排课' : ''}}{{training.status === 'in_class' ? '上课中' : ''}}{{training.status === 'finished' ? '已下课' : ''}}</text>
     </view>
   </view>
 
@@ -36,6 +36,19 @@
     <view class="info-row">
       <text class="label">训练难点</text>
       <text class="value">{{training.difficulty}}</text>
+    </view>
+  </view>
+
+  <!-- 改课记录：编辑页保存时 diff 留下的变更流水，最近一次在最上 -->
+  <view class="card" wx:if="{{changeLogs.length}}">
+    <view class="card-title">改课记录</view>
+    <view class="log-item" wx:for="{{changeLogs}}" wx:key="index">
+      <view class="log-line1">
+        <text class="log-action">{{item.action}}</text>
+        <text class="log-by" wx:if="{{item.by}}">{{item.by}}</text>
+        <text class="log-time" wx:if="{{item.timeText}}">{{item.timeText}}</text>
+      </view>
+      <view class="log-detail">{{item.detail}}</view>
     </view>
   </view>
 

@@ -1,0 +1,63 @@
+<!-- pages/admin/schedule/index.wxml — 排课调度中心（管理员专属，管理 tab 入口卡跳入） -->
+<nav-bar title="排课调度" showBack="{{true}}"></nav-bar>
+
+<view class="container">
+
+  <view class="section">
+    <view class="sched-head">
+      <view class="sched-date-bar">
+        <view class="sched-arrow" bind:tap="onPrevDay">‹</view>
+        <picker mode="date" value="{{selectedDate}}" bindchange="onDatePick">
+          <view class="sched-date {{isToday ? 'today' : ''}}">{{dateLabel}}</view>
+        </picker>
+        <view class="sched-arrow" bind:tap="onNextDay">›</view>
+      </view>
+      <view class="sched-add" bind:tap="onAddTraining">＋ 新建课程</view>
+    </view>
+
+    <view class="sched-summary" wx:if="{{!scheduleLoading}}">
+      <text>共 {{totalCount}} 节</text>
+      <text class="sched-summary-conflict" wx:if="{{conflictCount > 0}}">· {{conflictCount}} 节时间冲突</text>
+    </view>
+
+    <view class="sched-card">
+      <view wx:if="{{loading || scheduleLoading}}" class="sched-empty">加载中…</view>
+      <block wx:else>
+        <view wx:if="{{!scheduleList.length}}" class="sched-empty">
+          <text>当天暂无课程</text>
+          <text class="sched-empty-hint">点右上「＋ 新建课程」排一节</text>
+        </view>
+
+        <view
+          class="sched-item"
+          wx:for="{{scheduleList}}"
+          wx:key="_id"
+          data-id="{{item._id}}"
+          bind:tap="onScheduleTap"
+        >
+          <view class="sched-time">
+            <text class="sched-time-main">{{item.timeText}}</text>
+            <text class="sched-reminded {{item.reminded ? 'on' : ''}}">{{item.reminded ? '已提醒' : ''}}</text>
+          </view>
+          <view class="sched-body">
+            <view class="sched-row1">
+              <text class="sched-child">{{item.childName}}</text>
+              <text class="sched-name">{{item.name}}</text>
+              <view class="sched-status st-{{item.statusType}}">{{item.statusText}}</view>
+            </view>
+            <view class="sched-row2">
+              <text class="sched-coach">教练 {{item.coachName}}</text>
+              <text class="sched-loc" wx:if="{{item.location}}">📍{{item.location}}</text>
+            </view>
+            <view class="sched-flags" wx:if="{{item.conflict || item.changed}}">
+              <text class="sched-flag conflict" wx:if="{{item.conflict}}">⚠ 时间冲突</text>
+              <text class="sched-flag changed" wx:if="{{item.changed}}">已改课</text>
+            </view>
+          </view>
+          <view class="sched-edit" catch:tap="onScheduleEdit" data-id="{{item._id}}">改课</view>
+        </view>
+      </block>
+    </view>
+  </view>
+
+</view>

@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "report-blocks": "/components/report-blocks/index"
+  },
+  "navigationStyle": "custom"
+}

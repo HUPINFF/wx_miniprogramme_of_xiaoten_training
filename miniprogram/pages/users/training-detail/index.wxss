@@ -207,6 +207,8 @@ page {
 .card:nth-child(2) { animation-delay: 0.10s; }
 .card:nth-child(3) { animation-delay: 0.16s; }
 .card:nth-child(4) { animation-delay: 0.22s; }
+/* 第 5 张起（教练反馈卡）沿用上一档延迟——不写的话它是 0s，会比第 1 张还早出现 */
+.card:nth-child(n+5) { animation-delay: 0.22s; }
 
 @keyframes cardIn {
   from { opacity: 0; transform: translateY(24rpx); }
@@ -415,6 +417,122 @@ page {
   color: var(--text-hint);
   font-size: 26rpx;
   padding: 48rpx 0;
+}
+
+/* ==================== 教练反馈 ====================
+   这节课教练写的评价（评分/进步标签/正文）。照片视频上面「训练记录」卡已经放过，
+   这里只放文字部分；完整版（含朋友圈分享文案）在反馈详情页。 */
+.card-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 18rpx;
+  margin-bottom: 8rpx;
+  border-bottom: 1rpx solid var(--border);
+}
+
+/* 标题放进标题行后，自身的下边距和分隔线交给行来画，分隔线才是通栏的 */
+.card-title-row .card-title {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.fb-more {
+  font-size: 24rpx;
+  color: var(--primary);
+}
+
+.fb-more-active {
+  opacity: 0.7;
+}
+
+.fb-coach-row {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0 4rpx;
+}
+
+.fb-avatar {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: #f2f2f7;
+}
+
+/* 没头像时用姓名首字占位（同反馈详情页的做法） */
+.fb-avatar-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, #ff9d4d 0%, #ff7a3d 100%);
+}
+
+.fb-coach-meta {
+  flex: 1;
+  min-width: 0;
+  margin-left: 20rpx;
+}
+
+.fb-coach-name {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+/* 星星与反馈详情页同款（.star.on #FF9500），小一号 */
+.stars {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  margin-top: 8rpx;
+}
+
+.star {
+  font-size: 30rpx;
+  line-height: 1;
+  color: rgba(60, 60, 67, 0.18);
+}
+
+.star.on {
+  color: #FF9500;
+  text-shadow: 0 2rpx 8rpx rgba(255, 149, 0, 0.28);
+}
+
+.fb-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  padding: 20rpx 0 4rpx;
+}
+
+.fb-tag {
+  /* 同一份数据在反馈详情页是绿色标签，这里保持同色，点过去不跳色 */
+  font-size: 24rpx;
+  color: #2FAE52;
+  background: rgba(52, 199, 89, 0.13);
+  padding: 8rpx 20rpx;
+  border-radius: 999rpx;
+}
+
+.fb-content {
+  display: block;
+  font-size: 28rpx;
+  line-height: 1.8;
+  color: var(--text-main);
+  padding: 20rpx 0 6rpx;
+}
+
+.fb-none {
+  text-align: center;
+  color: var(--text-hint);
+  font-size: 26rpx;
+  padding: 40rpx 0 16rpx;
 }
 
 /* ==================== 加载遮罩 ==================== */

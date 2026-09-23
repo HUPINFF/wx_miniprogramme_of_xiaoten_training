@@ -1,0 +1,150 @@
+<!-- pages/coach/reports/edit/index.wxml
+     编辑模式：数据块只读复用 report-blocks，教练块逐块编辑；
+     预览模式：和成品完全同源的渲染，所见即所得。 -->
+<nav-bar title="{{reportId ? '编辑' + typeLabel : '生成' + typeLabel}}"></nav-bar>
+
+<view class="page" wx:if="{{!loading}}">
+  <view class="fail-tip" wx:if="{{loadFail}}">加载失败，请返回重试</view>
+
+  <block wx:if="{{!loadFail}}">
+    <!-- 预览模式：成品海报 -->
+    <block wx:if="{{previewMode}}">
+      <view class="poster">
+        <view class="poster-head">
+          <view class="poster-name">{{childName}}</view>
+          <view class="poster-meta">
+            <text class="poster-period">{{period.label}}</text>
+            <text class="poster-type">{{typeLabel}}</text>
+          </view>
+        </view>
+        <report-blocks sections="{{sections}}"></report-blocks>
+        <view class="poster-foot">腾鑫体育 · 让每一次训练都被看见</view>
+      </view>
+      <view class="bottom-bar">
+        <view class="bar-btn primary" bind:tap="onPreviewToggle">返回编辑</view>
+      </view>
+    </block>
+
+    <!-- 编辑模式 -->
+    <block wx:else>
+      <view class="head-card">
+        <view class="head-row">
+          <text class="head-child">{{childName}}</text>
+          <text class="head-type">{{typeLabel}}</text>
+        </view>
+        <view class="period-row">
+          <text class="period-label">报告周期</text>
+          <picker mode="selector" range="{{periodOptions}}" range-key="label" value="{{periodIndex}}" bindchange="onPeriodChange">
+            <view class="period-picker">
+              <text class="period-value">{{period.label}}</text>
+              <text class="picker-arrow">切换 ›</text>
+            </view>
+          </picker>
+        </view>
+      </view>
+
+      <view class="block-card" wx:for="{{sections}}" wx:for-item="sec" wx:key="kind">
+        <view class="block-head">
+          <text class="block-title">{{sec.title}}</text>
+          <text class="block-source" wx:if="{{sec.source === 'auto'}}">系统自动统计</text>
+        </view>
+
+        <!-- 自动块（本期完成/能力变化）：直接复用报告渲染，标题由外层卡片出，避免双标题 -->
+        <report-blocks sections="{{[sec]}}" show-title="{{false}}" wx:if="{{sec.source === 'auto'}}"></report-blocks>
+
+        <!-- 精彩证据：训练记录里选 or 手机上传（照片 9 张 / 视频 3 个） -->
+        <block wx:elif="{{sec.kind === 'photos'}}">
+          <view class="photo-grid">
+            <view class="photo-cell" wx:for="{{sec.fileIDs}}" wx:for-item="fid" wx:for-index="pIdx" wx:key="*this">
+              <image class="photo-img" src="{{fid}}" mode="aspectFill"></image>
+              <view class="photo-del" catch:tap="removePhoto" data-index="{{pIdx}}">×</view>
+            </view>
+            <view class="photo-add" bind:tap="openAlbumPicker" wx:if="{{sec.fileIDs.length < 9 || sec.videos.length < 3}}">
+              <text class="photo-add-icon">🖼</text>
+              <text class="photo-add-txt">训练记录选</text>
+            </view>
+            <view class="photo-add" bind:tap="addPhotos" wx:if="{{sec.fileIDs.length < 9 || sec.videos.length < 3}}">
+              <text class="photo-add-icon">＋</text>
+              <text class="photo-add-txt">手机上传</text>
+            </view>
+          </view>
+          <view class="video-list" wx:if="{{sec.videos.length > 0}}">
+            <view class="video-cell" wx:for="{{sec.videos}}" wx:for-item="vid" wx:for-index="vIdx" wx:key="*this">
+              <video class="video-player" src="{{vid}}" object-fit="contain"></video>
+              <view class="photo-del" catch:tap="removeVideo" data-index="{{vIdx}}">×</view>
+            </view>
+          </view>
+          <view class="block-hint">照片最多 9 张、视频最多 3 个，优先从训练记录里挑本周期的精彩瞬间</view>
+        </block>
+
+        <!-- 教练点评：文字 + 表现标签 -->
+        <block wx:elif="{{sec.kind === 'comment'}}">
+          <textarea class="block-textarea" value="{{sec.content}}" maxlength="500"
+            placeholder="本期整体表现如何？有什么让你印象深刻的变化？"
+            placeholder-class="ph" bindinput="onSectionInput" data-kind="comment"></textarea>
+          <view class="tag-row">
+            <view class="tag-chip {{commentTagMap[item] ? 'on' : ''}}"
+              wx:for="{{presets.tags}}" wx:key="*this"
+              bind:tap="onTagToggle" data-tag="{{item}}">{{item}}</view>
+          </view>
+        </block>
+
+        <!-- 下阶段计划：可一键带入本阶段目标 -->
+        <block wx:elif="{{sec.kind === 'plan'}}">
+          <view class="goal-hint" wx:if="{{sec.goal}}" bind:tap="onBringGoal">🎯 带入本阶段目标：{{sec.goal}}</view>
+          <textarea class="block-textarea" value="{{sec.content}}" maxlength="500"
+            placeholder="下一阶段重点练什么？"
+            placeholder-class="ph" bindinput="onSectionInput" data-kind="plan"></textarea>
+          <view class="phrase-row">
+            <view class="phrase-chip" wx:for="{{presets.plan}}" wx:key="*this"
+              bind:tap="onInsertPhrase" data-kind="plan" data-text="{{item}}">{{item}}</view>
+          </view>
+        </block>
+
+        <!-- 家长行动：常用语整段插入 -->
+        <block wx:elif="{{sec.kind === 'action'}}">
+          <textarea class="block-textarea" value="{{sec.content}}" maxlength="500"
+            placeholder="请家长在家配合做哪些事？"
+            placeholder-class="ph" bindinput="onSectionInput" data-kind="action"></textarea>
+          <view class="phrase-row">
+            <view class="phrase-chip" wx:for="{{presets.action}}" wx:key="*this"
+              bind:tap="onInsertPhrase" data-kind="action" data-text="{{item}}">{{item}}</view>
+          </view>
+        </block>
+      </view>
+
+      <view class="bottom-bar">
+        <view class="bar-btn secondary" bind:tap="onPreviewToggle">预览</view>
+        <view class="bar-btn secondary" bind:tap="onSaveDraft">存草稿</view>
+        <view class="bar-btn primary" bind:tap="onPublish">发布报告</view>
+      </view>
+      <view class="draft-del" wx:if="{{reportId && loadedStatus === 'draft'}}" bind:tap="onDeleteDraft">删除草稿</view>
+    </block>
+  </block>
+</view>
+
+<!-- 训练照片选择面板：photosAvideos 里该学员按月归档的训练照片，多选后并入精彩证据 -->
+<view class="album-mask" wx:if="{{pickerOpen}}" bind:tap="closePicker">
+  <view class="album-panel" catchtap="noop">
+    <view class="album-head">
+      <text class="album-title">从训练记录选</text>
+      <text class="album-count">已选 {{pickerCount}} 张</text>
+    </view>
+    <scroll-view scroll-y class="album-scroll">
+      <view class="album-tip" wx:if="{{pickerLoading}}">加载中...</view>
+      <view class="album-grid" wx:elif="{{pickerList.length > 0}}">
+        <view class="album-cell {{pickerSelMap[item.fileID] ? 'sel' : ''}}"
+          wx:for="{{pickerList}}" wx:key="fileID"
+          bind:tap="togglePickerItem" data-id="{{item.fileID}}">
+          <image class="album-img" src="{{item.fileID}}" mode="aspectFill"></image>
+          <view class="album-check" wx:if="{{pickerSelMap[item.fileID]}}">✓</view>
+        </view>
+      </view>
+      <view class="album-tip" wx:else>该学员还没有训练照片或视频，可先用手机上传</view>
+    </scroll-view>
+    <view class="album-foot">
+      <view class="album-btn secondary" bind:tap="closePicker">取消</view>
+      <view class="album-btn primary" bind:tap="confirmPicker">确定添加</view>
+    </view>
+  </view>
+</view>

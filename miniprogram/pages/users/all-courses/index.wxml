@@ -1,13 +1,19 @@
+<!-- pages/users/all-courses/index.wxml 全部课程：品牌绿渐变头部（首页同款配方）+ 白卡课程列表 -->
 <view class="container">
-  <nav-bar title="全部课程" showBack="{{true}}"></nav-bar>
+  <view class="gradient-bg"></view>
+
+  <view class="header-area">
+    <view class="back-btn" hover-class="back-btn-active" bind:tap="goBack">‹</view>
+    <text class="header-title">全部课程</text>
+    <text class="header-subtitle">共 {{courses.length}} 门课程</text>
+  </view>
 
   <view class="course-list" wx:if="{{courses.length > 0}}">
-    <view class="course-card" wx:for="{{courses}}" wx:key="_id" bind:tap="viewCourseDetail" data-id="{{item._id}}">
+    <view class="course-card fade-in" wx:for="{{courses}}" wx:key="_id"
+          hover-class="course-card-active" bind:tap="viewCourseDetail" data-id="{{item._id}}">
       <view class="course-cover">
-        <image wx:if="{{item.coverImage}}" class="course-cover-img" src="{{item.coverImage}}" mode="aspectFill"></image>
-        <view wx:if="{{!item.coverImage}}" class="course-no-cover">
-          <text>📚</text>
-        </view>
+        <image wx:if="{{item.coverImage}}" class="course-cover-img" src="{{item.coverImage}}" mode="aspectFill" lazy-load></image>
+        <view wx:else class="course-no-cover"><text>📚</text></view>
       </view>
       <view class="course-info">
         <text class="course-name">{{item.courseName}}</text>
@@ -20,12 +26,16 @@
     </view>
   </view>
 
+  <!-- 空状态 -->
   <view class="empty-state" wx:elif="{{!loading}}">
-    <text class="empty-icon">📚</text>
-    <text class="empty-text">暂无课程</text>
+    <view class="empty-icon">📚</view>
+    <text class="empty-title">暂无课程</text>
+    <text class="empty-sub">课程上架后会显示在这里</text>
   </view>
 
+  <!-- 加载状态 -->
   <view class="loading" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
     <text>加载中...</text>
   </view>
 </view>

@@ -18,7 +18,7 @@
   <!-- 反馈列表 -->
   <view class="feedback-list">
     <block wx:for="{{feedbackList}}" wx:key="_id">
-      <view class="feedback-card">
+      <view class="feedback-card" bind:tap="goToDetail" data-id="{{item._id}}">
         <!-- 头部 -->
         <view class="card-header">
           <view class="course-info">
@@ -27,7 +27,7 @@
           </view>
 
           <view class="rating">
-            <text class="star {{index < item.rating ? 'active':''}}" wx:for="{{[1,2,3,4,5]}}" wx:key="index">★</text>
+            <text class="star {{sIndex < item.rating ? 'active':''}}" wx:for="{{[1,2,3,4,5]}}" wx:for-item="star" wx:for-index="sIndex" wx:key="sIndex">★</text>
           </view>
         </view>
 
@@ -40,6 +40,21 @@
         <!-- 反馈内容 -->
         <view class="feedback-content">
           <text>{{item.content}}</text>
+        </view>
+
+        <!-- 每课反馈照片 -->
+        <view class="fb-photo-grid" wx:if="{{item.photos && item.photos.length > 0}}">
+          <image
+            class="fb-photo-thumb"
+            wx:for="{{item.photos}}"
+            wx:for-item="url"
+            wx:key="*this"
+            src="{{url}}"
+            mode="aspectFill"
+            data-urls="{{item.photos}}"
+            data-url="{{url}}"
+            catch:tap="previewFeedbackPhoto"
+          />
         </view>
 
         <!-- 反馈标签 -->

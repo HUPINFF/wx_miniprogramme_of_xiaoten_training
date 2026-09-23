@@ -200,6 +200,12 @@ page {
   opacity: 0.8;
 }
 
+/* 课次已被删除的孤儿反馈：编辑入口置灰 */
+.edit-btn.disabled {
+  color: #9aa8a0;
+  background-color: rgba(26, 42, 26, 0.06);
+}
+
 /* 加载更多 */
 .load-more,
 .no-more {

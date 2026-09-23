@@ -175,7 +175,9 @@ Page({
     const db = wx.cloud.database();
     db.collection('feedbacks').where({
       childId:childId,
-      weekStart:this.data.weekStart
+      weekStart:this.data.weekStart,
+      // 排除每课反馈（带 trainingId），周反馈的查重只针对周文档
+      trainingId: db.command.exists(false)
     }).get().then(res => {
       if(res.data.length > 0) {
         const feedback = res.data[0];
@@ -261,7 +263,8 @@ Page({
       childId: this.data.childId,
       coachId: this.data.coachInfo._id,
       coachName: this.data.coachInfo.name,
-      coachAvatar: this.data.coachInfo.avatar || '',
+      // users 文档的头像字段是 avatarUrl（不是 avatar），写错字段名会让反馈里的头像恒为空
+      coachAvatar: this.data.coachInfo.avatarUrl || '',
       weekRange: this.data.weekRange,
       weekStart: this.data.weekStart,
       weekEnd: this.data.weekEnd,
@@ -276,7 +279,9 @@ Page({
     // 检查是否有该周反馈
     db.collection('feedbacks').where({
       childId:this.data.childId,
-      weekStart:this.data.weekStart
+      weekStart:this.data.weekStart,
+      // 排除每课反馈（带 trainingId），避免周反馈覆盖到每课文档上
+      trainingId: db.command.exists(false)
     }).get().then(res => {
       if(res.data.length > 0 ) {
         //更新已有反馈

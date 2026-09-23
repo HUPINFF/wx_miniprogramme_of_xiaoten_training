@@ -1,172 +1,187 @@
-/* pages/users/class-records/index.wxss */
+/* pages/users/class-records/index.wxss —— 训练记录列表（iOS 风格，单层书写） */
 .container {
   min-height: 100vh;
-  background-color: #f5f7fa;
+  background-color: #F2F2F7;
   padding-bottom: 40rpx;
 }
 
-/* 筛选栏 */
+/* 筛选栏：iOS 分段控件 */
 .filter-bar {
-  width: 90%;
   display: flex;
-  background-color: #fff;
-  padding: 20rpx 32rpx;
-  margin: 0 20rpx 20rpx 20rpx;
-  border-radius: 48rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+  margin: 16rpx 24rpx 24rpx;
+  background-color: #ffffff;
+  border: 1rpx solid rgba(60, 60, 67, 0.1);
+  border-radius: 999rpx;
+  padding: 6rpx;
 }
-
 .filter-item {
   flex: 1;
   text-align: center;
-  padding: 16rpx 0;
+  padding: 14rpx 0;
   font-size: 28rpx;
-  color: #666;
-  border-radius: 40rpx;
+  color: rgba(60, 60, 67, 0.6);
+  border-radius: 999rpx;
   transition: all 0.2s;
 }
-
 .filter-item.active {
-  background: linear-gradient(135deg, #07c160 0%, #06a34d 100%);
-  color: #fff;
+  background: #007aff;
+  color: #ffffff;
   font-weight: 500;
 }
 
 /* 记录列表 */
 .record-list {
-  padding: 0 20rpx;
+  padding: 0 24rpx;
 }
 
 .record-card {
   display: flex;
   align-items: center;
-  background-color: #fff;
-  border-radius: 24rpx;
+  background-color: #ffffff;
+  border-radius: 28rpx;
   padding: 28rpx;
   margin-bottom: 20rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s;
+  transition: opacity 0.15s;
+}
+.record-card-active {
+  opacity: 0.85;
 }
 
-.record-card:active {
-  transform: scale(0.98);
-}
-
-/* 日期区域 */
+/* 左侧日期：大号「18」+ 9月18日 + 周四 */
 .record-date {
-  width: 120rpx;
-  text-align: center;
-  border-right: 2rpx solid #f0f0f0;
+  width: 110rpx;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-right: 1rpx solid rgba(60, 60, 67, 0.1);
   margin-right: 24rpx;
   padding-right: 20rpx;
+  align-self: stretch;
+  justify-content: center;
 }
-
 .record-date .day {
-  font-size: 32rpx;
-  font-weight: 600;
-  color: #07c160;
-  display: block;
-  margin-bottom: 8rpx;
+  font-size: 44rpx;
+  font-weight: 700;
+  color: #007aff;
+  line-height: 1.1;
+}
+.record-date .month-day {
+  font-size: 22rpx;
+  color: rgba(60, 60, 67, 0.6);
+  margin-top: 6rpx;
+}
+.record-date .weekday {
+  font-size: 22rpx;
+  color: rgba(60, 60, 67, 0.34);
+  margin-top: 2rpx;
 }
 
-.record-date .date {
-  font-size: 24rpx;
-  color: #999;
-}
-
-/* 课程信息区域 */
+/* 右侧信息 */
 .record-info {
   flex: 1;
+  min-width: 0;
 }
 
-.course-name {
-  font-size: 32rpx;
-  font-weight: 600;
-  color: #333;
-  display: block;
-  margin-bottom: 12rpx;
-}
-
-.coach-info {
+.record-title-row {
   display: flex;
   align-items: center;
   gap: 12rpx;
-  margin-bottom: 12rpx;
+  margin-bottom: 8rpx;
+}
+.course-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #000000;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
-.coach-avatar {
-  width: 48rpx;
-  height: 48rpx;
-  border-radius: 50%;
-  background-color: #f0f0f0;
+/* 状态章：配色对齐训练详情页的状态语义 */
+.status-chip {
+  flex-shrink: 0;
+  font-size: 20rpx;
+  padding: 4rpx 14rpx;
+  border-radius: 999rpx;
+  font-weight: 500;
+}
+.status-chip.status-finished {
+  background: rgba(52, 199, 89, 0.12);
+  color: #34c759;
+}
+.status-chip.status-in_class {
+  background: rgba(255, 149, 0, 0.15);
+  color: #ff9500;
+}
+.status-chip.status-pending,
+.status-chip.status-scheduled {
+  background: rgba(0, 122, 255, 0.1);
+  color: #007aff;
 }
 
-.coach-name {
-  font-size: 26rpx;
-  color: #666;
+.record-meta {
+  display: block;
+  font-size: 24rpx;
+  color: rgba(60, 60, 67, 0.6);
+  margin-bottom: 10rpx;
 }
 
-.record-stats {
+/* 完成进度 / 媒体数小标签 */
+.record-tags {
   display: flex;
-  gap: 24rpx;
-  margin-bottom: 12rpx;
+  flex-wrap: wrap;
+  gap: 12rpx;
 }
-
-.stat-item {
-  font-size: 24rpx;
-  color: #999;
-  background-color: #f8f9fc;
+.tag {
+  font-size: 22rpx;
+  color: rgba(60, 60, 67, 0.6);
+  background-color: rgba(60, 60, 67, 0.06);
   padding: 6rpx 16rpx;
-  border-radius: 20rpx;
+  border-radius: 999rpx;
 }
-
-.record-photos {
-  display: inline-flex;
-  align-items: center;
-  gap: 8rpx;
-  background-color: #f0f9f0;
-  padding: 6rpx 16rpx;
-  border-radius: 24rpx;
-}
-
-.photo-icon {
-  font-size: 24rpx;
-}
-
-.photo-count {
-  font-size: 24rpx;
-  color: #07c160;
+.tag-done {
+  color: #34c759;
+  background-color: rgba(52, 199, 89, 0.1);
 }
 
 /* 箭头 */
 .arrow {
-  font-size: 32rpx;
-  color: #ccc;
-  margin-left: 16rpx;
+  flex-shrink: 0;
+  font-size: 36rpx;
+  color: rgba(60, 60, 67, 0.25);
+  margin-left: 12rpx;
 }
 
-/* 加载更多 */
+/* 加载更多 / 空态 / 加载中 */
 .load-more,
 .no-more {
   text-align: center;
   padding: 32rpx;
   font-size: 26rpx;
-  color: #999;
+  color: rgba(60, 60, 67, 0.34);
 }
-
 .load-more {
-  color: #07c160;
+  color: #007aff;
 }
 
-/* 空状态 */
 .empty {
-  text-align: center;
-  padding: 120rpx 0;
-  color: #999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 140rpx 0;
+}
+.empty-icon {
+  font-size: 88rpx;
+  margin-bottom: 24rpx;
+}
+.empty-text {
+  color: rgba(60, 60, 67, 0.34);
   font-size: 28rpx;
 }
 
-/* 加载状态 */
 .loading {
   position: fixed;
   top: 50%;
@@ -176,112 +191,22 @@
   flex-direction: column;
   align-items: center;
   gap: 20rpx;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(255, 255, 255, 0.96);
   padding: 40rpx;
   border-radius: 20rpx;
-  color: #fff;
+  color: rgba(60, 60, 67, 0.6);
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
   z-index: 1000;
 }
-
 .loading-spinner {
   width: 60rpx;
   height: 60rpx;
-  border: 4rpx solid rgba(255, 255, 255, 0.3);
-  border-top-color: #fff;
+  border: 4rpx solid rgba(60, 60, 67, 0.1);
+  border-top-color: #007aff;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
-
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
-}
-
-/* ==================== iOS 精修（追加覆盖，后面规则优先） ==================== */
-.container {
-  background-color: #F2F2F7;
-}
-
-/* 筛选栏：iOS 分段控件 */
-.filter-bar {
-  width: auto;
-  margin: 16rpx 30rpx 24rpx;
-  background-color: #ffffff;
-  border: 1rpx solid rgba(60, 60, 67, 0.1);
-  border-radius: 999rpx;
-  padding: 6rpx;
-  box-shadow: none;
-}
-.filter-item {
-  border-radius: 999rpx;
-  color: rgba(60, 60, 67, 0.6);
-}
-.filter-item.active {
-  background: #007aff;
-  color: #ffffff;
-}
-
-/* 记录列表 */
-.record-list {
-  padding: 0 24rpx;
-}
-.record-card {
-  border-radius: 28rpx;
-  box-shadow: none;
-}
-.record-card:active {
-  transform: none;
-  opacity: 0.85;
-}
-.record-date {
-  border-right: 1rpx solid rgba(60, 60, 67, 0.1);
-}
-.record-date .day {
-  color: #007aff;
-}
-.record-date .date {
-  color: rgba(60, 60, 67, 0.34);
-}
-.course-name {
-  color: #000000;
-}
-.coach-name {
-  color: rgba(60, 60, 67, 0.6);
-}
-.coach-avatar {
-  background-color: rgba(60, 60, 67, 0.1);
-}
-.stat-item {
-  background-color: #f7f7fa;
-  color: rgba(60, 60, 67, 0.6);
-}
-.record-photos {
-  background-color: rgba(0, 122, 255, 0.1);
-}
-.photo-count {
-  color: #007aff;
-}
-.arrow {
-  color: rgba(60, 60, 67, 0.25);
-}
-
-/* 更多 / 空态 / 加载 */
-.load-more,
-.no-more {
-  color: rgba(60, 60, 67, 0.34);
-}
-.load-more {
-  color: #007aff;
-}
-.empty {
-  color: rgba(60, 60, 67, 0.34);
-}
-.loading {
-  background-color: rgba(255, 255, 255, 0.96);
-  color: rgba(60, 60, 67, 0.6);
-  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
-}
-.loading-spinner {
-  border: 4rpx solid rgba(60, 60, 67, 0.1);
-  border-top-color: #007aff;
 }

@@ -286,8 +286,8 @@ page {
 }
 
 /* ==================== 「正在上课」的直播卡 ====================
-   整卡从白底换成暖色渐变，是首页唯一一张「有色」的卡——上课中就是首页上
-   唯一一件此刻正在发生的事，值得这个份量。
+   整卡换成暖色大渐变——上课中就是首页上唯一一件此刻正在发生的事，
+   饱和度全页最高，比下面淡蓝打底的「下节课」卡还要重一档。
 
    渐变往右下走深，是有意的：正文（训练内容/重点）排在卡片下半部，
    正好落在对比度更高的暗端；大号数字留在浅端，那一段只有「白色 + 60rpx +
@@ -450,12 +450,144 @@ page {
   color: var(--primary);
 }
 
+/* ==================== 「下节课」品牌绿渐变卡 ====================
+   与「正在上课」的暖橙渐变同一手法、同一份量：家长每天最需要的
+   信息给整张品牌色卡，白字大号时间一眼锁定；绿冷调与橙暖调把
+   「将来」和「此刻」两种状态分开，层级不打架。
+   底色定在中值品牌绿，颜色的「活」交给四角循环变换（见下）。 */
+.status-card-upcoming {
+  background: var(--primary);
+  box-shadow: 0 12rpx 32rpx rgba(6, 154, 82, 0.26);
+  overflow: hidden;
+}
+
+/* ---------- 四角颜色循环变换（用户定稿：不要扫过痕迹） ----------
+   四个角落区域各自循环 浅绿 → 深绿 → 浅绿：每角一对光晕（浅绿 +
+   深绿）原地交叉淡入淡出，只动 opacity 走合成器，无位移无方向感；
+   光晕圆心压在角上，柔边洗进角部区域。四角周期/相位全错开，
+   颜色此起彼伏像呼吸。层 pointer-events: none 不挡整卡点击。 */
+.corner-colors {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.cc-light,
+.cc-dark {
+  position: absolute;
+  width: 640rpx;
+  height: 640rpx;
+  border-radius: 50%;
+  will-change: opacity;
+}
+
+/* 浅绿晕前半周期在场、后半让位深绿；深绿晕反相——同角两层镜像同步。
+   两色都调浅过一档（用户要求）：浅绿走薄荷调，深绿只比底色深一点 */
+.cc-light {
+  background: radial-gradient(circle, rgba(126, 226, 168, 0.95) 0%, rgba(126, 226, 168, 0) 68%);
+  animation: cc-light-cycle 7s ease-in-out infinite;
+}
+
+.cc-dark {
+  background: radial-gradient(circle, rgba(16, 168, 100, 0.95) 0%, rgba(16, 168, 100, 0) 68%);
+  animation: cc-dark-cycle 7s ease-in-out infinite;
+}
+
+@keyframes cc-light-cycle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes cc-dark-cycle {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+/* 圆心内收 120rpx（用户调的）：亮核探进卡内，变色区域往中间延伸 */
+.cc-tl { top: -200rpx; left: -200rpx; }
+.cc-tr { top: -200rpx; right: -200rpx; }
+.cc-bl { bottom: -200rpx; left: -200rpx; }
+.cc-br { bottom: -200rpx; right: -200rpx; }
+
+/* 同角两层共用周期与相位（必须镜像同步）；四角之间错开，进场即不同步。
+   周期再压一档（用户两次加速后定在 2.5-4s），delay 等比缩放保相位差 */
+.cc-tl.cc-light, .cc-tl.cc-dark { animation-duration: 3s; animation-delay: -0.4s; }
+.cc-tr.cc-light, .cc-tr.cc-dark { animation-duration: 4s; animation-delay: -1.7s; }
+.cc-bl.cc-light, .cc-bl.cc-dark { animation-duration: 3.5s; animation-delay: -2.7s; }
+.cc-br.cc-light, .cc-br.cc-dark { animation-duration: 2.5s; animation-delay: -0.9s; }
+
+/* 和 live-glow 同一个手法：右上角一团高光，裁在圆角内 */
+.status-card-upcoming::before {
+  content: '';
+  position: absolute;
+  top: -140rpx;
+  right: -120rpx;
+  width: 420rpx;
+  height: 420rpx;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0) 70%);
+  pointer-events: none;
+}
+
+/* 高光是绝对定位会盖住静态内容，卡内元素全部提到相对层（同 live-fact 的做法） */
+.status-card-upcoming .status-head,
+.status-card-upcoming .status-title-hero,
+.status-card-upcoming .status-row {
+  position: relative;
+}
+
+.status-card-upcoming .status-more {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* 查看详情正下方的「我的课表」入口：与查看详情同款文字链（同字号同色） */
+.status-links {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10rpx;
+}
+
+.status-schedule-btn {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.status-card-upcoming .status-badge.upcoming {
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+  border: 1rpx solid rgba(255, 255, 255, 0.3);
+}
+
+.status-card-upcoming .status-label {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.status-card-upcoming .status-value {
+  color: #fff;
+}
+
 .status-title {
   font-size: 34rpx;
   font-weight: 700;
   color: var(--text-main);
   line-height: 1.4;
   margin-bottom: 28rpx;
+}
+
+/* 时间行：整卡最重要的数字，白字大号加重 */
+.status-title-hero {
+  font-size: 48rpx;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.5rpx;
+  text-shadow: 0 4rpx 16rpx rgba(0, 90, 40, 0.2);
 }
 
 .status-row {
@@ -484,20 +616,60 @@ page {
   word-break: break-all;
 }
 
-/* 「下节课」下方：最近进步 + 最近反馈 */
-.status-divider {
-  height: 2rpx;
-  background: var(--border);
-  margin: 30rpx 0;
+/* ==================== 训练反馈（独立卡，三种状态常驻） ====================
+   原来内嵌在下节课卡/空闲态足迹卡里，现拆出为独立卡：上课中/下节课/空闲
+   都显示，位置固定在「当前情况」卡下方。点整卡进最新反馈详情。 */
+.fb-card {
+  margin: 0 30rpx 30rpx;
+  background: var(--card);
+  border-radius: var(--radius-xl);
+  padding: 30rpx 32rpx;
+  box-shadow: var(--shadow-2);
+  position: relative;
+  z-index: 1;
 }
 
-.progress-line {
+.fb-card-active {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+/* 「最近进步」的辨识印记：同版式但 pill 换暖橙——成长的热度（原成绩单卡
+   的用色意图平移过来），对比小标转中性灰，别跟橙色 pill 抢戏。
+   这段必须写在 flat 之前：退步态的石墨灰要能盖过它 */
+.fb-card--progress .fb-label {
+  color: #e8820c;
+  background: rgba(255, 149, 0, 0.12);
+}
+
+.fb-card--progress .fb-today {
+  color: var(--text-hint);
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* 「最近进步」复用本卡版式（用户定稿），退步（最近变化）整卡转石墨灰——
+   结构语言不变，把庆祝感收回去：记录如实 */
+.fb-card--flat {
+  background: linear-gradient(135deg, #f5f6f8 0%, #eceef2 100%);
+}
+
+.fb-card--flat .fb-label {
+  color: var(--text-sub);
+  background: rgba(0, 0, 0, 0.07);
+}
+
+.fb-card--flat .fb-today {
+  color: var(--text-hint);
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.fb-head {
   display: flex;
   align-items: center;
-  margin-bottom: 20rpx;
+  gap: 12rpx;
+  margin-bottom: 16rpx;
 }
 
-.progress-label {
+.fb-label {
   flex-shrink: 0;
   font-size: 24rpx;
   font-weight: 600;
@@ -505,37 +677,52 @@ page {
   background: var(--primary-light);
   padding: 6rpx 20rpx;
   border-radius: 999rpx;
-  margin-right: 18rpx;
 }
 
-.progress-text {
+/* 「今日」橙标：今天上的课的反馈，一眼扫到 */
+.fb-today {
+  flex-shrink: 0;
+  font-size: 20rpx;
+  font-weight: 700;
+  color: #ff9500;
+  background: rgba(255, 149, 0, 0.14);
+  padding: 4rpx 14rpx;
+  border-radius: 999rpx;
+}
+
+/* 标题行中间的项目名摘要：过长省略，不挤掉右侧周次 */
+.fb-items {
   flex: 1;
-  font-size: 28rpx;
-  font-weight: 600;
-  color: var(--text-main);
-}
-
-.feedback-line {
-  margin-top: 4rpx;
-}
-
-.feedback-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 14rpx;
-}
-
-.feedback-meta {
-  font-size: 24rpx;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 22rpx;
   color: var(--text-hint);
 }
 
-.feedback-content {
-  display: block;
+.fb-meta {
+  flex-shrink: 0;
+  font-size: 22rpx;
+  color: var(--text-hint);
+}
+
+.fb-content {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
   font-size: 27rpx;
   color: var(--text-sub);
-  line-height: 1.6;
+  line-height: 1.7;
+}
+
+.fb-more {
+  display: block;
+  margin-top: 14rpx;
+  text-align: right;
+  font-size: 22rpx;
+  color: var(--text-hint);
 }
 
 /* 骨架屏当前情况 */
@@ -575,10 +762,9 @@ page {
 
 
 /* ==================== 空闲态：成长足迹 ====================
-   没课的今天，首页原本只剩轮播图和孩子卡。这张卡回答「孩子进步了吗」：
-   练了多少次（两个大数字）→ 最近进步 → 最新反馈，从积累到变化层层往下。
-   进步行复用上面 .progress-line 的胶囊样式，和「下节课」卡长得一样——
-   家长在两张卡里看到的是同一套文案，不该有两副面孔。 */
+   没课的今天，这张卡回答「孩子坚持得怎么样」：练了多少次（两个大数字）→
+   最新反馈。「最明显进步」已上移为学员卡下方的独立卡（三种状态共用），
+   这里不再重复。 */
 .growth-section {
   position: relative;
   z-index: 1;
@@ -661,48 +847,7 @@ page {
   margin: 28rpx 0 24rpx;
 }
 
-/* 反馈行可点进「我的反馈」，给个按下的反馈 */
-.growth-feedback {
-  border-radius: var(--radius-sm);
-  margin: -8rpx -12rpx;
-  padding: 8rpx 12rpx;
-}
-
-.growth-feedback-active {
-  background: var(--bg);
-}
-
-.growth-feedback-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12rpx;
-}
-
-.growth-feedback-label {
-  flex-shrink: 0;
-  font-size: 24rpx;
-  font-weight: 600;
-  color: var(--primary);
-  background: var(--primary-light);
-  padding: 6rpx 20rpx;
-  border-radius: 999rpx;
-}
-
-.growth-feedback-meta {
-  font-size: 22rpx;
-  color: var(--text-hint);
-}
-
-.growth-feedback-content {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  overflow: hidden;
-  font-size: 27rpx;
-  color: var(--text-sub);
-  line-height: 1.6;
-}
+/* 最新训练反馈已上移为三态常驻的独立卡（.fb-card），此处不再有 inset 版 */
 
 /* 全新用户：三块数据全空时的引导行 */
 .growth-empty-hint {

@@ -54,14 +54,17 @@
         <view class="photos" wx:if="{{item.photos && item.photos.length > 0}}">
           <scroll-view scroll-x class="photo-scroll">
             <view class="photo-list">
+              <!-- 内层循环必须改名：默认 item 会遮蔽外层 classList 项，
+                   data-urls 取不到整组照片 → 预览退化成单张 -->
               <image
                 class="photo-item"
                 wx:for="{{item.photos}}"
-                wx:key="index"
-                src="{{item}}"
+                wx:for-item="photo"
+                wx:key="*this"
+                src="{{photo}}"
                 mode="aspectFill"
                 bind:tap="previewPhoto"
-                data-url="{{item}}"
+                data-url="{{photo}}"
                 data-urls="{{item.photos}}"
               ></image>
             </view>
@@ -73,7 +76,8 @@
           <view class="comment-header">
             <text class="comment-label">我的点评</text>
             <view class="rating">
-              <text class="star {{index < item.comment.rating ? 'active':''}}" wx:for="{{[1,2,3,4,5]}}" wx:key="index">★</text>
+              <!-- 同 my-feedback 星星坑：内层循环不显式改名，index/item 都被遮蔽 → 星星永不点亮 -->
+              <text class="star {{sIndex < item.comment.rating ? 'active':''}}" wx:for="{{[1,2,3,4,5]}}" wx:for-item="star" wx:for-index="sIndex" wx:key="sIndex">★</text>
             </view>
           </view>
           <text class="comment-content">{{item.comment.content}}</text>

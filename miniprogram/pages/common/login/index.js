@@ -2,9 +2,10 @@
 const auth = require('../../../utils/auth');
 const { ENTRY, resolveLoginEntry } = require('../../../utils/helper');
 
-// 三个入口的显示名。注意这是「登录入口」，不是 users.role 的取值：
-// 管理员的 role 仍是 'coach'，靠 isAdmin 字段区分。
-const ROLE_LABEL = { user: '家长', coach: '教练', admin: '管理' };
+// 两个入口的显示名。注意这是「登录入口」，不是 users.role 的取值：
+// 管理员的 role 仍是 'coach'，靠 isAdmin 字段区分。管理端入口已撤掉——
+// 管理员从教练端登录，带 isAdmin 标识就自动进管理模式（见 onLogin）。
+const ROLE_LABEL = { user: '家长', coach: '教练' };
 
 Page({
   data:{
@@ -18,13 +19,10 @@ Page({
 
   onRoleSelect(e){
     const role = e.currentTarget.dataset.role;
-    // 管理端不能自助注册，选中它时注册按钮文案回落到「家长/教练」，
-    // 否则会渲染出「注册管理账号」，暗示可以注册
-    const registerLabel = role === ENTRY.ADMIN ? '家长/教练' : ROLE_LABEL[role];
     this.setData({
       selectedRole: role,
       roleLabel: ROLE_LABEL[role],
-      registerLabel
+      registerLabel: ROLE_LABEL[role]
     })
   },
   
@@ -72,23 +70,13 @@ Page({
       const user = res.data[0];
       console.log('[登录] 命中 users 记录', res.data.length, '条，取第一条：', user);
 
-      // 检查角色是否匹配（管理端还需 isAdmin，判断逻辑集中在 resolveLoginEntry）
+      // 检查角色是否匹配（家长进不了教练端，判断逻辑集中在 resolveLoginEntry）
       const gate = resolveLoginEntry(user, this.data.selectedRole);
       if(!gate.ok) {
-        // 把实际读到的字段值一并显示。「没有管理员权限」这一条绝大多数情况
-        // 不是权限没配，而是记录里的字段名/类型和代码读的不一致——
-        // 光看提示文案会一直以为是自己没配权限，所以这里直接把原始值亮出来。
-        // 注意这里显示的是 user.isAdmin 原文（不是 readIsAdmin 的结果）——
-        // 走到这个分支说明鉴权判定已是 false，真正要看的是「库里到底存成了什么」
-        const detail = this.data.selectedRole === ENTRY.ADMIN
-          ? `\n\nrole = ${JSON.stringify(user.role)}`
-            + `\nisAdmin = ${JSON.stringify(user.isAdmin)}（类型 ${typeof user.isAdmin}）`
-            + `\n含 isAdmin 字样的字段名：${Object.keys(user).filter(k => k.trim() === 'isAdmin').map(k => JSON.stringify(k)).join('、') || '无'}`
-          : '';
         console.error('[登录] 角色闸门拦截', user, gate);
         wx.showModal({
           title: '提示',
-          content: gate.message + detail,
+          content: gate.message,
           showCancel: false
         });
 
@@ -96,10 +84,17 @@ Page({
         return;
       }
 
+      // 教练端登录的账号带 isAdmin 标识 → 直接进管理模式（驾驶舱）。
+      // 登录页已撤掉管理端入口，这是管理员唯一的进入方式；
+      // cacheSession 写入的 entry 也升级成 admin，冷启动按它回驾驶舱
+      const entry = (this.data.selectedRole === ENTRY.COACH && auth.readIsAdmin(user))
+        ? ENTRY.ADMIN
+        : this.data.selectedRole;
+
       // 保存用户信息（cacheSession 会一并写入 coachInfo / isAdmin / entry）
       wx.setStorageSync('userInfo', userInfo);
       wx.setStorageSync('openid', savedOpenid);
-      auth.cacheSession(user, this.data.selectedRole);
+      auth.cacheSession(user, entry);
 
       // 更新最后登录时间
       const db = wx.cloud.database();
@@ -111,8 +106,8 @@ Page({
         }
       });
 
-      // 跳转到对应首页（传整个 user，判断管理端需要 isAdmin 字段）
-      this.navigateToHome(user);
+      // 跳转到对应首页（管理模式用 isAdmin 升级后的 entry）
+      this.navigateToHome(user, entry);
    }).catch(err => {
     console.error('登录失败', err);
     wx.showToast({ title: '登录失败', icon: 'none' });
@@ -123,16 +118,6 @@ Page({
 
   // 注册
   onRegister() {
-    // 管理端不可自助注册：账号由管理员在云开发控制台开通
-    if(this.data.selectedRole === ENTRY.ADMIN) {
-      wx.showModal({
-        title: '提示',
-        content: '管理端账号由管理员在云开发控制台开通，无法自助注册。',
-        showCancel: false
-      });
-      return;
-    }
-
     if(!this.data.agree) {
       wx.showToast({ title: '请先同意用户协议', icon: 'none' });
     }
@@ -229,10 +214,9 @@ Page({
     });
   },  
 
-  // 根据角色跳转首页
-
-  navigateToHome(user) {
-    const gate = resolveLoginEntry(user, this.data.selectedRole);
+  // 根据入口跳转首页（不传 entry 时按当前选择的入口）
+  navigateToHome(user, entry) {
+    const gate = resolveLoginEntry(user, entry || this.data.selectedRole);
     wx.reLaunch({ url: gate.home });
   },
   /**
@@ -255,8 +239,11 @@ Page({
       role: wx.getStorageSync('userRole') || 'user',
       isAdmin: auth.isAdmin()
     };
-    // 按上次登录的入口跳转：从管理端登录就回驾驶舱，从教练端登录回工作台
-    const gate = resolveLoginEntry(user, auth.getEntry());
+    // 按上次登录的入口跳转；带 isAdmin 的老会话（缓存 entry 还是 coach 的）
+    // 也升级回管理模式，保证管理员冷启动永远落在驾驶舱
+    const cachedEntry = auth.getEntry();
+    const entry = cachedEntry === ENTRY.COACH && auth.isAdmin() ? ENTRY.ADMIN : cachedEntry;
+    const gate = resolveLoginEntry(user, entry);
     wx.reLaunch({ url: gate.home });
   },
 

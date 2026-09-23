@@ -10,11 +10,20 @@
       </picker>
     </view>
 
+    <!-- 任课教练（仅管理员显示）：排课调度中心把课派给哪位教练 -->
+    <view class="form-item" wx:if="{{isAdmin}}">
+      <text class="label">任课教练</text>
+      <picker mode="selector" range="{{coachNames}}" bindchange="onCoachChange">
+        <view class="picker">{{coachIndex >= 0 ? coachNames[coachIndex] : (coachInfo.name || '请选择教练')}}</view>
+      </picker>
+    </view>
+
     <!-- 显示学员信息 -->
     <view class="child-info" wx:if="{{childName}}">
       <image class="avatar" src="cloud://hupin255-5gfbw856b1c861ef.6875-hupin255-5gfbw856b1c861ef-1410552194/default_avatar/6756593ba0eb6a537f7060da8ede3ca8.jpeg" mode="aspectFill"></image>
       <view class="info">
         <text class="name">{{childName}}</text>
+        <text class="hint {{balanceLow ? 'balance-warn' : ''}}" wx:if="{{balanceText}}">{{balanceText}}</text>
         <text class="hint">正在为TA添加训练记录</text>
       </view>
     </view>
@@ -45,18 +54,27 @@
        <!-- <text class="hint" wx:if="{{duration}}">约 {{duration}}，扣减 {{trainingHoursDisplay}} 课时</text> -->
     </view>
 
-    <!-- 训练类型 -->
+    <!-- 训练项目：一行一个，上课时在 in-class 页逐项打卡 -->
     <view class="form-item">
-      <text class="label">训练类型</text>
-      <picker mode="selector" range="{{typeList}}" bindchange="onTypeChange">
-        <view class="picker">{{selectedType || '请选择训练类型'}}</view>
-      </picker>
-    </view>
-
-    <!-- 训练名称 -->
-    <view class="form-item">
-      <text class="label">训练名称</text>
-      <input placeholder="例如:起跑反应训练" value="{{name}}" bindinput="onNameInput"/>
+      <view class="label-row">
+        <text class="label">训练项目</text>
+        <text class="label-hint">上课时逐项打卡</text>
+      </view>
+      <!-- 常用项目点选：该学员近期用过的项目名，点一下填入空行——从源头少打字，
+           写法保持一致，保存前的 AI 归一调用也跟着变少 -->
+      <view class="item-chips" wx:if="{{recentItems.length}}">
+        <text class="chips-label">常用</text>
+        <view class="chip" wx:for="{{recentItems}}" wx:key="*this"
+              hover-class="chip-hover" bind:tap="onRecentItemTap" data-name="{{item}}">{{item}}</view>
+      </view>
+      <view class="item-row" wx:for="{{itemDrafts}}" wx:key="index">
+        <view class="item-main">
+          <input class="item-input" placeholder="项目名称，如：绳梯步法" maxlength="20"
+                 value="{{item.name}}" data-index="{{index}}" bindinput="onItemInput"/>
+        </view>
+        <view class="item-del" catch:tap="onRemoveItem" data-index="{{index}}">✕</view>
+      </view>
+      <view class="item-add" bind:tap="onAddItem">＋ 添加项目</view>
     </view>
 
     <!-- 训练重点 -->
@@ -76,16 +94,6 @@
         placeholder="例如：保持低重心" 
         value="{{difficulty}}" 
         bindinput="onDifficultyInput"
-      />
-    </view>
-
-    <!-- 本次训练内容（教练手填，上课时在 in-class 页展示） -->
-    <view class="form-item">
-      <text class="label">本次训练内容</text>
-      <input
-        placeholder="例如：绳梯辅助练习 + 单脚稳定"
-        value="{{coachContent}}"
-        bindinput="onCoachContentInput"
       />
     </view>
 
@@ -117,6 +125,6 @@
       <text class="hint">支持jpg/png格式，最多9张</text>
     </view>
 
-    <button class="submit-btn" type="primary" bind:tap="onSubmit" loading="{{submitting}}">保存训练记录</button>
+    <button class="submit-btn" type="primary" bind:tap="onSubmit" loading="{{submitting}}" disabled="{{submitting}}">保存训练记录</button>
   </view>
 </view>

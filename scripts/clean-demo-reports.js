@@ -1,0 +1,1 @@
+(async function () { var db = wx.cloud.database(); var res = await db.collection('reports').where({ coachId: 'demo-coach' }).get(); for (var i = 0; i < res.data.length; i++) { await db.collection('reports').doc(res.data[i]._id).remove(); } console.log('OK 已删除 ' + res.data.length + ' 份测试报告'); })().catch(function (e) { console.error('清理失败', e); });

@@ -1,52 +1,265 @@
-/* pages/admin/dashboard/index.wxss — iOS 风格，与 coach 端其它页面一致 */
+/* pages/admin/dashboard/index.wxss — 经营驾驶舱：品牌绿渐变头部 + 白卡数据面板
+   与工作台/学员管理同一设计语言（渐变 hero、绿系变量、软阴影白卡） */
 
 page {
-  --bg: #F2F2F7;
-  --primary: #007AFF;
+  --bg: #f5f7fa;
+  --primary: #07c160;
+  --primary-dark: #05a350;
+  --primary-light: #e8f5e9;
   --card: #ffffff;
-  --text-main: #000000;
-  --text-sub: rgba(60, 60, 67, 0.6);
-  --text-hint: rgba(60, 60, 67, 0.34);
-  --border: rgba(60, 60, 67, 0.1);
-  --radius-xl: 32rpx;
-  --green: #34C759;
-  --orange: #FF9500;
-  --red: #FF3B30;
+  --text-main: #1a2a1a;
+  --text-sub: #5f6f65;
+  --text-hint: #9aa8a0;
+  --border: rgba(26, 42, 26, 0.08);
+  --radius-lg: 32rpx;
+  --radius-md: 24rpx;
+  --card-shadow: 0 4rpx 20rpx rgba(26, 42, 26, 0.06);
+  --green: #07c160;
+  --blue: #4a90d9;
+  --orange: #ff9f43;
+  --red: #fa5151;
 }
 
 .container {
   min-height: 100vh;
   background-color: var(--bg);
-  padding: 24rpx 0 calc(140rpx + env(safe-area-inset-bottom));
+  padding: 0 0 calc(140rpx + env(safe-area-inset-bottom));
+  position: relative;
 }
 
-/* ==================== 分组 ==================== */
+/* ==================== 渐变背景层 ==================== */
+.gradient-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 500rpx;
+  background: linear-gradient(135deg, #07c160 0%, #00d68f 30%, #e8f5e9 80%, rgba(245, 247, 250, 0) 100%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.gradient-bg::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80rpx;
+  background: linear-gradient(180deg, transparent 0%, var(--bg) 100%);
+}
+
+/* ==================== 顶部标题区 ==================== */
+.header-area {
+  padding: 100rpx 40rpx 90rpx;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.header-title {
+  display: block;
+  font-size: 52rpx;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 12rpx;
+  text-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
+  letter-spacing: 2rpx;
+}
+
+.header-subtitle {
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 400;
+  letter-spacing: 1rpx;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 8rpx 24rpx;
+  border-radius: 20rpx;
+}
+
+/* ==================== 主体 ==================== */
+.page-body {
+  position: relative;
+  z-index: 1;
+  padding: 0 30rpx;
+}
+
 .section {
-  margin: 0 30rpx 28rpx;
+  margin: 0 0 28rpx;
+}
+
+/* 今日课次卡上探进渐变，形成悬浮叠压 */
+.section-first {
+  margin-top: -56rpx;
 }
 
 .section-title {
-  display: block;
-  font-size: 26rpx;
-  font-weight: 500;
-  color: var(--text-sub);
-  margin: 0 0 12rpx 8rpx;
+  display: flex;
+  align-items: center;
+  margin: 0 0 16rpx 4rpx;
+}
+
+.title-accent {
+  width: 8rpx;
+  height: 28rpx;
+  border-radius: 4rpx;
+  background: linear-gradient(180deg, var(--primary) 0%, #00d68f 100%);
+  margin-right: 12rpx;
+}
+
+.section-title text {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: var(--text-main);
 }
 
 .section-hint {
   display: block;
   font-size: 22rpx;
   color: var(--text-hint);
-  margin: 12rpx 0 0 8rpx;
+  margin: 14rpx 0 0 8rpx;
 }
 
-/* ==================== 指标行 ==================== */
+/* ==================== ① 今日课次 ==================== */
+.stat-hero {
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  padding: 40rpx 32rpx 32rpx;
+  box-shadow: var(--card-shadow);
+}
+
+.stat-hero-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-hero-num-wrap {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+}
+
+.stat-hero-num {
+  font-size: 76rpx;
+  font-weight: 800;
+  color: var(--text-main);
+  line-height: 1;
+}
+
+.stat-hero-unit {
+  font-size: 26rpx;
+  color: var(--text-sub);
+  margin-left: 8rpx;
+}
+
+.stat-hero-label {
+  font-size: 24rpx;
+  color: var(--text-hint);
+  margin-top: 12rpx;
+}
+
+.stat-hero-sub {
+  display: flex;
+  margin-top: 28rpx;
+  padding-top: 28rpx;
+  border-top: 1rpx solid var(--border);
+}
+
+.stat-mini {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.mini-dot {
+  width: 14rpx;
+  height: 14rpx;
+  border-radius: 50%;
+  margin-bottom: 2rpx;
+}
+
+.dot-green { background: var(--green); }
+.dot-blue { background: var(--blue); }
+.dot-gray { background: #c6cfd0; }
+
+.stat-mini-num {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1;
+}
+
+.stat-mini-num.ok { color: var(--green); }
+.stat-mini-num.running { color: var(--blue); }
+
+.stat-mini-label {
+  font-size: 22rpx;
+  color: var(--text-sub);
+}
+
+/* ==================== ①½ 排课调度中心入口（时间轴在 pages/admin/schedule） ==================== */
+.sched-entry {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #07c160 0%, #00d68f 100%);
+  border-radius: var(--radius-lg);
+  padding: 32rpx;
+  box-shadow: 0 8rpx 24rpx rgba(7, 193, 96, 0.3);
+  transition: transform 0.2s ease;
+}
+
+.sched-entry:active { transform: scale(0.98); }
+
+.sched-entry-icon {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40rpx;
+  margin-right: 24rpx;
+  flex-shrink: 0;
+}
+
+.sched-entry-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.sched-entry-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #fff;
+}
+
+.sched-entry-sub {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.sched-entry-arrow {
+  font-size: 40rpx;
+  color: rgba(255, 255, 255, 0.9);
+  margin-left: 12rpx;
+}
+
+/* ==================== ② 全局概览 ==================== */
 .stat-row {
   display: flex;
   background: var(--card);
-  border-radius: var(--radius-xl);
-  padding: 32rpx 0;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  border-radius: var(--radius-lg);
+  padding: 36rpx 0;
+  box-shadow: var(--card-shadow);
 }
 
 .stat-cell {
@@ -54,18 +267,22 @@ page {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8rpx;
+  gap: 10rpx;
+}
+
+.stat-cell + .stat-cell {
+  border-left: 1rpx solid var(--border);
 }
 
 .stat-num {
-  font-size: 46rpx;
-  font-weight: 700;
+  font-size: 44rpx;
+  font-weight: 800;
   line-height: 1.1;
   color: var(--text-main);
 }
 
 .stat-num.ok { color: var(--green); }
-.stat-num.running { color: var(--primary); }
+.stat-num.running { color: var(--blue); }
 .stat-num.warn { color: var(--orange); }
 
 .stat-label {
@@ -73,14 +290,14 @@ page {
   color: var(--text-sub);
 }
 
-/* ==================== 本月课时 ==================== */
+/* ==================== ③ 本月课时 ==================== */
 .month-card {
   display: flex;
   align-items: center;
   background: var(--card);
-  border-radius: var(--radius-xl);
-  padding: 36rpx 0;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  border-radius: var(--radius-lg);
+  padding: 40rpx 0;
+  box-shadow: var(--card-shadow);
 }
 
 .month-cell {
@@ -92,8 +309,8 @@ page {
 }
 
 .month-num {
-  font-size: 52rpx;
-  font-weight: 700;
+  font-size: 56rpx;
+  font-weight: 800;
   color: var(--text-main);
   line-height: 1.1;
 }
@@ -111,60 +328,83 @@ page {
   background: var(--border);
 }
 
-/* ==================== 待办 ==================== */
+/* ==================== ④ 今日需要处理 ==================== */
 .todo-card {
   background: var(--card);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-lg);
   overflow: hidden;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  box-shadow: var(--card-shadow);
 }
 
 .todo-item {
   display: flex;
   align-items: center;
-  padding: 30rpx 32rpx;
+  padding: 26rpx 32rpx;
   border-bottom: 1rpx solid var(--border);
   transition: background-color 0.15s ease;
 }
 
 .todo-item:last-child { border-bottom: none; }
-.todo-item:active { background-color: rgba(60, 60, 67, 0.04); }
+.todo-item:active { background-color: rgba(26, 42, 26, 0.04); }
 
-.todo-icon { font-size: 36rpx; margin-right: 20rpx; }
+.todo-icon {
+  width: 68rpx;
+  height: 68rpx;
+  border-radius: 20rpx;
+  background: var(--primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  margin-right: 24rpx;
+  flex-shrink: 0;
+}
 
 .todo-title {
   flex: 1;
   font-size: 28rpx;
+  font-weight: 500;
   color: var(--text-main);
 }
 
 .todo-count {
-  font-size: 30rpx;
-  font-weight: 600;
+  min-width: 44rpx;
+  height: 40rpx;
+  line-height: 40rpx;
+  padding: 0 14rpx;
+  box-sizing: border-box;
+  border-radius: 20rpx;
+  background: #eef1f0;
   color: var(--text-hint);
-  margin-right: 12rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  text-align: center;
+  margin-right: 16rpx;
 }
 
-.todo-count.has { color: var(--red); }
+.todo-count.has {
+  background: rgba(250, 81, 81, 0.12);
+  color: var(--red);
+}
 
 .todo-arrow {
   font-size: 32rpx;
-  color: var(--text-hint);
+  color: #c0c8c4;
 }
 
-/* ==================== 趋势图 ==================== */
+/* ==================== ⑤ 本周趋势 ==================== */
 .trend-card {
   background: var(--card);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-lg);
   padding: 32rpx 24rpx 24rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  box-shadow: var(--card-shadow);
 }
 
 .trend-chart {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  height: 240rpx;
+  height: 260rpx;
 }
 
 .trend-col {
@@ -178,8 +418,14 @@ page {
 
 .trend-value {
   font-size: 22rpx;
+  font-weight: 600;
   color: var(--text-sub);
   line-height: 1;
+}
+
+.trend-value.zero {
+  font-weight: 400;
+  color: #c0c8c4;
 }
 
 /* 柱子容器：吃掉剩余高度，柱子按 percent 从底部长上来 */
@@ -191,17 +437,30 @@ page {
   justify-content: center;
 }
 
+/* 过往的日子淡绿，今天全天饱和 + 投影突出 */
 .trend-bar {
-  width: 36rpx;
-  min-height: 4rpx;
-  border-radius: 8rpx;
-  background: linear-gradient(180deg, #4DA3FF 0%, var(--primary) 100%);
+  width: 32rpx;
+  min-height: 8rpx;
+  border-radius: 16rpx;
+  background: linear-gradient(180deg, #00d68f 0%, var(--primary-dark) 100%);
+  opacity: 0.35;
+  transition: height 0.4s ease;
+}
+
+.trend-bar.is-today {
+  opacity: 1;
+  box-shadow: 0 4rpx 12rpx rgba(7, 193, 96, 0.35);
 }
 
 .trend-label {
   font-size: 22rpx;
   color: var(--text-hint);
   line-height: 1;
+}
+
+.trend-label.is-today {
+  color: var(--primary);
+  font-weight: 700;
 }
 
 .trend-empty {

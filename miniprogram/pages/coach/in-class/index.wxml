@@ -25,8 +25,62 @@
       </view>
     </view>
 
-    <!-- 本次训练内容：教练在 trainings/edit 页填写，上课时给教练自己看 -->
-    <view class="section" wx:if="{{training.coachContent}}">
+    <!-- 训练项目打卡：勾选即写库，退出重进状态保留 -->
+    <view class="section" wx:if="{{items.length}}">
+      <view class="items-head">
+        <view class="section-title">训练项目</view>
+        <text class="items-progress">已完成 {{doneCount}}/{{items.length}}</text>
+      </view>
+      <view class="check-list">
+        <view class="check-item" wx:for="{{items}}" wx:key="index">
+          <view class="check-row" bind:tap="onToggleItem" data-index="{{index}}">
+            <view class="check-circle {{item.done ? 'done' : ''}}">{{item.done ? '✓' : ''}}</view>
+            <text class="check-name {{item.done ? 'done' : ''}}">{{item.name}}</text>
+            <text class="check-amount" wx:if="{{item.amount}}">{{item.amount}}</text>
+          </view>
+          <!-- 勾完展开：本次表现（选填文字），展示到家长端/教练端成长页的训练项目层 -->
+          <view class="perf-box" wx:if="{{item.done}}">
+            <input class="perf-input" placeholder="本次表现(选填)，如：1分钟跳了160下" maxlength="60"
+                   value="{{item.performance}}" data-index="{{index}}"
+                   bindinput="onPerfInput" bindblur="onPerfBlur"/>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 精彩瞬间：上课中拍照/录视频，选完自动上传，课后写反馈时直接引用 -->
+    <view class="section">
+      <view class="section-title">精彩照片 <text class="media-hint">最多{{photoCap}}张，选完自动上传</text></view>
+      <view class="photo-grid">
+        <view class="photo-cell" wx:for="{{photos}}" wx:key="*this">
+          <image class="photo-img" src="{{item}}" mode="aspectFill" data-index="{{index}}" bind:tap="previewPhoto"></image>
+          <view class="photo-del" data-index="{{index}}" catch:tap="removePhoto">×</view>
+        </view>
+        <view class="photo-add" wx:if="{{photos.length < photoCap}}" bind:tap="addPhoto">
+          <text class="add-icon">＋</text>
+          <text class="add-label">照片</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-title">精彩视频 <text class="media-hint">最多{{videoCap}}个，选完自动上传</text></view>
+      <view class="photo-grid">
+        <view class="photo-cell" wx:for="{{videos}}" wx:key="*this">
+          <view class="video-thumb" data-index="{{index}}" bind:tap="previewVideo">
+            <text class="video-play">▶</text>
+          </view>
+          <view class="photo-del" data-index="{{index}}" catch:tap="removeVideo">×</view>
+        </view>
+        <view class="photo-add" wx:if="{{videos.length < videoCap}}" bind:tap="addVideo">
+          <text class="add-icon">＋</text>
+          <text class="add-label">视频</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 本次训练内容：教练在 trainings/edit 页填写，上课时给教练自己看（有项目清单时不重复展示） -->
+    <view class="section" wx:if="{{!items.length && training.coachContent}}">
       <view class="section-title">本次训练内容</view>
       <view class="section-content">{{training.coachContent}}</view>
     </view>

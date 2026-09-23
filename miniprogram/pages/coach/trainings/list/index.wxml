@@ -63,11 +63,13 @@
 
     <!-- 空状态 -->
     <view wx:if="{{trainingList.length === 0 && !loading}}" class="empty">
-      <text class="暂无训练记录"></text>
+      <text class="empty-icon">📋</text>
+      <text class="empty-title">暂无训练记录</text>
+      <text class="empty-hint">这里只显示你自己执教的课次；学员的历史记录请从学员详情进入查看</text>
     </view>
 
     <!-- 加载更多 -->
-    <view wx:if="{{hasMore && trainingList.length > 0}}" class="load-more" bind:tap="loadMore">
+    <view wx:if="{{hasMore && trainingList.length > 0}}" class="load-more" bind:tap="loadingMore">
       <text wx:if="{{!loadingMore}}">加载更多</text>
       <text wx:else>加载中...</text>
     </view>

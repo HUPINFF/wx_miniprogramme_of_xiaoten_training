@@ -17,13 +17,11 @@
     
     <view class="user {{selectedRole === 'user' ? 'active':''}}" data-role="user" bind:tap="onRoleSelect">用户端</view>
     <view class="coach {{selectedRole === 'coach'?'active':''}}" data-role="coach" bind:tap="onRoleSelect">教练端</view>
-    <view class="admin {{selectedRole === 'admin'?'active':''}}" data-role="admin" bind:tap="onRoleSelect">管理端</view>
    </view>
   <view class="login-box">
     <button class="login_btn" type="primary" open-type="getUserInfo" bindgetuserinfo="onLogin" loading="{{loading}}">{{roleLabel}}登录</button>
 
-    <!-- 注册按钮：管理端不可自助注册，选中管理端时置灰 -->
-    <button class="register_btn" type="default" bind:tap="onRegister" loading="{{registerLoading}}" disabled="{{selectedRole === 'admin'}}">
+    <button class="register_btn" type="default" bind:tap="onRegister" loading="{{registerLoading}}">
       注册{{registerLabel}}账号
     </button>
 

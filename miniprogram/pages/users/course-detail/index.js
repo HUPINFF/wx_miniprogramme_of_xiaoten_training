@@ -62,5 +62,14 @@ Page({
 
   goToContactCoach() {
     wx.navigateTo({ url: '/pages/users/book-coach/index' });
+  },
+
+  // 自定义头部的返回键：栈里有上一页就返回，否则回首页（分享/扫码直接进来的场景）
+  goBack() {
+    if (getCurrentPages().length > 1) {
+      wx.navigateBack();
+    } else {
+      wx.switchTab({ url: '/pages/users/home/index' });
+    }
   }
 });
